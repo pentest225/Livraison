@@ -1,0 +1,65 @@
+/*SECTION MENU*/
+body{
+	margin: 0px;
+	padding: 0px;
+	font-family:"Book Antiqua" ,"Lucida Console", Monaco, monospace;
+	font-size: 15px ;
+}
+.entete{
+	font-size: 1.5rem;
+	margin-top: -10px;
+}
+.entete table  {
+	border: 1 px solid red;
+}
+.date{
+	text-align: center;
+	display: inline;
+}
+.date input{
+	color: #1E90FF;
+}
+/*MISE EN FORME DES INPUT*/
+input{
+	margin: 0px;
+	padding: 0px;
+	border:none;
+	text-decoration: none;
+	color:red;
+	width: 40%;
+}
+/*POUR AFFICHER OU CACHE LES ENTETE DU SITE */
+.showHide{
+	display: none;
+	transition: display 2s ease-in-out;
+	
+}
+.navigation{
+	padding: 0px;
+	margin: 0px;
+	height: 50px;
+}
+.navigation .restPrise{
+	display: flex;
+	border-bottom: 2px solid grey;
+
+	margin-top: -30px;
+}
+.restVal{
+	margin-left:60px; 
+}
+
+
+
+
+
+
+/*SECTION VENTE */
+
+
+.vente_du_jour h4 {
+	text-align: center;
+}
+.vente_du_jour{
+	padding: 10px;
+}
