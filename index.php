@@ -22,7 +22,7 @@
 
 <body>
 <header>
-			<?php include("menu.php") ?>
+			<?php include("views/include/menu.php") ?>
 		</header>
 		<form action="# " method="post">
 			<div class="row entete">
