@@ -79,15 +79,10 @@ $(function()
                         dataType: "json",
                         success: function (response) {
                             if(response.NameExist){
-                                
                                
                             }
                             else{
-                                var creationCompt=confirm('Desole Ce Client '+nom+' Existe pas dans la liste des client\nvoulez vous cree un compt pour ce client');
-                                if(creationCompt)
-                                {
-                                    $('#creationCompt').click();
-                                }
+                                clientExitpas(nom);
                             }
                         }
                     });
@@ -109,22 +104,18 @@ $(function()
                         $.ajax({
                             type: "Post",
                             url: 'static/php/livraison.php',
-                            data:{Action:'actualisation',Nom:nom} ,
+                            data:{Action:'actualisationPrise',Nom:nom,date:dateDuJour,prise:prise} ,
                             dataType: "json",
                             success: function (response) {
                                 if(response.NameExist){
                                     SommeAVerse.innerText=parseInt(prise) * parseInt(response.prixUnitaire) ;
-                                    etatSolde.innerText=response.etatSolde;
+                                    etatSolde.innerText=verifEtatSolde(response.newSolde);
                                     montantSolde.innerText=response.newSolde;
                                     //si le client est dans la base de bonne 
                                    
                                 }
                                 else{
-                                    var creationCompt=confirm('Desole Ce Client '+nom+' Existe pas dans la liste des client\nvoulez vous cree un compt pour ce client');
-                                    if(creationCompt)
-                                    {
-                                        $('#creationCompt').click();
-                                    }
+                                    clientExitpas(nom);
                                 }
                             }
                         });
@@ -297,4 +288,10 @@ $(function()
         clear: 'effacer',
         formatSubmit: 'yyyy/mm/dd'
         })
+
+
+        //DATA TABLE 
+        $(document).ready( function () {
+            $('#dtBasicExample').DataTable();
+        } );
 })

@@ -48,17 +48,34 @@ if(isset($_POST)){
         break;
         case 'actualisationPrise':
             extract($_POST);
+            
             //prise des information sur l'utilisateur 
+
             $db=DB::connect();
             $query =$db->prepare('SELECT * FROM user WHERE name =?');
             $query->execute(array($_POST['Nom']));
-            $reponse=$query->fetch();
+            $response=$query->fetch();
             if($response){
+                //Calcule de la somme a verser 
+                $SommeDu =$prise * $response['unitary_price'];
                 $Info['NameExist']=TRUE; 
-                $InsertVente = $db->prepare('INSERT INTO vente (date,id_user,prise_client,somme_a_verser,rest) VALUES (?,?,?,?,?)');
-                $InsertVente->execute(array($date,$response['id'],$prise,$SomAverser,$Somme,$diffSomme));
-                
+                $Info['prixUnitaire']=$response['unitary_price']; 
+                $InsertPrise = $db->prepare('INSERT INTO vente (date,id_client,prise_client,etat_prise,somme_a_verser) VALUES (?,?,?,?,?)');
+                $InsertPrise->execute(array($date,$response['id'],$prise,0,$SommeDu));
+                if($InsertPrise){
+                    //Insertion dans la table vente ok 
+                    //Mise a jour du solde du client 
+                    $newSolde =$response['solde'] + $SommeDu ;
+                    $UpdateClient =$db->prepare('UPDATE  user SET solde =?  WHERE id = ?');
+                    $UpdateClient->execute(array($newSolde,$response['id']));
+                        if($UpdateClient){
+                        $Info['miseAJourOk']=TRUE;
+                        $Info['newSolde']=$newSolde;
+                        } 
+                }
             }
+            echo json_encode($Info);
+        break;
         case 'actualisation':
             //selection des information du client array(5) { ["Action"]=> string(13) "actualisation" ["Nom"]=> string(7) "patrick" ["priseClient"]=> string(1) "3" ["SomAverser"]=> string(3) "375" ["Somme"]=> string(3) "300" }
             extract($_POST);
@@ -71,6 +88,7 @@ if(isset($_POST)){
             $reponse=$query->fetch();
             if($response){
                 $Info['NameExist']=TRUE;  
+                $Info['prixUnitaire']=$response['unitary_price']; 
                 //insertion des information 
                 $InsertVente = $db->prepare('INSERT INTO vente (date,id_user,prise_client,somme_a_verser,rest) VALUES (?,?,?,?,?)');
                 $InsertVente->execute(array($date,$response['id'],$prise,$SomAverser,$Somme,$diffSomme));

@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B"
         crossorigin="anonymous">
     <!-- ME OWN CSS -->
+	<link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="static/css/style.css">
     <!-- Material Design Bootstrap -->
     <link href="static/css/mdb.min.css" rel="stylesheet">
@@ -24,7 +25,11 @@
 <body>
 <header>
 			<?php include("views/include/menu.php") ?>
+
 		</header>
+	<div class="container mt-5">
+	
+
 		<form action="# " method="post">
 			<div class="row entete">
 					<div class="col-md-4 Tab_left">
@@ -126,7 +131,7 @@
 				</tr>
 			</tfoot>
 		</table>
-			<!-- fin de la section table mdn -->
+			<!-- fin de la section table mdn 
 			<div class="row navigation">
 				<div class="col-md-4">
 					<input type="button" name="" class="btn btn-success " id="addLine" onclick="ajouterLigne();" value="Ajouter une ligne">
@@ -150,8 +155,9 @@
 			    </tr>
 			  </thead>
 			</table>
-			<a type="submit" name="Soumetre" class="btn btn-success  "> SOUMETRE LE FORMULAIRE </a>
+			<a type="submit" name="Soumetre" class="btn btn-success  "> SOUMETRE LE FORMULAIRE </a>-->
 		</form>
+	</div>
 		<!-- SECTION MODAL MDB -->
 		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 			<div class="modal-dialog" role="document">
@@ -230,8 +236,8 @@
 	      </div>
 		fin de la section modal    
 		</div>-->
-  </div>
-  
+  	</div>
+
     <!-- SCRIPTS -->
 
     <!-- JQuery -->
@@ -252,6 +258,7 @@
     <script type="text/javascript" src="static/js/mdb.min.js"></script>
 	<!-- <script type="text/javascript" src="https://mdbootstrap.com/previews/docs/latest/js/mdb.min.js"></script> -->
 	<script type="text/javascript" src="https://mdbootstrap.com/previews/docs/latest/js/mdb.min.js"></script>
+	<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
 
 </body>
 
