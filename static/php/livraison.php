@@ -48,14 +48,44 @@ if(isset($_POST)){
         break;
         case 'actualisationPrise':
             extract($_POST);
-            
             //prise des information sur l'utilisateur 
-
             $db=DB::connect();
             $query =$db->prepare('SELECT * FROM user WHERE name =?');
             $query->execute(array($_POST['Nom']));
             $response=$query->fetch();
             if($response){
+                //verifions si c'est une mise  jours ou une premiers insertion 
+                $verif =$db->prepare('SELECT * FROM vente WHERE date = ? and id_client=?');
+                $verif->execute(array($date,$response['id']));
+                $resVerif=$verif->fetch();
+                if($resVerif){
+                    
+                $Info['NameExist']=TRUE; 
+                $Info['prixUnitaire']=$response['unitary_price']; 
+                //Modification du solde du client 
+                $lastSolde =$response['solde'];
+                $lastPrise=$verif['prise'];
+                $newSoldeUser = $lastSolde - ($lastPrise * $response['unitary_price']);
+                $updateSolde =$db->prepare('UPDATE user SET solde = ? WHERE id=?');
+                $updateSolde->execute(array($newSoldeUser,$reponse['id']));
+                //Mise a jour de la table vente 
+                $updatePrise =$db->prepare('UPDATE  vente set prise = ?,etat_prise =? somme_a_verser = ? WHERE date = ? and id_client = ? ');
+                $updatePrise->execute(array($prise,0,$SommeDu,$date,$response['id']));
+                if($updatePrise){
+                    //Calcule de la somme a verser 
+                    $SommeDu =$prise * $response['unitary_price'];
+                    //Insertion dans la table vente ok 
+                    //Mise a jour du solde du client 
+                    $newSolde =$response['solde'] + $SommeDu ;
+                    $UpdateClient =$db->prepare('UPDATE  user SET solde =?  WHERE id = ?');
+                    $UpdateClient->execute(array($newSolde,$response['id']));
+                        if($UpdateClient){
+                        $Info['miseAJourOk']=TRUE;
+                        $Info['newSolde']=$newSolde;
+                        } 
+                    }
+                }
+                else{
                 //Calcule de la somme a verser 
                 $SommeDu =$prise * $response['unitary_price'];
                 $Info['NameExist']=TRUE; 
@@ -73,11 +103,13 @@ if(isset($_POST)){
                         $Info['newSolde']=$newSolde;
                         } 
                 }
+                }
+                
             }
             echo json_encode($Info);
         break;
         case 'actualisation':
-            //selection des information du client array(5) { ["Action"]=> string(13) "actualisation" ["Nom"]=> string(7) "patrick" ["priseClient"]=> string(1) "3" ["SomAverser"]=> string(3) "375" ["Somme"]=> string(3) "300" }
+            //selection des information du client 
             extract($_POST);
             //calcule de la difference entre la domme a verser t la somme verser 
             $diffSomme = $Somme - $SomAverser;
@@ -85,10 +117,15 @@ if(isset($_POST)){
             $db=DB::connect();
             $query =$db->prepare('SELECT * FROM user WHERE name =?');
             $query->execute(array($_POST['Nom']));
-            $reponse=$query->fetch();
+            $response=$query->fetch();
             if($response){
+                //ici le client ext bien dans la base de donnee 
                 $Info['NameExist']=TRUE;  
                 $Info['prixUnitaire']=$response['unitary_price']; 
+                //verification dans la table vente si une requete en attente 
+                $verifTab=$db->prepare('SELECT * FROM vente WHERE date= ? and id_user =?');
+                $verifTab->execute(array())
+
                 //insertion des information 
                 $InsertVente = $db->prepare('INSERT INTO vente (date,id_user,prise_client,somme_a_verser,rest) VALUES (?,?,?,?,?)');
                 $InsertVente->execute(array($date,$response['id'],$prise,$SomAverser,$Somme,$diffSomme));
