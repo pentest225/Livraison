@@ -104,11 +104,47 @@
 			</table>
 			<a type="submit" name="Soumetre" class="btn btn-success  "> SOUMETRE LE FORMULAIRE </a>
 		</form>
-	<!-- section modal  -->
+		<!-- SECTION MODAL MDB -->
+		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+				<div class="modal-header text-center">
+					<h4 class="modal-title w-100 font-weight-bold">Creation de compte Client</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body mx-3">
+					<div class="md-form mb-5">
+					<i class="fas fa-user prefix grey-text"></i>
+					<input type="text" id="NomClient" class="form-control validate" name="NomClient">
+					<label data-error="wrong" data-success="right" for="NomClient">Nom Client(te)</label>
+					</div>
+					<select class="mdb-select md-form" name="typeClient" id="Type">
+						<option value="" disabled selected>Type Client</option>
+						<option value="r">Revendeur</option>
+						<option value="d">Domicile</option>
+					</select>
+					<div class="md-form mb-4">
+					<i class="fas fa-envelope prefix grey-text"></i>
+					<input type="number" id="Prix" class="form-control validate" name="PrixClient">
+					<label data-error="wrong" data-success="right" for="Prix">Prix D'Achat</label>
+					</div>
+
+				</div>
+				<div class="modal-footer d-flex justify-content-center">
+					<button class="btn btn-indigo" id="Validation" >Enregistre <i class="fas fa-paper-plane-o ml-1"></i></button>
+				</div>
+				</div>
+			</div>
+		</div>
+
+<!-- FIN DE LA SECTION MODAL MDB -->
+	<!-- section modal  
 		<div class="modal fade" id="myModal" role="dialog">
-	    <div class="modal-dialog">
+	    <div class="modal-dialog">-->
 	    
-	      <!-- Modal content-->
+	      <!-- Modal content
 	      <div class="modal-content">
 	        <div class="modal-header">
 	          <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -141,8 +177,8 @@
 	          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 	        </div>
 	      </div>
-			<!--  fin de la section modal-->    
-		</div>
+		fin de la section modal    
+		</div>-->
   </div>
   <!-- MI OWN SRCIPT JS -->
   <script src="static/js/script.js"></script>
