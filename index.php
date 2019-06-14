@@ -47,7 +47,8 @@
 							</table>
 						</div>
 					<div class="col-md-4 date">
-						<h4>Date du jour </h4><input type="date" name="" id="dateDuJour">
+						<h4>Date du jour </h4>
+						<input data-value="2015/04/20" name="" id="dateDuJour">
 					</div>
 				<!-- FIN TABLEAU GAUCHE -->
 					<div class="col-md-4  Tab_right">
