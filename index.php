@@ -144,7 +144,8 @@
 			<!--  fin de la section modal-->    
 		</div>
   </div>
-  <script src="js/script.js"></script>
+  <!-- MI OWN SRCIPT JS -->
+  <script src="static/js/script.js"></script>
 
     <!-- SCRIPTS -->
 
