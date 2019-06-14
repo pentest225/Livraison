@@ -270,4 +270,10 @@ $(function()
         }
         return 0
     }
+
+    //code pour les tableaux de la page index 
+    $(document).ready(function () {
+        $('#dtBasicExample').DataTable();
+        $('.dataTables_length').addClass('bs-select');
+        });
 })

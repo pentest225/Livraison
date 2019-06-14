@@ -80,6 +80,68 @@
 				</div>
 			</div>
 			<!--SECTION TABLEAUX  CLIENTS -->
+
+			<!-- section table mdn -->
+		<table id="dtBasicExample" class="table table-striped table-bordered table-sm table-hover" cellspacing="0" width="100%">
+			<thead>
+				<tr>
+				<th class="th-sm">N°
+				</th>
+				<th class="th-sm">Name
+				</th>
+				<th class="th-sm">Prise
+				</th>
+				<th class="th-sm">somme a verser
+				</th>
+				<th class="th-sm">somme vercer
+				</th>
+				<th class="th-sm">etat solde 
+				</th>
+				<th class="th-sm">valleur solde 
+				</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+				<td>Tiger Nixon</td>
+				<td>Tiger Nixon</td>
+				<td>System Architect</td>
+				<td>Edinburgh</td>
+				<td>61</td>
+				<td>2011/04/25</td>
+				<td>$320,800</td>
+				</tr>
+				<tr>
+				<td>Tiger Nixon</td>
+				<td>Garrett Winters</td>
+				<td>Accountant</td>
+				<td>Tokyo</td>
+				<td>63</td>
+				<td>2011/07/25</td>
+				<td>$170,750</td>
+				</tr>
+				
+			</tbody>
+			<tfoot>
+				<tr>
+				<th>N°
+				</th>
+				<th>Name
+				</th>
+				<th>Position
+				</th>
+				<th>Office
+				</th>
+				<th>Age
+				</th>
+				<th>Start date
+				</th>
+				<th>Salary
+				</th>
+				</tr>
+			</tfoot>
+		</table>
+			<!-- fin de la section table mdn -->
 			<div class="row navigation">
 				<div class="col-md-4">
 					<input type="button" name="" class="btn btn-success " id="addLine" onclick="ajouterLigne();" value="Ajouter une ligne">
@@ -117,24 +179,22 @@
 				</div>
 				<div class="modal-body mx-3">
 					<div class="md-form mb-5">
-					<i class="fas fa-user prefix grey-text"></i>
-					<input type="text" id="NomClient" class="form-control validate" name="NomClient">
-					<label data-error="wrong" data-success="right" for="NomClient">Nom Client(te)</label>
+						<i class="fas fa-user prefix grey-text"></i>
+						<input type="text" id="NomClient" class="form-control validate" name="NomClient">
+						<label data-error="wrong" data-success="right" for="NomClient">Nom Client(te)</label>
 					</div>
-					<select class="mdb-select md-form" name="typeClient" id="Type">
-						<option value="" disabled selected>Type Client</option>
-						<option value="r">Revendeur</option>
-						<option value="d">Domicile</option>
-					</select>
-					<select class="browser-default mdb-select custom-select md-form" name="typeClient" id="Type">
-						<option value="" disabled selected>Type Client</option>
-						<option value="r">Revendeur</option>
-						<option value="d">Domicile</option>
-					</select>
+					<div class="md-form mb-5">
+						<i class="fas fa-user prefix grey-text"></i>
+						<select class="browser-default mdb-select custom-select md-form" name="typeClient" id="Type">
+							<option value="" disabled selected>Type Client</option>
+							<option value="r">Revendeur</option>
+							<option value="d">Domicile</option>
+						</select>
+					</div>
 					<div class="md-form mb-4">
-					<i class="fas fa-envelope prefix grey-text"></i>
-					<input type="number" id="Prix" class="form-control validate" name="PrixClient">
-					<label data-error="wrong" data-success="right" for="Prix">Prix D'Achat</label>
+						<i class="fas fa-envelope prefix grey-text"></i>
+						<input type="number" id="Prix" class="form-control validate" name="PrixClient">
+						<label data-error="wrong" data-success="right" for="Prix">Prix D'Achat</label>
 					</div>
 
 				</div>
