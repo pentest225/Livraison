@@ -125,12 +125,11 @@
 						<option value="r">Revendeur</option>
 						<option value="d">Domicile</option>
 					</select>
-					<select class="browser-default custom-select">
-  <option selected>Open this select menu</option>
-  <option value="1">One</option>
-  <option value="2">Two</option>
-  <option value="3">Three</option>
-</select>
+					<select class="browser-default mdb-select custom-select md-form" name="typeClient" id="Type">
+						<option value="" disabled selected>Type Client</option>
+						<option value="r">Revendeur</option>
+						<option value="d">Domicile</option>
+					</select>
 					<div class="md-form mb-4">
 					<i class="fas fa-envelope prefix grey-text"></i>
 					<input type="number" id="Prix" class="form-control validate" name="PrixClient">
