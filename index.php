@@ -49,7 +49,7 @@
 					<div class="col-md-4 date">
 						<h4>Date du jour </h4>
  						<div class="md-form">
-						<input placeholder="Selected date" type="date" id="date-picker-exampleb" class="form-control datepicker dateDuJour">
+						<input placeholder="Selected date" type="text" id="date-picker-exampleb" class="form-control datepicker dateDuJour">
 						<label for="date-picker-example">Try me...</label>
 						</div>
 					</div>

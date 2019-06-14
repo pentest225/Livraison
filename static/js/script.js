@@ -21,13 +21,13 @@ $(function()
             celNom=ligne.insertCell(0);
             celNom.innerHTML+=(i+1);
             celNom=ligne.insertCell(1);
-            celNom.innerHTML+="<input type='text' placeholder='Non client' class='NomClient"+i+"'> ";
+            celNom.innerHTML+="<input type='text' placeholder='Non client' class='tableInput NomClient"+i+"'> ";
             celPrise=ligne.insertCell(2);
-            celPrise.innerHTML+="<input type='number' placeholder='prise' class='priseClient"+i+"'> ";
+            celPrise.innerHTML+="<input type='number' placeholder='prise' class=' tableInput priseClient"+i+"'> ";
             celSommeAVerser=ligne.insertCell(3);
             celSommeAVerser.innerHTML+="<p class='SommeAverser"+i+"'>SommeAVerse <i> fr</i></p> ";
             celSommeVerser=ligne.insertCell(4);
-            celSommeVerser.innerHTML+="<input type='number' placeholder='Somme Verse ' class='SommeVerser"+i+"'> ";
+            celSommeVerser.innerHTML+="<input type='number' placeholder='Somme Verse ' class='tableInput SommeVerser"+i+"'> ";
             celEtatSolde=ligne.insertCell(5);
             celEtatSolde.innerHTML+="<p class='EtatSolde"+i+"'>Etat soled</p>";
             celSolde=ligne.insertCell(6);
@@ -79,21 +79,7 @@ $(function()
                         dataType: "json",
                         success: function (response) {
                             if(response.NameExist){
-                                if(parseInt(parseInt(response.valSolde)) > 0){
-                                    etatSolde.innerText="cediteur";
-                                }
-                                else{
-                                    etatSolde.innerText="debiteur";
-                                }
-                                if(parseInt(parseInt(response.valSolde)) == 0){
-                                    etatSolde.innerText="null";
-                                }
                                 
-                                montantSolde.innerText=parseInt(parseInt(response.valSolde))+" fr";
-                                //si le client est dans la base de bonne 
-                                if(response.typeClient =="r"){
-                                    //Afficher la cellule des retoure 
-                                }
                                
                             }
                             else{
@@ -123,13 +109,13 @@ $(function()
                         $.ajax({
                             type: "Post",
                             url: 'static/php/livraison.php',
-                            data:{Action:'VerifClient',Nom:nom} ,
+                            data:{Action:'actualisation',Nom:nom} ,
                             dataType: "json",
                             success: function (response) {
                                 if(response.NameExist){
                                     SommeAVerse.innerText=parseInt(prise) * parseInt(response.prixUnitaire) ;
                                     etatSolde.innerText=response.etatSolde;
-                                    montantSolde.innerText=response.valSolde;
+                                    montantSolde.innerText=response.newSolde;
                                     //si le client est dans la base de bonne 
                                    
                                 }
@@ -168,20 +154,13 @@ $(function()
                                     dataType: "json",
                                     success: function (response) {
                                         if(response.NameExist){
-                                            etatSolde.innerText=response.etatSolde;
-                                            montantSolde.innerText=response.valSolde+" fr";
+                                            etatSolde.innerText=verifEtatSolde(response.valSolde);
+                                            montantSolde.innerText=response.newSolde+" fr";
                                             //si le client est dans la base de bonne 
-                                            if(response.typeClient =="r"){
-                                                //Afficher la cellule des retoure 
-                                            }
                                            
                                         }
                                         else{
-                                            var creationCompt=confirm('Desole Ce Client '+nom+' Existe pas dans la liste des client\nvoulez vous cree un compt pour ce client');
-                                            if(creationCompt)
-                                            {
-                                                $('#creationCompt').click();
-                                            }
+                                            clientExitpas(nom);
                                         }
                                     }
                                 });
@@ -206,7 +185,12 @@ $(function()
             data:{Action:"actualisation",name:nameClient,prise:priseClient},
             typedata:'json',
             success:function(result){
+                  if(result.NameExist){
 
+                  }
+                  else{
+                    
+                  }
             }         
            })
         })
@@ -270,6 +254,27 @@ $(function()
             return 1
         }
         return 0
+    }
+    //FUNCTION POUR VERIFIER L'ETAT DU SOLDE DE L'UTILISATEUR 
+   
+    function verifEtatSolde( solde){
+        if(parseInt(solde) > 0){
+           return "cediteur";
+        }
+        if(parseInt(solde) < 0){
+            return "debiteur";
+        }
+        if(parseInt(solde) == 0){
+            return "null";
+        }
+ 
+    }
+    function clientExitpas(nomDuClient){
+        var creationCompt=confirm('Desole Ce Client '+nomDuClient+' Existe pas dans la liste des client\nvoulez vous cree un compt pour ce client');
+            if(creationCompt)
+            {
+                $('#creationCompt').click();
+            }
     }
     // Data Picker Initialization
     $('.datepicker').pickadate();
