@@ -73,7 +73,7 @@ $(function()
                 var clientExit=false;
                     $.ajax({
                         type: "Post",
-                        url: "Livraison.php",
+                        url: '../php/livraison.php',
                         data:{Action:'VerifClient',Nom:nom} ,
                         dataType: "json",
                         success: function (response) {
@@ -121,7 +121,7 @@ $(function()
                     var clientExit=false;
                         $.ajax({
                             type: "Post",
-                            url: "Livraison.php",
+                            url: '../php/livraison.php',
                             data:{Action:'VerifClient',Nom:nom} ,
                             dataType: "json",
                             success: function (response) {
@@ -162,7 +162,7 @@ $(function()
                             var clientExit=false;
                                 $.ajax({
                                     type: "Post",
-                                    url: "Livraison.php",
+                                    url: '../php/livraison.php',
                                     data:{Action:'actualisation',Nom:nom,priseClient:prise,SomAverser:SommeAVerse,Somme:Somme,date:dateDuJour} ,
                                     dataType: "json",
                                     success: function (response) {
@@ -201,7 +201,7 @@ $(function()
            priseClient=$(this).val();
            $.ajax({
             type:'POST' ,
-            url:'Livraison.php',
+            url:'../php/livraison.php',
             data:{Action:"actualisation",name:nameClient,prise:priseClient},
             typedata:'json',
             success:function(result){
@@ -234,7 +234,7 @@ $(function()
         {
             $.ajax({
             type:'Post',
-            url:'Livraison.php',
+            url:'../php/livraison.php',
             data:{Action:'CreationCompte',Nom:nomClient,PrixAchat:Prix,typeClient:type},
             typedata:'json',
             success:function(response){

@@ -1,5 +1,5 @@
 <?php 
-    require 'Admin/DataBase.php';
+    require '../Admin/DataBase.php';
     $Info=array();
 if(isset($_POST)){
     switch($_POST['Action'])
