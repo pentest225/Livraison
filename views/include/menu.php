@@ -21,7 +21,7 @@
         <a class="nav-link" href="#" data-toggle="modal" data-target="#myModal" id="creationCompt" >Ajouter un client</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">+</a>
+        <a class="nav-link" href="#">Ajouter une page</a>
       </li>
       <!-- Dropdown -->
       <li class="nav-item dropdown multi-level-dropdown">
@@ -72,6 +72,7 @@
         <input class="form-control mr-sm-2" type="text" placeholder="rechrecher un client " aria-label="Search">
       </div>
     </form>
+		<a class="btn-floating btn-primary" id="showHideEntete"><i class="fas fa-leaf"></i></a>
   </div>
   <!-- Collapsible content -->
 </nav>

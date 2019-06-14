@@ -8,13 +8,14 @@ $(function()
     var SommeAVerse=0;
     var Manquant=0;
     var linesNumber = 50;
-    var dateDuJour =document.querySelector("#dateDuJour").value;
-    var arrayTableau=document.getElementById('Tableau').rows;
+    var dateDuJour = document.querySelector(".dateDuJour").value;
+    var arrayTableau=document.getElementById('dtBasicExample').rows;
     var nombreLignesTab=arrayTableau.length;
-    console.log(dateDuJour);
+    console.log('bonjour le monde ');
+    console.log(dateDuJour); 
     //creation des Ligne du tableau 
     for (var i= 0 ;i <linesNumber ;i++){
-        arrayTab=document.getElementById('Tableau');
+        arrayTab=document.getElementById('tbody');
             var ligne=arrayTab.insertRow();
             ligne.className="ligne";
             celNom=ligne.insertCell(0);
@@ -58,7 +59,7 @@ $(function()
         $('#Versement').html(SommeAVerse);
         $('#ManquantDuJour').html(Manquant);
     });
-    $('#dateDuJour').on('change',function () { 
+    $('.dateDuJour').on('change',function () { 
         dateDuJour=this.value;
     });
     //Verification du client dans la base de donnee 
@@ -73,7 +74,7 @@ $(function()
                 var clientExit=false;
                     $.ajax({
                         type: "Post",
-                        url: '../php/livraison.php',
+                        url: 'static/php/livraison.php',
                         data:{Action:'VerifClient',Nom:nom} ,
                         dataType: "json",
                         success: function (response) {
@@ -121,7 +122,7 @@ $(function()
                     var clientExit=false;
                         $.ajax({
                             type: "Post",
-                            url: '../php/livraison.php',
+                            url: 'static/php/livraison.php',
                             data:{Action:'VerifClient',Nom:nom} ,
                             dataType: "json",
                             success: function (response) {
@@ -162,7 +163,7 @@ $(function()
                             var clientExit=false;
                                 $.ajax({
                                     type: "Post",
-                                    url: '../php/livraison.php',
+                                    url: 'static/php/livraison.php',
                                     data:{Action:'actualisation',Nom:nom,priseClient:prise,SomAverser:SommeAVerse,Somme:Somme,date:dateDuJour} ,
                                     dataType: "json",
                                     success: function (response) {
@@ -201,7 +202,7 @@ $(function()
            priseClient=$(this).val();
            $.ajax({
             type:'POST' ,
-            url:'../php/livraison.php',
+            url:'php/livraison.php',
             data:{Action:"actualisation",name:nameClient,prise:priseClient},
             typedata:'json',
             success:function(result){
@@ -264,16 +265,31 @@ $(function()
 
 
     function verifDate(){
-        if (dateDuJour ===""){
+        if (document.querySelector(".dateDuJour").value ===""){
             alert("Commencez par saisir la date du jour ");
             return 1
         }
         return 0
     }
-
-    //code pour les tableaux de la page index 
-    $(document).ready(function () {
-        $('#dtBasicExample').DataTable();
-        $('.dataTables_length').addClass('bs-select');
-        });
+    // Data Picker Initialization
+    $('.datepicker').pickadate();
+    // Extend the default picker options for all instances.
+    $.extend($.fn.pickadate.defaults, {
+        monthsFull: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre',
+        'Novembre', 'Décembre'],
+        weekdaysShort: ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'],
+        today: 'aujourd\'hui',
+        clear: 'effacer',
+        formatSubmit: 'yyyy/mm/dd'
+        })
+        
+        // Or, pass the months and weekdays as an array for each invocation.
+        $('.datepicker').pickadate({
+        monthsFull: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre',
+        'Novembre', 'Décembre'],
+        weekdaysShort: ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'],
+        today: 'aujourd\'hui',
+        clear: 'effacer',
+        formatSubmit: 'yyyy/mm/dd'
+        })
 })

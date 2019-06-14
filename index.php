@@ -48,7 +48,10 @@
 						</div>
 					<div class="col-md-4 date">
 						<h4>Date du jour </h4>
-						<input data-value="2015/04/20" name="" id="dateDuJour">
+ 						<div class="md-form">
+						<input placeholder="Selected date" type="date" id="date-picker-exampleb" class="form-control datepicker dateDuJour">
+						<label for="date-picker-example">Try me...</label>
+						</div>
 					</div>
 				<!-- FIN TABLEAU GAUCHE -->
 					<div class="col-md-4  Tab_right">
@@ -83,18 +86,18 @@
 			<!--SECTION TABLEAUX  CLIENTS -->
 
 			<!-- section table mdn -->
-		<table id="dtBasicExample" class="table  table-bordered table-sm table-hover" cellspacing="0" width="100%">
+		<table id="dtBasicExample" class="table  table-sm table-hover table-responsive-md " cellspacing="0" width="100%">
 			<thead>
 				<tr>
-				<th class="th-sm">N°
+				<th class="th-sm-6">N°
 				</th>
 				<th class="th-sm">Name
 				</th>
 				<th class="th-sm">Prise
 				</th>
-				<th class="th-sm">somme a verser
+				<th class="th-sm">total S
 				</th>
-				<th class="th-sm">somme vercer
+				<th class="th-sm">somme recu
 				</th>
 				<th class="th-sm">etat solde 
 				</th>
@@ -102,26 +105,7 @@
 				</th>
 				</tr>
 			</thead>
-			<tbody>
-				<tr>
-				<td>Tiger Nixon</td>
-				<td>Tiger Nixon</td>
-				<td>System Architect</td>
-				<td>Edinburgh</td>
-				<td>61</td>
-				<td>2011/04/25</td>
-				<td>$320,800</td>
-				</tr>
-				<tr>
-				<td>Tiger Nixon</td>
-				<td>Garrett Winters</td>
-				<td>Accountant</td>
-				<td>Tokyo</td>
-				<td>63</td>
-				<td>2011/07/25</td>
-				<td>$170,750</td>
-				</tr>
-				
+			<tbody id="tbody">
 			</tbody>
 			<tfoot>
 				<tr>
@@ -129,15 +113,15 @@
 				</th>
 				<th>Name
 				</th>
-				<th>Position
+				<th>Prise
 				</th>
-				<th>Office
+				<th>total S
 				</th>
-				<th>Age
+				<th>somme recu
 				</th>
-				<th>Start date
+				<th>etat solde 
 				</th>
-				<th>Salary
+				<th>Solde
 				</th>
 				</tr>
 			</tfoot>
@@ -186,7 +170,7 @@
 					</div>
 					<div class="md-form mb-5">
 						<i class="fas fa-user prefix grey-text"></i>
-						<select class="browser-default mdb-select custom-select md-form" name="typeClient" id="Type">
+						<select class="browser-default mdb-select  form-control validate" name="typeClient" id="Type">
 							<option value="" disabled selected>Type Client</option>
 							<option value="r">Revendeur</option>
 							<option value="d">Domicile</option>
@@ -247,14 +231,13 @@
 		fin de la section modal    
 		</div>-->
   </div>
-  <!-- MI OWN SRCIPT JS -->
-  <script src="static/js/script.js"></script>
-
+  
     <!-- SCRIPTS -->
 
     <!-- JQuery -->
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="crossorigin="anonymous"></script>
+	<!-- MI OWN SRCIPT JS -->
+	<script src="static/js/script.js"></script>
 
     <!-- Tooltips -->
     <!-- <script type="text/javascript" src="https://mdbootstrap.com/previews/docs/latest/js/popper.min.js"></script> -->
