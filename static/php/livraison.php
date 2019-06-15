@@ -58,33 +58,37 @@ if(isset($_POST)){
                 $verif =$db->prepare('SELECT * FROM vente WHERE date = ? and id_client=?');
                 $verif->execute(array($date,$response['id']));
                 $resVerif=$verif->fetch();
-                if($resVerif){
-                    
-                $Info['NameExist']=TRUE; 
-                $Info['prixUnitaire']=$response['unitary_price']; 
-                //Modification du solde du client 
-                $lastSolde =$response['solde'];
-                $lastPrise=$verif['prise'];
-                $newSoldeUser = $lastSolde - ($lastPrise * $response['unitary_price']);
-                $updateSolde =$db->prepare('UPDATE user SET solde = ? WHERE id=?');
-                $updateSolde->execute(array($newSoldeUser,$reponse['id']));
-                //Mise a jour de la table vente 
-                $updatePrise =$db->prepare('UPDATE  vente set prise = ?,etat_prise =? somme_a_verser = ? WHERE date = ? and id_client = ? ');
-                $updatePrise->execute(array($prise,0,$SommeDu,$date,$response['id']));
-                if($updatePrise){
-                    //Calcule de la somme a verser 
-                    $SommeDu =$prise * $response['unitary_price'];
-                    //Insertion dans la table vente ok 
-                    //Mise a jour du solde du client 
-                    $newSolde =$response['solde'] + $SommeDu ;
-                    $UpdateClient =$db->prepare('UPDATE  user SET solde =?  WHERE id = ?');
-                    $UpdateClient->execute(array($newSolde,$response['id']));
-                        if($UpdateClient){
-                        $Info['miseAJourOk']=TRUE;
-                        $Info['newSolde']=$newSolde;
-                        } 
+                if ($resVerif) {
+                    //ok ici la requette a dans la table vente a deja ete faite c'est donc une modification
+                    $Info['NameExist']=true;
+                    $Info['prixUnitaire']=$response['unitary_price'];
+                    //Retablisons le solde du client
+                    $lastSolde =$response['solde'];
+                    $lastPrise=$resVerif['prise_client'];
+                    $newSoldeUser = $lastSolde - ($lastPrise * $response['unitary_price']);
+                    $updateSolde =$db->prepare('UPDATE user SET solde = ? WHERE id=?');
+                    $updateSolde->execute(array($newSoldeUser,$response['id']));
+                    if($updateSolde) {
+                        //ok on a remis sons solde en bon etat
+                        //on passe a la mise a jour dans la table vente
+
+                        //Calcule de la somme a verser
+                        $SommeDu =$prise * $response['unitary_price'];
+                        $updatePrise =$db->prepare('UPDATE  vente SET prise_client = ?,etat_prise =? , somme_a_verser = ?  WHERE date = ? and id_client = ? ');
+                        $updatePrise->execute(array($prise,0,$SommeDu,$date,$response['id']));
+                        if ($updatePrise) {
+                            //Insertion dans la table vente ok
+                            //Nouvelle Mise a jour du solde du client
+                            $newSolde =$response['solde'] + $SommeDu ;
+                            $UpdateClient =$db->prepare('UPDATE  user SET solde =?  WHERE id = ?');
+                            $UpdateClient->execute(array($newSolde,$response['id']));
+                            if ($UpdateClient) {
+                                $Info['miseAJourOk']=true;
+                                $Info['newSolde']=$newSolde;
+                            }
+                        }
                     }
-                }
+                }//dans le cas ou c'est une premier insertion 
                 else{
                 //Calcule de la somme a verser 
                 $SommeDu =$prise * $response['unitary_price'];
@@ -102,44 +106,102 @@ if(isset($_POST)){
                         $Info['miseAJourOk']=TRUE;
                         $Info['newSolde']=$newSolde;
                         } 
-                }
+                    }
                 }
                 
             }
             echo json_encode($Info);
         break;
         case 'actualisation':
-            //selection des information du client 
             extract($_POST);
-            //calcule de la difference entre la domme a verser t la somme verser 
-            $diffSomme = $Somme - $SomAverser;
             //prise des information sur l'utilisateur 
             $db=DB::connect();
             $query =$db->prepare('SELECT * FROM user WHERE name =?');
             $query->execute(array($_POST['Nom']));
             $response=$query->fetch();
             if($response){
-                //ici le client ext bien dans la base de donnee 
+                //ici le client est bien dans la base de donnee 
                 $Info['NameExist']=TRUE;  
                 $Info['prixUnitaire']=$response['unitary_price']; 
                 //verification dans la table vente si une requete en attente 
-                $verifTab=$db->prepare('SELECT * FROM vente WHERE date= ? and id_user =?');
-                $verifTab->execute(array())
+                $verifTab=$db->prepare('SELECT * FROM vente WHERE date= ? and id_client=?');
+                $verifTab->execute(array($date,$response['id']));
+                $resVerifTab=$verifTab->fetch();
+                if($resVerifTab){
+                    //si on a un enregistrement en attente 
+                    if($resVerifTab['etat_prise']=="0"){
+                        
+                        //calcule de la difference entre la domme a verser t la somme verser 
+                        $diffSomme = $Somme - $SomAverser;
+                        $updateSommeVerser=$db->prepare('UPDATE vente set etat_prise=?, somme_verser =? ,rest=? WHERE date =? and id_client=? and prise_client=?');
+                        $updateSommeVerser->execute(array(1,$Somme,$diffSomme,$date,$response['id'],$priseClient));
+                        if($updateSommeVerser){
+                            //ok on a mis a jour la table vente 
+                            //on doit maintement actualiser le solde de l'utilisateur 
+                            $lastSoldeUser=$response['solde'];
+                            $newSoldeUser =$lastSoldeUser - $Somme;
+                            $MiseAjoutComptClient =$db->prepare('UPDATE  user SET solde =?  WHERE id = ?');
+                            $MiseAjoutComptClient->execute(array($newSoldeUser,$response['id']));
+                            if($MiseAjoutComptClient){
+                                $Info['miseAJourOk']=TRUE;
+                                $Info['newSolde']=$newSoldeUser;
+                                } 
 
-                //insertion des information 
-                $InsertVente = $db->prepare('INSERT INTO vente (date,id_user,prise_client,somme_a_verser,rest) VALUES (?,?,?,?,?)');
-                $InsertVente->execute(array($date,$response['id'],$prise,$SomAverser,$Somme,$diffSomme));
-                if($InsertVente){
-                    //Insertion dans la table vente ok 
-                    //Mise a jour du solde du client 
-                    $newSolde =$response['solde'] + $diffSomme ;
-                    $UpdateClient =$db->prepare('UPDATE TABLE user SET selde =? WHERE id_user = ?');
-                    $UpdateClient->execute(array($nweSolde,$response['id']));
-                        if($UpdateClient){
-                        $Info['miseAJourOk']=TRUE;
-                        $Info['newSolde']=$newSolde;
-                        }   
+                        }
                     }
+                    
+                    if($resVerifTab['etat_prise']=='1'){
+                        //dans le cas ou on a dejat saisie une somme a verser 
+                        //Retablison le compte du client 
+                        $lastSolde =$response['solde'];
+                        $lastSommeVerser=$resVerifTab['somme_verser'];
+                        $newSoldeUser = $lastSolde - $lastSommeVerser;
+                        $updateSolde =$db->prepare('UPDATE user SET solde = ? WHERE id=?');
+                        $updateSolde->execute(array($newSoldeUser,$response['id']));
+                        if($updateSolde){
+                            $Info['miseAJourOk']=TRUE;
+                            $Info['newSolde']=$newSoldeUser;
+                        }
+                        //ok on a retablie son solde 
+                        //mise a jour de la table vente 
+                        $updateSommeVerser=$db->prepare('UPDATE vente set somme_verser =?  WHERE date =? and id_client=?  ');
+                        $updateSommeVerser->execute(array($Somme,$date,$response['id']));
+                        if($updateSommeVerser){
+                            //ok on a mis a jour la table vente 
+                            //on doit maintement actualiser le solde de l'utilisateur 
+                            $lastSoldeUser=$response['solde'];
+                            $newSoldeUser =$lastSoldeUser - $Somme;
+                            $MiseAjoutComptClient =$db->prepare('UPDATE  user SET solde =?  WHERE id = ?');
+                            $MiseAjoutComptClient->execute(array($newSoldeUser,$response['id']));
+                            if($MiseAjoutComptClient){
+                                $Info['miseAJourOk']=TRUE;
+                                $Info['newSolde']=$newSoldeUser;
+                                } 
+                        }
+
+                    }
+                }
+                else{
+                    //si il n'y a pas d'enregistrement dans la table vente 
+                    //calcule de la difference entre la domme a verser t la somme verser 
+                    $diffSomme = $Somme - $SomAverser;
+                    //insertion des information 
+                    $InsertVente = $db->prepare('INSERT INTO vente (date,id_user,prise_client,somme_a_verser,somme_verser,rest) VALUES (?,?,?,?,?,?)');
+                    $InsertVente->execute(array($date,$response['id'],$priseClient,$SomAverser,$Somme,$diffSomme));
+                    if($InsertVente){
+                        //Insertion dans la table vente ok 
+                        //Mise a jour du solde du client 
+                        $newSolde =$response['solde'] + $diffSomme ;
+                        $UpdateClient =$db->prepare('UPDATE TABLE user SET selde =? WHERE id_user = ?');
+                        $UpdateClient->execute(array($nweSolde,$response['id']));
+                            if($UpdateClient){
+                            $Info['miseAJourOk']=TRUE;
+                            $Info['newSolde']=$newSolde;
+                            }   
+                        }
+                }
+
+                
             }
             echo json_encode($Info);
             break;

@@ -148,7 +148,6 @@ $(function()
                                             etatSolde.innerText=verifEtatSolde(response.valSolde);
                                             montantSolde.innerText=response.newSolde+" fr";
                                             //si le client est dans la base de bonne 
-                                           
                                         }
                                         else{
                                             clientExitpas(nom);
@@ -159,34 +158,7 @@ $(function()
                         });
                 }
 
-        
-   
-    //Actualisation du compte de l'utilisateur 
-    for(var i =0 ;i <linesNumber;i++)
-    {
-        $('#priseClient'+(i+1)+'').on('change',function(){
-            console.log('ok prise');
-           //SI L'UTILISATEUR SAISI LA PRISE DU CLIENT 
-           //ON FAIT UNE ACTUALISATION DE SON COMPTE
-           var nameClient =$('#client'+(i+1)+'').val();
-           priseClient=$(this).val();
-           $.ajax({
-            type:'POST' ,
-            url:'php/livraison.php',
-            data:{Action:"actualisation",name:nameClient,prise:priseClient},
-            typedata:'json',
-            success:function(result){
-                  if(result.NameExist){
 
-                  }
-                  else{
-                    
-                  }
-            }         
-           })
-        })
-       
-    }
     //Ajout d'un utilisateur 
     $('#formAddUser').submit(function(e){
         e.preventDefault();
@@ -210,18 +182,14 @@ $(function()
         {
             $.ajax({
             type:'Post',
-            url:'../php/livraison.php',
+            url:'static/php/livraison.php',
             data:{Action:'CreationCompte',Nom:nomClient,PrixAchat:Prix,typeClient:type},
             typedata:'json',
-            success:function(response){
-                if(response.NameExist===true)
-                {
-                   alert('Desole le client'+nomClient+'est deja enregistre');
+            success:function (response){
+                if(response.NameExist){
+
                 }
-                if(response.InsertionOk===true)
-                {
-                    alert('client'+nomClient+'enregistre avec succes ;)')
-                }
+                console.log(typeof(response.InsertionOk));
             }
          })
         }

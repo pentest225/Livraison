@@ -131,68 +131,45 @@
 				</tr>
 			</tfoot>
 		</table>
-			<!-- fin de la section table mdn 
-			<div class="row navigation">
-				<div class="col-md-4">
-					<input type="button" name="" class="btn btn-success " id="addLine" onclick="ajouterLigne();" value="Ajouter une ligne">
-				</div>
-				<div class="col-md-4 col-md-offset-8 restPrise">
-					<h4>Rest prise :</h4><h4 class="restVal">125</h4>
-				</div>
-				
-			</div>
-		
-			<table class="table table-striped" id="Tableau" >
-			  <thead>
-			    <tr>
-				<th scope="col">N°</th>
-			      <th scope="col">Nom</th>
-			      <th scope="col">Prise</th>
-			      <th scope="col">Somme A verser </th>
-			      <th scope="col">Somme verser </th>
-			      <th scope="col">Etat Solde</th>
-			      <th scope="col">Montant Solde</th>
-			    </tr>
-			  </thead>
-			</table>
-			<a type="submit" name="Soumetre" class="btn btn-success  "> SOUMETRE LE FORMULAIRE </a>-->
 		</form>
 	</div>
 		<!-- SECTION MODAL MDB -->
 		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 			<div class="modal-dialog" role="document">
-				<div class="modal-content">
-				<div class="modal-header text-center">
-					<h4 class="modal-title w-100 font-weight-bold">Creation de compte Client</h4>
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-				<div class="modal-body mx-3">
-					<div class="md-form mb-5">
-						<i class="fas fa-user prefix grey-text"></i>
-						<input type="text" id="NomClient" class="form-control validate" name="NomClient">
-						<label data-error="wrong" data-success="right" for="NomClient">Nom Client(te)</label>
-					</div>
-					<div class="md-form mb-5">
-						<i class="fas fa-user prefix grey-text"></i>
-						<select class="browser-default mdb-select  form-control validate" name="typeClient" id="Type">
-							<option value="" disabled selected>Type Client</option>
-							<option value="r">Revendeur</option>
-							<option value="d">Domicile</option>
-						</select>
-					</div>
-					<div class="md-form mb-4">
-						<i class="fas fa-envelope prefix grey-text"></i>
-						<input type="number" id="Prix" class="form-control validate" name="PrixClient">
-						<label data-error="wrong" data-success="right" for="Prix">Prix D'Achat</label>
-					</div>
+				<form action="" id="formAddUser">
+					<div class="modal-content">
+						<div class="modal-header text-center">
+							<h4 class="modal-title w-100 font-weight-bold">Creation de compte Client</h4>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="modal-body mx-3">
+							<div class="md-form mb-5">
+								<i class="fas fa-user prefix grey-text"></i>
+								<input type="text" id="NomClient" class="form-control validate" name="NomClient">
+								<label data-error="wrong" data-success="right" for="NomClient">Nom Client(te)</label>
+							</div>
+							<div class="md-form mb-5">
+								<i class="fas fa-user prefix grey-text"></i>
+								<select class="browser-default mdb-select  form-control validate" name="typeClient" id="Type">
+									<option value="" disabled selected>Type Client</option>
+									<option value="r">Revendeur</option>
+									<option value="d">Domicile</option>
+								</select>
+							</div>
+							<div class="md-form mb-4">
+								<i class="fas fa-envelope prefix grey-text"></i>
+								<input type="number" id="Prix" class="form-control validate" name="PrixClient">
+								<label data-error="wrong" data-success="right" for="Prix">Prix D'Achat</label>
+							</div>
 
-				</div>
-				<div class="modal-footer d-flex justify-content-center">
-					<button class="btn btn-indigo" id="Validation" >Enregistre <i class="fas fa-paper-plane-o ml-1"></i></button>
-				</div>
-				</div>
+						</div>
+						<div class="modal-footer d-flex justify-content-center">
+							<button class="btn btn-indigo" id="Validation" >Enregistre <i class="fas fa-paper-plane-o ml-1"></i></button>
+						</div>
+					</div>
+				</form>
 			</div>
 		</div>
 
