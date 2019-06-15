@@ -152,7 +152,7 @@ if(isset($_POST)){
                     
                     if($resVerifTab['etat_prise']=='1'){
                         //dans le cas ou on a dejat saisie une somme a verser 
-                        //Retablison le compte du client 
+                        //Retablisons le compte du client 
                         $lastSolde =$response['solde'];
                         $lastSommeVerser=$resVerifTab['somme_verser'];
                         $newSoldeUser = $lastSolde - $lastSommeVerser;
