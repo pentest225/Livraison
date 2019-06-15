@@ -13,11 +13,11 @@ if(isset($_POST)){
             if($reponse){
                 //Si le client existe on selectionne donc toute les information a son sujet 
                 $Info['NameExist']=TRUE;
-                $Info['valSolde']=$reponse['solde'];
+                $Info['newSolde']=$reponse['solde'];
                 $Info['typeClient']=$reponse['type'];
                 $Info['prixUnitaire']=$reponse['unitary_price'];
             }else{
-                $Info['NameExist']=FALSE;
+                $Info['NameExist']=FALSE; 
             }
         echo json_encode($Info);
         break;
@@ -29,19 +29,19 @@ if(isset($_POST)){
             $reponse=$query->fetch();
             if($reponse){
                 //si le nom existe plus d'insertion dans la base de bonne
-                $Info['NameExist']=TRUE;
+                $Info['NameExist']=true;
             }else{
-                $Info['NameExist']=FALSE;
+                $Info['NameExist']=false;
                 $NomClient=$_POST['Nom'];
                 $request =$db->prepare('INSERT INTO user (name,type,unitary_price,solde) VALUES (?,?,?,?)');
                 $request->execute(array($_POST['Nom'],$_POST['typeClient'],$_POST['PrixAchat'],'0'));
                 if($request)
                 {
-                    $Info['InsertionOk']=TRUE;
+                    $Info['InsertionOk']=true;
                 }
                 else
                 {
-                    $Info['InsertionOk']=FALSE;
+                    $Info['InsertionOk']=false;
                 }
             }
             echo json_encode($Info);
@@ -66,6 +66,7 @@ if(isset($_POST)){
                     $lastSolde =$response['solde'];
                     $lastPrise=$resVerif['prise_client'];
                     $newSoldeUser = $lastSolde - ($lastPrise * $response['unitary_price']);
+                    
                     $updateSolde =$db->prepare('UPDATE user SET solde = ? WHERE id=?');
                     $updateSolde->execute(array($newSoldeUser,$response['id']));
                     if($updateSolde) {
@@ -79,12 +80,12 @@ if(isset($_POST)){
                         if ($updatePrise) {
                             //Insertion dans la table vente ok
                             //Nouvelle Mise a jour du solde du client
-                            $newSolde =$response['solde'] + $SommeDu ;
+                            $newSoldeUser += $SommeDu ;
                             $UpdateClient =$db->prepare('UPDATE  user SET solde =?  WHERE id = ?');
-                            $UpdateClient->execute(array($newSolde,$response['id']));
+                            $UpdateClient->execute(array($newSoldeUser,$response['id']));
                             if ($UpdateClient) {
                                 $Info['miseAJourOk']=true;
-                                $Info['newSolde']=$newSolde;
+                                $Info['newSolde']=$newSoldeUser;
                             }
                         }
                     }
@@ -155,7 +156,7 @@ if(isset($_POST)){
                         //Retablisons le compte du client 
                         $lastSolde =$response['solde'];
                         $lastSommeVerser=$resVerifTab['somme_verser'];
-                        $newSoldeUser = $lastSolde - $lastSommeVerser;
+                        $newSoldeUser = $lastSolde + $lastSommeVerser;
                         $updateSolde =$db->prepare('UPDATE user SET solde = ? WHERE id=?');
                         $updateSolde->execute(array($newSoldeUser,$response['id']));
                         if($updateSolde){
@@ -170,7 +171,7 @@ if(isset($_POST)){
                             //ok on a mis a jour la table vente 
                             //on doit maintement actualiser le solde de l'utilisateur 
                             $lastSoldeUser=$response['solde'];
-                            $newSoldeUser =$lastSoldeUser - $Somme;
+                            $newSoldeUser -= $Somme;//ici $newSoldeUser et la derinier valleur du solde apres sa mise a jour juste en haut
                             $MiseAjoutComptClient =$db->prepare('UPDATE  user SET solde =?  WHERE id = ?');
                             $MiseAjoutComptClient->execute(array($newSoldeUser,$response['id']));
                             if($MiseAjoutComptClient){
@@ -183,15 +184,14 @@ if(isset($_POST)){
                 }
                 else{
                     //si il n'y a pas d'enregistrement dans la table vente 
-                    //calcule de la difference entre la domme a verser t la somme verser 
-                    $diffSomme = $Somme - $SomAverser;
+                    
                     //insertion des information 
-                    $InsertVente = $db->prepare('INSERT INTO vente (date,id_user,prise_client,somme_a_verser,somme_verser,rest) VALUES (?,?,?,?,?,?)');
-                    $InsertVente->execute(array($date,$response['id'],$priseClient,$SomAverser,$Somme,$diffSomme));
+                    $InsertVente = $db->prepare('INSERT INTO vente (date,id_user,somme_verser) VALUES (?,?,?)');
+                    $InsertVente->execute(array($date,$response['id'],$Somme));
                     if($InsertVente){
                         //Insertion dans la table vente ok 
                         //Mise a jour du solde du client 
-                        $newSolde =$response['solde'] + $diffSomme ;
+                        $newSolde =$response['solde'] - $Somme ;
                         $UpdateClient =$db->prepare('UPDATE TABLE user SET selde =? WHERE id_user = ?');
                         $UpdateClient->execute(array($nweSolde,$response['id']));
                             if($UpdateClient){

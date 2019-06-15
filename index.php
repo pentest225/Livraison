@@ -86,6 +86,7 @@
 			<div class="containeur">
 				<div class="vente_du_jour">
 					<h4>Vente du jour </h4>
+					<!--Big blue-->
 				</div>
 			</div>
 			<!--SECTION TABLEAUX  CLIENTS -->
@@ -136,7 +137,6 @@
 		<!-- SECTION MODAL MDB -->
 		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 			<div class="modal-dialog" role="document">
-				<form action="" id="formAddUser">
 					<div class="modal-content">
 						<div class="modal-header text-center">
 							<h4 class="modal-title w-100 font-weight-bold">Creation de compte Client</h4>
@@ -144,6 +144,51 @@
 							<span aria-hidden="true">&times;</span>
 							</button>
 						</div>
+						<!-- Div loader -->
+						<div class="text-center mt-5 hideDiv" id="divLoader">
+							<div class="preloader-wrapper small active " >
+								<div class="spinner-layer spinner-blue-only">
+									<div class="circle-clipper left">
+									<div class="circle"></div>
+									</div>
+									<div class="gap-patch">
+									<div class="circle"></div>
+									</div>
+									<div class="circle-clipper right">
+									<div class="circle"></div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- Fin div loader -->
+						<!--DIV SUCCESS -->
+						<div class="alert alert-success box-info hideDiv" role="alert" id="box-success">
+							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+							<h4 class="alert-heading box-infoHeding">:) INSCRIPTION VALIDÉ :)</h4>
+							<p class="box-infoHeding"></p>
+						</div>
+						<!-- FIN DIV SUCCESS -->
+						<!--DIV WARNING -->
+						<div class="alert alert-warning  hideDiv" role="alert" id="box-warning" >
+							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+							<h4 class="alert-heading box-infoHeding">;{( Erreur Doublon ;{(</h4>
+							<p class="box-infoHeding"></p>
+						</div>
+						<!-- FIN DIV WARNING -->
+						<!--DIV DANGER -->
+						<div class="alert alert-danger box-info hideDiv" role="alert" id="box-danger">
+							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button>
+							<h4 class="alert-heading box-infoHeding">;{( Erreur Saisie ;{(</h4>
+							<p class="box-infoHeding"></p>
+						</div>
+						<!-- FIN DIV DANGER -->
+					<form action="" id="formAddUser" class="">
 						<div class="modal-body mx-3">
 							<div class="md-form mb-5">
 								<i class="fas fa-user prefix grey-text"></i>
@@ -174,45 +219,6 @@
 		</div>
 
 <!-- FIN DE LA SECTION MODAL MDB -->
-	<!-- section modal  
-		<div class="modal fade" id="myModal" role="dialog">
-	    <div class="modal-dialog">-->
-	    
-	      <!-- Modal content
-	      <div class="modal-content">
-	        <div class="modal-header">
-	          <button type="button" class="close" data-dismiss="modal">&times;</button>
-	          <h2 class="modal-title" style="text-align: center;">Creation de compt Client</h2>
-	        </div>
-	        <div class="modal-body">
-	                <form action="#" method="post" id='formAddUser' style='margin:0 80px' >
-	                <div class="row">
-	                    <div class="form-group ">
-	                        <label for="NomClient">Nom Client</label>
-	                        <input id="NomClient" class="form-control" type="text" name="NomClient">
-	                    </div>
-	                    <div class="form-group ">
-	                        <label for="Prix">Prix D'Achat</label>
-	                        <input id="Prix" class="form-control" type="number" name="PrixClient">
-	                    </div>
-	                    <div class="form-group ">
-	                        <label for="NomClient">Type Client</label>
-	                        <select name="typeClient" id="Type" class="form-control">
-	                            <option value="" >...</option>
-	                            <option value="r" >Revendeur(se)</option>
-	                            <option value="d" >Domicile</option>
-	                        </select> 
-	                    </div> 
-	                    <button id="Validation" class="btn btn-success">Enregistre </button>
-	                </div>
-	            </form>
-	        </div>
-	        <div class="modal-footer">
-	          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-	        </div>
-	      </div>
-		fin de la section modal    
-		</div>-->
   	</div>
 
     <!-- SCRIPTS -->

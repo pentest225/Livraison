@@ -79,7 +79,8 @@ $(function()
                         dataType: "json",
                         success: function (response) {
                             if(response.NameExist){
-                               
+                                etatSolde.innerText=verifEtatSolde(response.newSolde);
+                                montantSolde.innerText=response.newSolde;
                             }
                             else{
                                 clientExitpas(nom);
@@ -162,34 +163,75 @@ $(function()
     //Ajout d'un utilisateur 
     $('#formAddUser').submit(function(e){
         e.preventDefault();
+
         var nomClient =$('#NomClient').val();
+        var divLoader =document.querySelector("#divLoader");
+        var form =document.querySelector("#formAddUser");
+        var box_success =document.querySelector("#box-success");
+        var box_warning =document.querySelector("#box-warning");
+        var box_danger =document.querySelector("#box-danger");
         var Prix =$('#Prix').val();
         var type =$('#Type').val();
+        var ErrorInput =false;
+        var textError=[];
+        if(!box_danger.classList.contains('hideDiv')){
+            box_danger.classList.add('hideDiv');
+        }
+        if(!box_warning.classList.contains('hideDiv')){
+            box_warning.classList.add('hideDiv');
+        }
+        if(!box_success.classList.contains('hideDiv')){
+            box_success.classList.add('hideDiv');
+        }
         nomClient=nomClient.toLowerCase();
+
         if(nomClient==undefined || nomClient=="")
-        {
-            alert('Veillez saisir le nom du client')
-        }
-        else if((Prix < 100)||(Prix >150))
-        {
-            alert('Le prix unitire dois etre compris entre 100 et 150')
-        }
-        else if(type =="")
-        {
-            alert('Veillez selectionne le type de client ')
+            {
+                ErrorInput=true;
+                textError[0]='Veillez saisir le nom du client';
+            }
+        if((Prix < 100)||(Prix >150))
+            {
+                ErrorInput=true;
+                textError[1]='Le prix unitire dois etre compris entre 100 et 150';
+            }
+        if(type =="")
+            {
+                ErrorInput=true;
+                textError='Veillez selectionne le type de client';
+            }
+        if(ErrorInput){
+            if(box_danger.classList.contains('hideDiv')){
+                box_danger.classList.remove('hideDiv');
+            }
+            for(var i =0 ; i<textError.length ;i++){
+                box_danger.querySelector('p').innerHTML="<p>"+textError[i]+"</p>" ;
+            }
+            
         }
         else
         {
+            
             $.ajax({
             type:'Post',
             url:'static/php/livraison.php',
             data:{Action:'CreationCompte',Nom:nomClient,PrixAchat:Prix,typeClient:type},
-            typedata:'json',
+            dataType:'json',
             success:function (response){
                 if(response.NameExist){
-
+                    if(box_warning.classList.contains('hideDiv')){
+                        box_warning.classList.remove('hideDiv');
+                    }
+                    box_warning.querySelector('p').innerHTML= "Désolé il existe dejat client nommé  <strong>"+nomClient+" </strong> dans la liste de vos client " ;
                 }
-                console.log(typeof(response.InsertionOk));
+                if(response.InsertionOk){
+                    if(box_success.classList.contains('hideDiv')){
+                        box_success.classList.remove('hideDiv');
+                    }
+                    box_success.classList.remove('hideDiv');
+                    box_success.querySelector('p').innerHTML= "Felicitation le client <strong>"+nomClient+" </strong> a été ajouté avec succes  " ;
+                
+                }
             }
          })
         }
@@ -197,7 +239,7 @@ $(function()
     })
   	
         
-    //CODE JS  POUR AFFICHER OU CHACHEZ LES ENTETE 
+    //CODE JS  POUR AFFICHER OU CACHEZ LES ENTETE 
 
     var showHideEntete =document.querySelector("#showHideEntete");
     showHideEntete.addEventListener('click',function(){
@@ -206,7 +248,7 @@ $(function()
       this.hidden;
     })
 
-
+// ---------------------------SECTION DES FUNCTIO --------------------------------  //
     function verifDate(){
         if (document.querySelector(".dateDuJour").value ===""){
             alert("Commencez par saisir la date du jour ");
@@ -226,6 +268,7 @@ $(function()
         if(parseInt(solde) == 0){
             return "null";
         }
+        return ";-(";
  
     }
     function clientExitpas(nomDuClient){
