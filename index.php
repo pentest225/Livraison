@@ -84,8 +84,36 @@
 <!-- ________________________________FIN DE LA SECTION DES ENTETE___________________________________________________ -->
 		<!--SECTION VENTE-->
 			<div class="containeur">
+
 				<div class="vente_du_jour">
 					<h4>Vente du jour </h4>
+					<div class="row venteDuJourRow">
+						<div class="col-xs">
+							<div class="card ">
+								<div class="card-body">
+									<div class="divUl">
+										<ul class="ulVenteDuJour">
+											<li class="list-group-item">Rest Prise</li>
+											<li class="list-group-item" id="restPrise">Valleur</li>
+										</ul>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="col-xs">
+							<div class="card ">
+								<div class="card-body">
+								<div class="divUl">
+									<ul class="ulVenteDuJour">
+										<li class="list-group-item">Total Somme</li>
+										<li class="list-group-item"id="totalSomme">Valleur</li>
+									</ul>
+								</div>
+								</div>
+							</div>
+						</div>
+					</div>
 					<!--Big blue-->
 				</div>
 			</div>

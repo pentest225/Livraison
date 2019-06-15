@@ -11,6 +11,8 @@ $(function()
     var dateDuJour = document.querySelector(".dateDuJour").value;
     var arrayTableau=document.getElementById('dtBasicExample').rows;
     var nombreLignesTab=arrayTableau.length;
+    var restPrise =0;//n'oublie pas d'explique 
+    var totalSommeRecu =0;
     console.log('bonjour le monde ');
     console.log(dateDuJour); 
     //creation des Ligne du tableau 
@@ -158,7 +160,26 @@ $(function()
                             
                         });
                 }
-
+                // --------------------------CODE POUR CALCULER LES REST DES PRISE ET LA SOMME TATAL RECU ---------------//
+                for(var i =0;i < linesNumber;i++){
+                        var inputprise=document.querySelector(".priseClient"+i+"");
+                        var inputRestPrise=document.querySelector("#restPrise");
+                        var priseVal=parseInt(inputprise.value);
+                        inputprise.addEventListener('change',function(){
+                            priseVal =parseInt(this.value);
+                        })
+                        restPrise +=priseVal;
+                        inputRestPrise.innerText=restPrise;
+                    }
+                for(var i =0;i < linesNumber;i++){
+                        var inputSommeRecu=document.querySelector(".SommeVerser"+i+"");
+                        var inputTotalSommeRecu=document.querySelector("#totalSomme");
+                        inputSommeRecu.addEventListener('change',function(){
+                            var valTotal =parseInt(this.value);
+                            totalSommeRecu +=valTotal;
+                            inputTotalSommeRecu.innerText=totalSommeRecu;
+                        })
+                    }
 
     //Ajout d'un utilisateur 
     $('#formAddUser').submit(function(e){
@@ -248,7 +269,7 @@ $(function()
       this.hidden;
     })
 
-// ---------------------------SECTION DES FUNCTIO --------------------------------  //
+// ---------------------------SECTION DES FUNCTION --------------------------------  //
     function verifDate(){
         if (document.querySelector(".dateDuJour").value ===""){
             alert("Commencez par saisir la date du jour ");

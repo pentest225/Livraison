@@ -67,7 +67,16 @@ input{
 
 
 /*SECTION VENTE */
-
+.divUl{
+	border-bottom: 1px solid grey;
+}
+.ulVenteDuJour li{
+	text-decoration: none;
+	display: inline;
+	border: none;
+	margin-right:-10px; 
+	
+}
 
 .vente_du_jour h4 {
 	text-align: center;
@@ -75,8 +84,10 @@ input{
 .vente_du_jour{
 	padding: 10px;
 }
-
-
+.venteDuJourRow{
+	display: flex;
+	justify-content:space-between;
+}
 /* CSS DES TABLE */
 table.dataTable thead .sorting:after,
 table.dataTable thead .sorting:before,
