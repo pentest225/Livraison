@@ -4,6 +4,61 @@
 if(isset($_POST)){
     switch($_POST['Action'])
     {
+        case 'recupInfoBoul':
+            extract($_POST);
+            $db=DB::connect();
+            //SELECTION DE TOUTE LES INFORMATION SUR LA BOUALGERIE
+            $selectInfo=$db->prepare('SELECT * FROM liste_boulangerie WHERE id=? ');
+            $selectInfo->execute(array($idBoul));
+            $resultInfo=$selectInfo->fetch();
+            if($resultInfo){
+               $Info['prixUniBoul']=$resultInfo['prix_unitaire'];
+               $Info['totalManquant']=$resultInfo['solde'];
+            }
+            echo json_encode($Info);
+        break;
+        case 'enregistrementBoulangerie':
+            //verification dans la base de bonne 
+            extract($_POST);
+            $db=DB::connect();
+            //RECUPERATION DE SON SOLDE 
+            $seleSolde=$db->prepare('SELECT * FROM liste_boulangerie WHERE id=?');
+            $seleSolde->execute(array($idBoul));
+            $resultSolde=$seleSolde->fetch();
+            if($resultSolde){
+                //si on a pu recuprer son ensien solde 
+                $verif=$db->prepare('SELECT * FROM boulangerie WHERE date = ? AND id_boul=?');
+                $verif->execute(array($date,$idBoul));
+                $resulVerif=$verif->fetch();
+                if($resulVerif){
+                    //un enregistrement a deja ete effectue 
+                    //c'est une mise a jour on doit en premier temps retablire son solde 
+                    $newSolde=$resultSolde['solde']- $resulVerif['somme_a_verser'];
+                    $newSolde+=$sommeDu;
+                    //en suite on met a jour son solde 
+                    $miseAjour=$db->prepare('UPDATE  liste_boulangerie SET solde=? WHERE id=?');
+                    $miseAjour->execute(array($newSolde,$idBoul));
+                    //mise a jour de la table boulangerie
+                    $miseAjourTabBoul=$db->prepare('UPDATE  boulangerie SET prise=?,somme_a_verser=?,manquant_du_jours=? WHERE id_boul=? AND date=?');
+                    $miseAjourTabBoul->execute(array($prise,$sommeDu,$rest,$date,$idBoul));
+                    if($miseAjourTabBoul){
+                        $Info['miseAJourOk']=true;
+                        $Info['totalManquant']=$newSolde;
+                    }
+                }else{
+                    //aucun enregistrement a ete effectue 
+                    //on cree donc la requette 
+                    $insert=$db->prepare('INSERT INTO boulangerie (date,id_boul,prise,somme_a_verser,manquant_du_jours ) VALUES (?,?,?,?,?)');
+                    $insert->execute(array($date,$idBoul,$prise,$sommeDu,$rest));
+                    //Augmentation du Manquant de la boulangerie 
+                    $newSolde=$resultSolde['solde']+$sommeDu;
+                    $miseAjour=$db->prepare('UPDATE  liste_boulangerie SET solde=? WHERE id=?');
+                    $miseAjour->execute(array($newSolde,$idBoul));
+                    $Info['totalManquant']=$newSolde;
+                }
+            }
+            echo json_encode($Info);
+        break;
         case 'VerifClient':
 
             $db=DB::connect();

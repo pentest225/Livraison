@@ -61,8 +61,8 @@
 											<tr>
 												<th scope="col">Boulangerie</th>
 												<th scope="col">
-												<select class="browser-default mdb-select  form-control validate" name="typeClient" id="Type">
-													<option value="" disabled selected>...</option>
+												<select class="browser-default mdb-select  form-control validate" id="selectBoulangerie" id="Type">
+													<option value=""  selected>...</option>
 													<?php 
 													foreach($InfoBoul as $Boulangerie) :
 															$id=$Boulangerie['id'];
@@ -112,7 +112,7 @@
 										</tr>
 										<tr>
 											<th scope="col">Total  Manquant</th>
-											<th scope="col">Valleur</th>
+											<th scope="col" id="totalManquant">Valleur</th>
 										</tr>
 									</thead>
 								</table>
@@ -143,9 +143,9 @@
 								<div class="card-body">
 									<div class="divUl">
 										<ul class="ulVenteDuJour">
-											<li class="list-group-item">Rest Prise</li>
+											<li class="">Rest Prise</li>
 											<li>  :</li>
-											<li class="list-group-item" id="restPrise">Valleur</li>
+											<li class="" id="restPrise">Valleur</li>
 										</ul>
 									</div>
 								</div>
@@ -164,8 +164,8 @@
 								<div class="card-body">
 								<div class="divUl">
 									<ul class="ulVenteDuJour">
-										<li class="list-group-item">Total Somme</li>
-										<li class="list-group-item"id="totalSomme">Valleur</li>
+										<li class="">Total Somme</li>
+										<li class=""id="totalSomme">Valleur</li>
 									</ul>
 								</div>
 								</div>

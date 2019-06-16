@@ -1,21 +1,27 @@
 $(function()
 {
     var ListeClient=0;
+    var idBoulagerie=0;
     var Prise=0;
-    var PrixUnitaire=85;
+    var PrixUnitaireBoul=0;
     var Retour=0;
     var Versement=0;
     var SommeAVerse=0;
     var Manquant=0;
+    var totalManquant=0;
     var linesNumber = 50;
+    var inputMaquantDuJour=document.querySelector('#ManquantDuJour');
+    var inputSommeAVerser=document.querySelector('#SommeAVerser');
+    var inputTotalManquant=document.querySelector('#totalManquant');
+    var inputPrise=document.querySelector('#Prise');
+    var inputRetour=document.querySelector('#Retour');
+    var inputversement=document.querySelector('#Versement');
     var box_success =document.querySelector("#box-success");
     var box_warning =document.querySelector("#box-warning");
     var box_danger =document.querySelector("#box-danger");
     var dateDuJour = document.querySelector(".dateDuJour").value;
     var arrayTableau=document.getElementById('dtBasicExample').rows;
     var nombreLignesTab=arrayTableau.length;
-    var restPrise =0;//n'oublie pas d'explique 
-    var priseL=[];
     var totalSommeRecu =0;
     //div pour les alert lor de l'inscription du client 
     if(!box_danger.classList.contains('hideDiv')){
@@ -27,6 +33,7 @@ $(function()
     if(!box_success.classList.contains('hideDiv')){
         box_success.classList.add('hideDiv');
     }
+    
     //creation des Ligne du tableau 
     for (var i= 0 ;i <linesNumber ;i++){
         arrayTab=document.getElementById('tbody');
@@ -47,37 +54,102 @@ $(function()
             celSolde=ligne.insertCell(6);
             celSolde.innerHTML+="<p class='valSolde"+i+"'>00 <i> fr</i></p> ";
     }
+//INSERTION DE MISE A JOUR DU FORMULAIRE DES PRISE ET VERSEMENT 
+        //desactivation des input par defaut ;
+        if((PrixUnitaireBoul===0) || (idBoulagerie === 0)){
+            inputPrise.disabled=true;
+            inputRetour.disabled=true;
+            inputversement.disabled=true;
+        }
+var selectBoul=document.querySelector('#selectBoulangerie');
+selectBoul.addEventListener("change",function(){
+    //si il chage de boulangerie on efface toute les donne qui a precedenment saisie 
+    PrixUnitaireBoul=0;
+    inputPrise.value=0;
+    inputRetour.value=0;
+    inputversement.value=0;
+    inputMaquantDuJour.innerHTML=0;
+    inputSommeAVerser.innerHTML=0;
+    idBoulagerie=this.value;
+    if(idBoulagerie==''){
+        alert('Veillez celectionne la boulagerie');
+        inputPrise.disabled=true;
+        inputRetour.disabled=true;
+        inputversement.disabled=true;
+    }
+    else{
+         //FAIRE UNE REQUETE POUR LA RECUPERATION DE TOUTE LES INFORMATION PAR RAPPORT AU SOLDE 
+        $.ajax({
+            type:'POST',
+            url:'static/php/livraison.php',
+            data:{Action:'recupInfoBoul',idBoul:idBoulagerie},
+            dataType:'JSON',
+            success:function(result){
+                //une fois les informations recupere on les affiche a la vue 
+                    //1=>on actualise le prix unitaire 
+
+                    PrixUnitaireBoul=result.prixUniBoul;
+                    inputPrise.disabled=false;
+                    inputRetour.disabled=false;
+                    inputversement.disabled=false;
+                    totalManquant=parseInt(result.totalManquant);
+                    inputTotalManquant.innerHTML="<strong>"+totalManquant+"</strong>"
+            }
+        })
+    }
+   
+   
+})
 //L'EVENEMENT DECLANCHREUR C'EST DANS CE EVENEMENT QU'EST DEFFINI LA PORTER DE TOUTE LE VARAIBLE 
-    $('#Prise').on('change',function () { 
+    //TETEMENT LORS DU CHANGEMENT DE LA PRISE 
+    inputPrise.addEventListener("change",function(){
         verifDate();
-        Prise =$('#Prise').val();
-        SommeAVerse=(Prise - Retour )*PrixUnitaire;
-        Manquant=SommeAVerse-Versement;
-        $('#SommeAVerser').html(SommeAVerse);
-        $('#ManquantDuJour').html(Manquant);
-    });
+        Retour=parseInt(Retour);
+        this.value==''? Prise=0:Prise=parseInt(this.value);
+        console.log(Prise);
+        SommeAVerse=(Prise - Retour )*PrixUnitaireBoul;
+        Manquant=parseInt(SommeAVerse-Versement);
+        inputSommeAVerser.innerHTML="<strong>"+SommeAVerse+"</strong>";
+        inputMaquantDuJour.innerHTML="<strong>"+Manquant+"</strong>";
+        totalManquant+=Manquant;
+         
+         $.ajax({
+            type:'POST',
+            url:'static/php/livraison.php',
+            data:{Action:'enregistrementBoulangerie',idBoul:idBoulagerie,date:dateDuJour, prise:Prise,sommeDu:SommeAVerse,rest:Manquant},
+            dataType:'JSON',
+            success:function(result){
+                //une fois les informations recupere on les affiche a la vue 
+                    //1=>on actualise le prix unitaire 
+                    totalManquant=parseInt(result.totalManquant);
+                    inputTotalManquant.innerHTML="<strong>"+totalManquant+"</strong>"
+            }
+        })
+    })
+ 
     $('#Retour').on('change',function(){
         verifDate();
         Retour =$('#Retour').val();
-        SommeAVerse=(Prise - Retour )*PrixUnitaire;
-        Manquant=SommeAVerse-Versement;
+        SommeAVerse=(Prise - Retour )*PrixUnitaireBoul;
+        Manquant=parseInt(SommeAVerse-Versement);
         $('#SommeAVerser').html(SommeAVerse);
         $('#ManquantDuJour').html(Manquant);
+        totalManquant+=Manquant;
+        inputTotalManquant.innerHTML="<strong>"+totalManquant+"</strong>";
     })
 
     $('#Versement').on('change',function () { 
         verifDate();
         Versement =$('#Versement').val();
-        SommeAVerse=(Prise - Retour )*PrixUnitaire;
-        Manquant=SommeAVerse-Versement;
+        SommeAVerse=(Prise - Retour )*PrixUnitaireBoul;
+        Manquant=parseInt(SommeAVerse-Versement);
         $('#Versement').html(SommeAVerse);
         $('#ManquantDuJour').html(Manquant);
     });
     $('.dateDuJour').on('change',function () { 
         dateDuJour=this.value;
     });
-    //INSERTION DE MISE A JOUR DU FORMULAIRE DES PRISE ET VERSEMENT 
-    var 
+    
     //Verification du client dans la base de donnee 
     for(var i =0 ;i< linesNumber;i++){
         var NomClient =document.querySelector(".NomClient"+i+"");
@@ -292,9 +364,16 @@ $(function()
     function verifDate(){
         if (document.querySelector(".dateDuJour").value ===""){
             alert("Commencez par saisir la date du jour ");
-            return 1
+            return 0
         }
-        return 0
+        return 1
+    }
+    function verifPrixUnitaire(valleur){
+        if ( valleur===0){
+            alert("Veillez selectionne la boulangerie");
+            return 0
+        }
+        return 1
     }
     //FUNCTION POUR VERIFIER L'ETAT DU SOLDE DE L'UTILISATEUR 
    
