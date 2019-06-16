@@ -1,3 +1,6 @@
+<?php 
+	include 'static/php/request.php';
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -31,56 +34,103 @@
 	
 
 		<form action="# " method="post">
-			<div class="row entete">
-					<div class="col-md-4 Tab_left">
-						<!-- Tableau d'entete -->
-							<table class="table table-striped" >
-								<thead>
-									<tr>
-										<th scope="col">Prise du jour</th>
-										<th scope="col"><input type="number" name="Prise" placeholder="prise" id="Prise" value='0'></th>
-									</tr>
-									<tr>
-										<th scope="col">Retour</th>
-										<th scope="col"><input type="number" name="Retour" placeholder="Retour" id="Retour" value='0'></th>
-									</tr>
-									<tr>
-										<th scope="col">Somme A verser</th>
-										<th scope="col" id="SommeAVerser">Valleur</th>
-									</tr>
-								</thead>
-							</table>
+			<button type="button" class="btn btn-primary " data-toggle="modal" data-target="#fullHeightModalRight" id="">
+				Add Prise et versement <span class="badge badge-warning ml-2">+</span>
+			</button>
+			<!-- Full Height Modal Right -->
+			<div class="modal fade top" id="fullHeightModalRight" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+			aria-hidden="true">
+
+			<!-- Add class .modal-full-height and then add class .modal-right (or other classes from list above) to set a position to the modal -->
+			<div class="modal-dialog modal-full-height  modal-top " role="document">
+
+				<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					...<!-- SECTION ENTRTR DU TABLEAUX --->
+					<div class="row entete">
+			
+							<div class="col-md-4 Tab_left">
+								<!-- Tableau d'entete -->
+									<table class="table table-striped" >
+										<thead>
+											<tr>
+												<th scope="col">Boulangerie</th>
+												<th scope="col">
+												<select class="browser-default mdb-select  form-control validate" name="typeClient" id="Type">
+													<option value="" disabled selected>...</option>
+													<?php 
+													foreach($InfoBoul as $Boulangerie) :
+															$id=$Boulangerie['id'];
+															$nom=$Boulangerie['nom'];
+													?>
+														<option value="<?=$id?>">
+														<?=$nom?>	
+														</option>
+														<?php endforeach ?>
+													
+												</select>
+												</th>
+											</tr>
+											<tr>
+												<th scope="col">Prise du jour</th>
+												<th scope="col"><input type="number" name="Prise" placeholder="prise" id="Prise" value='0'></th>
+											</tr>
+											<tr>
+												<th scope="col">Retour</th>
+												<th scope="col"><input type="number" name="Retour" placeholder="Retour" id="Retour" value='0'></th>
+											</tr>
+											<tr>
+												<th scope="col">Somme A verser</th>
+												<th scope="col" id="SommeAVerser">Valleur</th>
+											</tr>
+										</thead>
+									</table>
+								</div>
+							<div class="col-md-4 date">
+								<h4>Prise du ...</h4>
+								<div class="md-form">
+								<input placeholder="date de la prise" type="text" id="date-picker-exampleb" class="form-control datepicker dateDuJour">
+								<label for="date-picker-example">Try me...</label>
+								</div>
+							</div>
+						<!-- FIN TABLEAU GAUCHE -->
+							<div class="col-md-4  Tab_right">
+								<table class="table table-striped">
+									<thead>
+										<tr>
+											<th scope="col">VERSEMENT</th>
+											<th scope="col"><input type="number" name="Versement" placeholder="Versement" id="Versement"></th>
+										</tr>
+										<tr>
+											<th scope="col">Manquant Du jour </th>
+											<th scope="col" id='ManquantDuJour'>Valleur</th>
+										</tr>
+										<tr>
+											<th scope="col">Total  Manquant</th>
+											<th scope="col">Valleur</th>
+										</tr>
+									</thead>
+								</table>
+							</div>
+			
+							<!-- TABLEAU DROIT -->
 						</div>
-					<div class="col-md-4 date">
-						<h4>Date du jour </h4>
- 						<div class="md-form">
-						<input placeholder="Selected date" type="text" id="date-picker-exampleb" class="form-control datepicker dateDuJour">
-						<label for="date-picker-example">Try me...</label>
-						</div>
+	<!-- FIN DE LA SECTION ENTETE -->
 					</div>
-				<!-- FIN TABLEAU GAUCHE -->
-					<div class="col-md-4  Tab_right">
-						<table class="table table-striped">
-							<thead>
-								<tr>
-									<th scope="col">VERSEMENT</th>
-									<th scope="col"><input type="number" name="Versement" placeholder="Versement" id="Versement"></th>
-								</tr>
-								<tr>
-									<th scope="col">Manquant Du jour </th>
-									<th scope="col" id='ManquantDuJour'>Valleur</th>
-								</tr>
-								<tr>
-									<th scope="col">Total  Manquant</th>
-									<th scope="col">Valleur</th>
-								</tr>
-							</thead>
-						</table>
-					</div>
-					
-				<!-- TABLEAU DROIT -->
-				
+				<div class="modal-footer justify-content-center">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-primary" id="saveChangeFormBoul">Save changes</button>
+				</div>
+				</div>
 			</div>
+			</div>
+			<!-- Full Height Modal Right -->
+
 <!-- ________________________________FIN DE LA SECTION DES ENTETE___________________________________________________ -->
 		<!--SECTION VENTE-->
 			<div class="containeur">
@@ -88,21 +138,29 @@
 				<div class="vente_du_jour">
 					<h4>Vente du jour </h4>
 					<div class="row venteDuJourRow">
-						<div class="col-xs">
-							<div class="card ">
+						<div class="col-xs-6">
+							<div class="card w-10">
 								<div class="card-body">
 									<div class="divUl">
 										<ul class="ulVenteDuJour">
 											<li class="list-group-item">Rest Prise</li>
+											<li>  :</li>
 											<li class="list-group-item" id="restPrise">Valleur</li>
 										</ul>
 									</div>
 								</div>
 							</div>
 						</div>
-
-						<div class="col-xs">
-							<div class="card ">
+						<div class="col-md-4 date">
+							<h4>Vente du ...</h4>
+							<div class="md-form">
+								<input placeholder="date date de vente" type="text" id="date-picker-exampleb" class="form-control datepicker ">
+								<label for="date-picker-example">Try me...</label>
+							</div>
+						
+						</div>
+						<div class="col-xs-6">
+							<div class="card w-10">
 								<div class="card-body">
 								<div class="divUl">
 									<ul class="ulVenteDuJour">
@@ -162,7 +220,7 @@
 		</table>
 		</form>
 	</div>
-		<!-- SECTION MODAL MDB -->
+		<!-- SECTION MODAL CREATION COMPTE CLIENT MDB -->
 		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 			<div class="modal-dialog" role="document">
 					<div class="modal-content">
@@ -190,7 +248,7 @@
 						</div>
 						<!-- Fin div loader -->
 						<!--DIV SUCCESS -->
-						<div class="alert alert-success box-info hideDiv" role="alert" id="box-success">
+						<div class="alert alert-success box-info " role="alert" id="box-success">
 							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 								<span aria-hidden="true">&times;</span>
 							</button>
@@ -199,7 +257,7 @@
 						</div>
 						<!-- FIN DIV SUCCESS -->
 						<!--DIV WARNING -->
-						<div class="alert alert-warning  hideDiv" role="alert" id="box-warning" >
+						<div class="alert alert-warning  " role="alert" id="box-warning" >
 							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 								<span aria-hidden="true">&times;</span>
 							</button>
@@ -208,7 +266,7 @@
 						</div>
 						<!-- FIN DIV WARNING -->
 						<!--DIV DANGER -->
-						<div class="alert alert-danger box-info hideDiv" role="alert" id="box-danger">
+						<div class="alert alert-danger box-info " role="alert" id="box-danger">
 							<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 								<span aria-hidden="true">&times;</span>
 							</button>
@@ -224,7 +282,7 @@
 								<label data-error="wrong" data-success="right" for="NomClient">Nom Client(te)</label>
 							</div>
 							<div class="md-form mb-5">
-								<i class="fas fa-user prefix grey-text"></i>
+								
 								<select class="browser-default mdb-select  form-control validate" name="typeClient" id="Type">
 									<option value="" disabled selected>Type Client</option>
 									<option value="r">Revendeur</option>
@@ -247,6 +305,44 @@
 		</div>
 
 <!-- FIN DE LA SECTION MODAL MDB -->
+
+<!-- SECTION MODAL CREATION COMPTE BOULANGERIE MDB -->
+<div class="modal fade" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header text-center">
+							<h4 class="modal-title w-100 font-weight-bold">Creation de compte Boulangerie</h4>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div class="box_info">
+							<h4></h4>
+							<p></p>
+						</div>
+					<form action="" id="formAddBoullangerie" class="">
+						<div class="modal-body mx-3">
+							<div class="md-form mb-5">
+								<i class="fas fa-user prefix grey-text"></i>
+								<input type="text" id="nomBoul" class="form-control validate" name="nomBoul">
+								<label data-error="wrong" data-success="right" for="NomClient">Nom Boulangerie</label>
+							</div>
+							<div class="md-form mb-4">
+								<i class="fas fa-envelope prefix grey-text"></i>
+								<input type="number" id="prixBoul" class="form-control validate" name="prixBoul">
+								<label data-error="wrong" data-success="right" for="Prix">Prix D'Achat</label>
+							</div>
+
+						</div>
+						<div class="modal-footer d-flex justify-content-center">
+							<button class="btn btn-indigo" id="Validation" >Enregistre <i class="fas fa-paper-plane-o ml-1"></i></button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+
+<!-- FIN DE LA SECTION MODAL COMPTE BOULANGERIE MDB -->
   	</div>
 
     <!-- SCRIPTS -->

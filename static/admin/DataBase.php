@@ -17,7 +17,7 @@
                 return $db;
             }
 
-            public static function Desconexte(){
+            public static function Deconexte(){
                 $db=null;
             }
         

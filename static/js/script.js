@@ -8,13 +8,25 @@ $(function()
     var SommeAVerse=0;
     var Manquant=0;
     var linesNumber = 50;
+    var box_success =document.querySelector("#box-success");
+    var box_warning =document.querySelector("#box-warning");
+    var box_danger =document.querySelector("#box-danger");
     var dateDuJour = document.querySelector(".dateDuJour").value;
     var arrayTableau=document.getElementById('dtBasicExample').rows;
     var nombreLignesTab=arrayTableau.length;
     var restPrise =0;//n'oublie pas d'explique 
+    var priseL=[];
     var totalSommeRecu =0;
-    console.log('bonjour le monde ');
-    console.log(dateDuJour); 
+    //div pour les alert lor de l'inscription du client 
+    if(!box_danger.classList.contains('hideDiv')){
+        box_danger.classList.add('hideDiv');
+    }
+    if(!box_warning.classList.contains('hideDiv')){
+        box_warning.classList.add('hideDiv');
+    }
+    if(!box_success.classList.contains('hideDiv')){
+        box_success.classList.add('hideDiv');
+    }
     //creation des Ligne du tableau 
     for (var i= 0 ;i <linesNumber ;i++){
         arrayTab=document.getElementById('tbody');
@@ -23,17 +35,17 @@ $(function()
             celNom=ligne.insertCell(0);
             celNom.innerHTML+=(i+1);
             celNom=ligne.insertCell(1);
-            celNom.innerHTML+="<input type='text' placeholder='Non client' class='tableInput NomClient"+i+"'> ";
+            celNom.innerHTML+="<input type='text' placeholder='' class='tableInput NomClient"+i+"'> ";
             celPrise=ligne.insertCell(2);
-            celPrise.innerHTML+="<input type='number' placeholder='prise' class=' tableInput priseClient"+i+"'> ";
+            celPrise.innerHTML+="<input type='number' placeholder='' class=' tableInput priseClient"+i+"'> ";
             celSommeAVerser=ligne.insertCell(3);
-            celSommeAVerser.innerHTML+="<p class='SommeAverser"+i+"'>SommeAVerse <i> fr</i></p> ";
+            celSommeAVerser.innerHTML+="<p class='SommeAverser"+i+"'>00 <i> fr</i></p> ";
             celSommeVerser=ligne.insertCell(4);
-            celSommeVerser.innerHTML+="<input type='number' placeholder='Somme Verse ' class='tableInput SommeVerser"+i+"'> ";
+            celSommeVerser.innerHTML+="<input type='number' placeholder='' class='tableInput SommeVerser"+i+"'> ";
             celEtatSolde=ligne.insertCell(5);
-            celEtatSolde.innerHTML+="<p class='EtatSolde"+i+"'>Etat soled</p>";
+            celEtatSolde.innerHTML+="<p class='EtatSolde"+i+"'></p>";
             celSolde=ligne.insertCell(6);
-            celSolde.innerHTML+="<p class='valSolde"+i+"'>soled <i> fr</i></p> ";
+            celSolde.innerHTML+="<p class='valSolde"+i+"'>00 <i> fr</i></p> ";
     }
 //L'EVENEMENT DECLANCHREUR C'EST DANS CE EVENEMENT QU'EST DEFFINI LA PORTER DE TOUTE LE VARAIBLE 
     $('#Prise').on('change',function () { 
@@ -64,6 +76,8 @@ $(function()
     $('.dateDuJour').on('change',function () { 
         dateDuJour=this.value;
     });
+    //INSERTION DE MISE A JOUR DU FORMULAIRE DES PRISE ET VERSEMENT 
+    var 
     //Verification du client dans la base de donnee 
     for(var i =0 ;i< linesNumber;i++){
         var NomClient =document.querySelector(".NomClient"+i+"");
@@ -160,27 +174,33 @@ $(function()
                             
                         });
                 }
-                // --------------------------CODE POUR CALCULER LES REST DES PRISE ET LA SOMME TATAL RECU ---------------//
-                for(var i =0;i < linesNumber;i++){
-                        var inputprise=document.querySelector(".priseClient"+i+"");
-                        var inputRestPrise=document.querySelector("#restPrise");
-                        var priseVal=parseInt(inputprise.value);
-                        inputprise.addEventListener('change',function(){
-                            priseVal =parseInt(this.value);
-                        })
-                        restPrise +=priseVal;
-                        inputRestPrise.innerText=restPrise;
-                    }
-                for(var i =0;i < linesNumber;i++){
-                        var inputSommeRecu=document.querySelector(".SommeVerser"+i+"");
-                        var inputTotalSommeRecu=document.querySelector("#totalSomme");
-                        inputSommeRecu.addEventListener('change',function(){
-                            var valTotal =parseInt(this.value);
-                            totalSommeRecu +=valTotal;
-                            inputTotalSommeRecu.innerText=totalSommeRecu;
-                        })
-                    }
+                
+    //Ajouter une boullangerie
+    //Ajout d'un utilisateur 
+    $('#formAddBoullangerie').submit(function(e){
+        e.preventDefault();
+        var nomBoul =document.querySelector('#nomBoul').value;
+        var Prix =document.querySelector('#prixBoul').value;
+        nomBoul.toLowerCase();
 
+            $.ajax({
+            type:'Post',
+            url:'static/php/livraison.php',
+            data:{Action:'CreationCompteBoul',Nom:nomBoul,PrixAchat:Prix},
+            dataType:'json',
+            success:function (response){
+                if(response.NameExist){
+                    box_info.querySelector('h4').innerHTML="<strong>Erreur Boublon </strong>";
+                    box_info.querySelector('p').innerHTML= "Désolé il existe dejat client nommé  <strong>"+nomClient+" </strong> dans la liste de vos client " ;
+                }
+                if(response.InsertionOk){
+                    box_info.querySelector('h4').innerHTML="<strong>COMPTE CREE </strong>";
+                    box_info.querySelector('p').innerHTML= "Felicitation le client <strong>"+nomClient+" </strong> a été ajouté avec succes  " ;
+                }
+            }
+         })
+    })
+  	
     //Ajout d'un utilisateur 
     $('#formAddUser').submit(function(e){
         e.preventDefault();
@@ -188,22 +208,12 @@ $(function()
         var nomClient =$('#NomClient').val();
         var divLoader =document.querySelector("#divLoader");
         var form =document.querySelector("#formAddUser");
-        var box_success =document.querySelector("#box-success");
-        var box_warning =document.querySelector("#box-warning");
-        var box_danger =document.querySelector("#box-danger");
+        
         var Prix =$('#Prix').val();
         var type =$('#Type').val();
         var ErrorInput =false;
         var textError=[];
-        if(!box_danger.classList.contains('hideDiv')){
-            box_danger.classList.add('hideDiv');
-        }
-        if(!box_warning.classList.contains('hideDiv')){
-            box_warning.classList.add('hideDiv');
-        }
-        if(!box_success.classList.contains('hideDiv')){
-            box_success.classList.add('hideDiv');
-        }
+        
         nomClient=nomClient.toLowerCase();
 
         if(nomClient==undefined || nomClient=="")
@@ -225,6 +235,9 @@ $(function()
             if(box_danger.classList.contains('hideDiv')){
                 box_danger.classList.remove('hideDiv');
             }
+            else{
+            box_danger.style.display="block";
+            }
             for(var i =0 ; i<textError.length ;i++){
                 box_danger.querySelector('p').innerHTML="<p>"+textError[i]+"</p>" ;
             }
@@ -243,12 +256,18 @@ $(function()
                     if(box_warning.classList.contains('hideDiv')){
                         box_warning.classList.remove('hideDiv');
                     }
+                    else{
+                        box_warning.style.display="block";
+                        }
                     box_warning.querySelector('p').innerHTML= "Désolé il existe dejat client nommé  <strong>"+nomClient+" </strong> dans la liste de vos client " ;
                 }
                 if(response.InsertionOk){
                     if(box_success.classList.contains('hideDiv')){
                         box_success.classList.remove('hideDiv');
                     }
+                    else{
+                        box_success.style.display="block";
+                        }
                     box_success.classList.remove('hideDiv');
                     box_success.querySelector('p').innerHTML= "Felicitation le client <strong>"+nomClient+" </strong> a été ajouté avec succes  " ;
                 
@@ -291,6 +310,22 @@ $(function()
         }
         return ";-(";
  
+    }
+    function parcourPrise(){
+        for(var i =0;i < linesNumber;i++){
+            var inputprise=document.querySelector(".priseClient"+i+"");
+            var inputRestPrise=document.querySelector("#restPrise");
+            var priseVal=0;
+            console.log('prise avent modif'+priseVal+'');
+            inputprise.addEventListener('change',function(){
+                priseVal =parseInt(this.value);
+                var priseLocal=0;
+                console.log('prise apres modif '+priseVal);
+                priseLocal +=priseVal;
+                return priseLocal;
+            })
+            return 0;
+        }
     }
     function clientExitpas(nomDuClient){
         var creationCompt=confirm('Desole Ce Client '+nomDuClient+' Existe pas dans la liste des client\nvoulez vous cree un compt pour ce client');

@@ -46,6 +46,30 @@ if(isset($_POST)){
             }
             echo json_encode($Info);
         break;
+        case'CreationCompteBoul':
+            $db=DB::connect();
+            $query =$db->prepare('SELECT * FROM liste_boulangerie WHERE nom =?');
+            $query->execute(array($_POST['Nom']));
+            $reponse=$query->fetch();
+            if($reponse){
+                //si le nom existe plus d'insertion dans la base de bonne
+                $Info['NameExist']=true;
+            }else{
+                $Info['NameExist']=false;
+                $NomClient=$_POST['Nom'];
+                $request =$db->prepare('INSERT INTO liste_boulangerie (nom,prix_unitaire,solde) VALUES (?,?,?)');
+                $request->execute(array($_POST['Nom'],$_POST['PrixAchat'],'0'));
+                if($request)
+                {
+                    $Info['InsertionOk']=true;
+                }
+                else
+                {
+                    $Info['InsertionOk']=false;
+                }
+            }
+        echo json_encode($Info);
+        break;
         case 'actualisationPrise':
             extract($_POST);
             //prise des information sur l'utilisateur 

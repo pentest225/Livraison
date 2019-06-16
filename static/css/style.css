@@ -28,6 +28,11 @@ input{
 	color:rgba(46, 55, 180, 0.623);
 	
 }
+select{
+	border: none;
+	background-color:none;
+	color:green; 
+}
 /*POUR AFFICHER OU CACHE LES ENTETE DU SITE */
 .showHide{
 	display: none;
@@ -70,8 +75,12 @@ input{
 .divUl{
 	border-bottom: 1px solid grey;
 }
+.ulVenteDuJour ul{
+	display: inline-block;
+}
 .ulVenteDuJour li{
 	text-decoration: none;
+	width: 150px;
 	display: inline;
 	border: none;
 	margin-right:-10px; 
