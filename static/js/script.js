@@ -105,9 +105,9 @@ selectBoul.addEventListener("change",function(){
     inputPrise.addEventListener("change",function(){
         verifDate();
         Retour=parseInt(Retour);
+        console.log(Retour);
         this.value==''? Prise=0:Prise=parseInt(this.value);
-        console.log(Prise);
-        SommeAVerse=(Prise - Retour )*PrixUnitaireBoul;
+SommeAVerse=(Prise - Retour )*parseInt(PrixUnitaireBoul);
         Manquant=parseInt(SommeAVerse-Versement);
         inputSommeAVerser.innerHTML="<strong>"+SommeAVerse+"</strong>";
         inputMaquantDuJour.innerHTML="<strong>"+Manquant+"</strong>";
