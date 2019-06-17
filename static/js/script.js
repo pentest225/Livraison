@@ -13,9 +13,11 @@ $(function()
     var inputMaquantDuJour=document.querySelector('#ManquantDuJour');
     var inputSommeAVerser=document.querySelector('#SommeAVerser');
     var inputTotalManquant=document.querySelector('#totalManquant');
+    var selectBoul=document.querySelector('#selectBoulangerie');
     var inputPrise=document.querySelector('#Prise');
     var inputRetour=document.querySelector('#Retour');
     var inputversement=document.querySelector('#Versement');
+    var box_info=document.querySelector(".box_info");
     var box_success =document.querySelector("#box-success");
     var box_warning =document.querySelector("#box-warning");
     var box_danger =document.querySelector("#box-danger");
@@ -36,7 +38,7 @@ $(function()
     
     //creation des Ligne du tableau 
     for (var i= 0 ;i <linesNumber ;i++){
-        arrayTab=document.getElementById('tbody');
+            arrayTab=document.getElementById('tbody');
             var ligne=arrayTab.insertRow();
             ligne.className="ligne";
             celNom=ligne.insertCell(0);
@@ -56,12 +58,20 @@ $(function()
     }
 //INSERTION DE MISE A JOUR DU FORMULAIRE DES PRISE ET VERSEMENT 
         //desactivation des input par defaut ;
+        if(dateDuJour=== ""){
+            selectBoul.disabled=true;
+        }
+        $('.dateDuJour').on('change',function () { 
+            dateDuJour=this.value;
+            selectBoul.disabled=false;
+        });
         if((PrixUnitaireBoul===0) || (idBoulagerie === 0)){
             inputPrise.disabled=true;
             inputRetour.disabled=true;
             inputversement.disabled=true;
+    
         }
-var selectBoul=document.querySelector('#selectBoulangerie');
+
 selectBoul.addEventListener("change",function(){
     //si il chage de boulangerie on efface toute les donne qui a precedenment saisie 
     PrixUnitaireBoul=0;
@@ -103,53 +113,102 @@ selectBoul.addEventListener("change",function(){
 //L'EVENEMENT DECLANCHREUR C'EST DANS CE EVENEMENT QU'EST DEFFINI LA PORTER DE TOUTE LE VARAIBLE 
     //TETEMENT LORS DU CHANGEMENT DE LA PRISE 
     inputPrise.addEventListener("change",function(){
-        verifDate();
         Retour=parseInt(Retour);
-        console.log(Retour);
         this.value==''? Prise=0:Prise=parseInt(this.value);
-SommeAVerse=(Prise - Retour )*parseInt(PrixUnitaireBoul);
-        Manquant=parseInt(SommeAVerse-Versement);
-        inputSommeAVerser.innerHTML="<strong>"+SommeAVerse+"</strong>";
-        inputMaquantDuJour.innerHTML="<strong>"+Manquant+"</strong>";
-        totalManquant+=Manquant;
-         
-         $.ajax({
-            type:'POST',
-            url:'static/php/livraison.php',
-            data:{Action:'enregistrementBoulangerie',idBoul:idBoulagerie,date:dateDuJour, prise:Prise,sommeDu:SommeAVerse,rest:Manquant},
-            dataType:'JSON',
-            success:function(result){
-                //une fois les informations recupere on les affiche a la vue 
-                    //1=>on actualise le prix unitaire 
-                    totalManquant=parseInt(result.totalManquant);
-                    inputTotalManquant.innerHTML="<strong>"+totalManquant+"</strong>"
-            }
-        })
-    })
- 
-    $('#Retour').on('change',function(){
-        verifDate();
-        Retour =$('#Retour').val();
-        SommeAVerse=(Prise - Retour )*PrixUnitaireBoul;
-        Manquant=parseInt(SommeAVerse-Versement);
-        $('#SommeAVerser').html(SommeAVerse);
-        $('#ManquantDuJour').html(Manquant);
-        totalManquant+=Manquant;
-        inputTotalManquant.innerHTML="<strong>"+totalManquant+"</strong>";
-    })
+        
+        if(Prise < 0 ){
+            alert("valleur prise invalide");
+            this.value=0;
+        }
+        else{
 
+            if((Retour<0) || (Retour > Prise)){
+                alert("Retour negatif");
+                inputRetour.value =Retour=0;
+            }
+            SommeAVerse=(Prise - Retour )*parseInt(PrixUnitaireBoul);
+            Manquant=parseInt(SommeAVerse-Versement);
+            inputSommeAVerser.innerHTML="<strong>"+SommeAVerse+"</strong>";
+            inputMaquantDuJour.innerHTML="<strong>"+Manquant+"</strong>";
+            totalManquant+=Manquant;
+            
+            $.ajax({
+                type:'POST',
+                url:'static/php/livraison.php',
+                data:{Action:'enregistrementBoulangerie',idBoul:idBoulagerie,date:dateDuJour, prise:Prise,sommeDu:SommeAVerse,rest:Manquant},
+                dataType:'JSON',
+                success:function(result){
+                    //une fois les informations recupere on les affiche a la vue 
+                        //1=>on actualise le prix unitaire 
+                        totalManquant=parseInt(result.totalManquant);
+                        inputTotalManquant.innerHTML="<strong>"+totalManquant+"</strong>"
+                }
+            })
+        }
+    })
+    //TRAITEMENT AU CHAGEMENT DU RETOUR 
+    inputRetour.addEventListener('change',function(){
+        
+        this.value==''? Retour=0:Retour=parseInt(this.value);
+        if(Retour > Prise){
+            alert("Retour trop grand");
+            this.value=0;
+            this.onfocus=true;
+            
+        }else{
+            SommeAVerse=(Prise - Retour )*PrixUnitaireBoul;
+            Manquant=parseInt(SommeAVerse-Versement);
+            inputSommeAVerser.innerHTML="<strong>"+SommeAVerse+"</strong>";
+            inputMaquantDuJour.innerHTML="<strong>"+Manquant+"</strong>";
+            $.ajax({
+                type:"POST",
+                url:'static/php/livraison.php',
+                data:{Action:'MiseAjourRetour',idBoul:idBoulagerie,date:dateDuJour, prise:Prise,retour:Retour,sommeDu:SommeAVerse,rest:Manquant},
+                dataType:'JSON',
+                success:function(result){
+                    if(result.error){
+                        alert(result.Message);
+                    }
+                    else{
+                        totalManquant=parseInt(result.totalManquant);
+                        inputTotalManquant.innerHTML="<strong>"+totalManquant+"</strong>";
+                    }
+                    
+                }
+            })
+        }
+    })
+    //TRAITEMENT DU VERSEMENT 
+    inputversement.addEventListener('change',function(){
+        this.value==''? Versement=0:Versement=parseInt(this.value);
+        if(Versement < 0){
+            alert("valleur du versement est negative !");
+            this.value=0;
+        }
+        else{
+            SommeAVerse=(Prise - Retour )*PrixUnitaireBoul;
+            Manquant=parseInt(SommeAVerse-Versement);
+            $.ajax({
+                type:"POST",
+                url:'static/php/livraison.php',
+                data:{Action:'MiseAjourVersement',idBoul:idBoulagerie,date:dateDuJour, prise:Prise,retour:Retour,sommeDu:SommeAVerse,versement:Versement,rest:Manquant},
+                dataType:'JSON',
+                success:function(result){
+                    if(result.error){
+                        alert(result.Message);
+                    }else{
+                        totalManquant=parseInt(result.totalManquant);
+                        inputTotalManquant.innerHTML="<strong>"+totalManquant+"</strong>";
+                    }
+                }
+            })
+        }
+    })
     $('#Versement').on('change',function () { 
-        verifDate();
-        Versement =$('#Versement').val();
-        SommeAVerse=(Prise - Retour )*PrixUnitaireBoul;
-        Manquant=parseInt(SommeAVerse-Versement);
+        
         $('#Versement').html(SommeAVerse);
         $('#ManquantDuJour').html(Manquant);
     });
-    $('.dateDuJour').on('change',function () { 
-        dateDuJour=this.value;
-    });
-    
     //Verification du client dans la base de donnee 
     for(var i =0 ;i< linesNumber;i++){
         var NomClient =document.querySelector(".NomClient"+i+"");
@@ -263,11 +322,11 @@ SommeAVerse=(Prise - Retour )*parseInt(PrixUnitaireBoul);
             success:function (response){
                 if(response.NameExist){
                     box_info.querySelector('h4').innerHTML="<strong>Erreur Boublon </strong>";
-                    box_info.querySelector('p').innerHTML= "Désolé il existe dejat client nommé  <strong>"+nomClient+" </strong> dans la liste de vos client " ;
+                    box_info.querySelector('p').innerHTML= "Désolé il existe dejat client nommé  <strong>"+nomBoul+" </strong> dans la liste de vos client " ;
                 }
                 if(response.InsertionOk){
                     box_info.querySelector('h4').innerHTML="<strong>COMPTE CREE </strong>";
-                    box_info.querySelector('p').innerHTML= "Felicitation le client <strong>"+nomClient+" </strong> a été ajouté avec succes  " ;
+                    box_info.querySelector('p').innerHTML= "Felicitation le client <strong>"+nomBoul+" </strong> a été ajouté avec succes  " ;
                 }
             }
          })
@@ -368,13 +427,7 @@ SommeAVerse=(Prise - Retour )*parseInt(PrixUnitaireBoul);
         }
         return 1
     }
-    function verifPrixUnitaire(valleur){
-        if ( valleur===0){
-            alert("Veillez selectionne la boulangerie");
-            return 0
-        }
-        return 1
-    }
+
     //FUNCTION POUR VERIFIER L'ETAT DU SOLDE DE L'UTILISATEUR 
    
     function verifEtatSolde( solde){
@@ -390,22 +443,7 @@ SommeAVerse=(Prise - Retour )*parseInt(PrixUnitaireBoul);
         return ";-(";
  
     }
-    function parcourPrise(){
-        for(var i =0;i < linesNumber;i++){
-            var inputprise=document.querySelector(".priseClient"+i+"");
-            var inputRestPrise=document.querySelector("#restPrise");
-            var priseVal=0;
-            console.log('prise avent modif'+priseVal+'');
-            inputprise.addEventListener('change',function(){
-                priseVal =parseInt(this.value);
-                var priseLocal=0;
-                console.log('prise apres modif '+priseVal);
-                priseLocal +=priseVal;
-                return priseLocal;
-            })
-            return 0;
-        }
-    }
+
     function clientExitpas(nomDuClient){
         var creationCompt=confirm('Desole Ce Client '+nomDuClient+' Existe pas dans la liste des client\nvoulez vous cree un compt pour ce client');
             if(creationCompt)

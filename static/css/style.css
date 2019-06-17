@@ -15,9 +15,11 @@ body{
 .date{
 	text-align: center;
 	display: inline;
+	margin: 0 auto;
 }
 .date input{
 	color: #1E90FF;
+	text-align: center;
 }
 /*MISE EN FORME DES INPUT*/
 input{
