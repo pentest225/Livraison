@@ -17,11 +17,13 @@ $(function()
     var inputPrise=document.querySelector('#Prise');
     var inputRetour=document.querySelector('#Retour');
     var inputversement=document.querySelector('#Versement');
+    var inputDateVente=document.querySelector(".dateVente")
     var box_info=document.querySelector(".box_info");
     var box_success =document.querySelector("#box-success");
     var box_warning =document.querySelector("#box-warning");
     var box_danger =document.querySelector("#box-danger");
-    var dateDuJour = document.querySelector(".dateDuJour").value;
+    var dateBoul = document.querySelector(".dateBoul").value;
+    var dateVente =document.querySelector(".dateVente").value;
     var arrayTableau=document.getElementById('dtBasicExample').rows;
     var nombreLignesTab=arrayTableau.length;
     var totalSommeRecu =0;
@@ -56,22 +58,36 @@ $(function()
             celSolde=ligne.insertCell(6);
             celSolde.innerHTML+="<p class='valSolde"+i+"'>00 <i> fr</i></p> ";
     }
+    var allInput =document.querySelectorAll('.tableInput');
+
 //INSERTION DE MISE A JOUR DU FORMULAIRE DES PRISE ET VERSEMENT 
         //desactivation des input par defaut ;
-        if(dateDuJour=== ""){
+        if(dateBoul=== ""){
             selectBoul.disabled=true;
         }
-        $('.dateDuJour').on('change',function () { 
-            dateDuJour=this.value;
+        document.querySelector(".dateBoul").addEventListener("change",function(){
+            dateBoul=this.value;
             selectBoul.disabled=false;
-        });
+        })
         if((PrixUnitaireBoul===0) || (idBoulagerie === 0)){
             inputPrise.disabled=true;
             inputRetour.disabled=true;
             inputversement.disabled=true;
     
         }
-
+        if(dateVente ===""){
+            for(var i = 0 ;i<allInput.length;i++){
+                allInput[i].disabled=true;
+            }
+        }
+        inputDateVente.addEventListener("change",function(){
+            dateVente=this.value;
+            alert("activation des champ "+dateVente);
+            for(var i = 0 ;i<allInput.length;i++){
+                allInput[i].disabled=false;
+            }
+        });
+        
 selectBoul.addEventListener("change",function(){
     //si il chage de boulangerie on efface toute les donne qui a precedenment saisie 
     PrixUnitaireBoul=0;
@@ -135,7 +151,7 @@ selectBoul.addEventListener("change",function(){
             $.ajax({
                 type:'POST',
                 url:'static/php/livraison.php',
-                data:{Action:'enregistrementBoulangerie',idBoul:idBoulagerie,date:dateDuJour, prise:Prise,sommeDu:SommeAVerse,rest:Manquant},
+                data:{Action:'enregistrementBoulangerie',idBoul:idBoulagerie,date:dateBoul, prise:Prise,sommeDu:SommeAVerse,rest:Manquant},
                 dataType:'JSON',
                 success:function(result){
                     //une fois les informations recupere on les affiche a la vue 
@@ -163,7 +179,7 @@ selectBoul.addEventListener("change",function(){
             $.ajax({
                 type:"POST",
                 url:'static/php/livraison.php',
-                data:{Action:'MiseAjourRetour',idBoul:idBoulagerie,date:dateDuJour, prise:Prise,retour:Retour,sommeDu:SommeAVerse,rest:Manquant},
+                data:{Action:'MiseAjourRetour',idBoul:idBoulagerie,date:dateBoul, prise:Prise,retour:Retour,sommeDu:SommeAVerse,rest:Manquant},
                 dataType:'JSON',
                 success:function(result){
                     if(result.error){
@@ -191,7 +207,7 @@ selectBoul.addEventListener("change",function(){
             $.ajax({
                 type:"POST",
                 url:'static/php/livraison.php',
-                data:{Action:'MiseAjourVersement',idBoul:idBoulagerie,date:dateDuJour, prise:Prise,retour:Retour,sommeDu:SommeAVerse,versement:Versement,rest:Manquant},
+                data:{Action:'MiseAjourVersement',idBoul:idBoulagerie,date:dateBoul, prise:Prise,retour:Retour,sommeDu:SommeAVerse,versement:Versement,rest:Manquant},
                 dataType:'JSON',
                 success:function(result){
                     if(result.error){
@@ -204,11 +220,7 @@ selectBoul.addEventListener("change",function(){
             })
         }
     })
-    $('#Versement').on('change',function () { 
-        
-        $('#Versement').html(SommeAVerse);
-        $('#ManquantDuJour').html(Manquant);
-    });
+ 
     //Verification du client dans la base de donnee 
     for(var i =0 ;i< linesNumber;i++){
         var NomClient =document.querySelector(".NomClient"+i+"");
@@ -252,7 +264,7 @@ selectBoul.addEventListener("change",function(){
                         $.ajax({
                             type: "Post",
                             url: 'static/php/livraison.php',
-                            data:{Action:'actualisationPrise',Nom:nom,date:dateDuJour,prise:prise} ,
+                            data:{Action:'actualisationPrise',Nom:nom,date:dateVente,prise:prise} ,
                             dataType: "json",
                             success: function (response) {
                                 if(response.NameExist){
@@ -289,7 +301,7 @@ selectBoul.addEventListener("change",function(){
                                 $.ajax({
                                     type: "Post",
                                     url: 'static/php/livraison.php',
-                                    data:{Action:'actualisation',Nom:nom,priseClient:prise,SomAverser:SommeAVerse,Somme:Somme,date:dateDuJour} ,
+                                    data:{Action:'actualisation',Nom:nom,priseClient:prise,SomAverser:SommeAVerse,Somme:Somme,date:dateVente} ,
                                     dataType: "json",
                                     success: function (response) {
                                         if(response.NameExist){
@@ -421,7 +433,7 @@ selectBoul.addEventListener("change",function(){
 
 // ---------------------------SECTION DES FUNCTION --------------------------------  //
     function verifDate(){
-        if (document.querySelector(".dateDuJour").value ===""){
+        if (document.querySelector(".dateBoul").value ===""){
             alert("Commencez par saisir la date du jour ");
             return 0
         }

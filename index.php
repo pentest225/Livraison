@@ -49,7 +49,7 @@
 							<div class="col-md-8 date">
 								<h5>Prise du ...</h5>
 								<div class="md-form ">
-								<input placeholder="date de la prise" type="text" id="date-picker-exampleb" class="form-control datepicker dateDuJour">
+								<input placeholder="date de la prise" type="text" id="date-picker-exampleb" class="form-control datepicker dateBoul">
 								<label for="date-picker-example">Try me...</label>
 								</div>
 							</div>
@@ -157,7 +157,7 @@
 						<div class="col-md-4 date">
 							<h4>Vente du ...</h4>
 							<div class="md-form">
-								<input placeholder="date date de vente" type="text" id="date-picker-exampleb" class="form-control datepicker ">
+								<input placeholder="Date de vente" type="text" id="date-picker-exampleb" class="form-control datepicker dateVente " >
 								<label for="date-picker-example">Try me...</label>
 							</div>
 						
