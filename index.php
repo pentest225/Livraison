@@ -46,10 +46,10 @@
 
 				<div class="modal-content">
 				<div class="modal-header">
-							<div class="col-md-8 date">
+							<div class="col-md-4 date">
 								<h5>Prise du ...</h5>
 								<div class="md-form ">
-								<input placeholder="date de la prise" type="text" id="date-picker-exampleb" class="form-control datepicker dateBoul">
+								<input placeholder="date de la prise" type="text" id="date-picker-exampleb" class="form-control datepicker inputDateBoulangerie">
 								<label for="date-picker-example">Try me...</label>
 								</div>
 							</div>
@@ -98,13 +98,13 @@
 										</thead>
 									</table>
 								</div>
-							<!--<div class="col-md-4 date">
-								<h4>Prise du ...</h4>
+							<div class="col-md-4 ">
+								<!--<h4>Prise du ...</h4>
 								<div class="md-form">
 								<input placeholder="date de la prise" type="text" id="date-picker-exampleb" class="form-control datepicker dateDuJour">
 								<label for="date-picker-example">Try me...</label>
-								</div>
-							</div> -->
+								</div> -->
+							</div>
 						<!-- FIN TABLEAU GAUCHE -->
 							<div class="col-md-4  Tab_right">
 								<table class="table table-striped">

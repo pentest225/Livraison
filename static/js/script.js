@@ -18,14 +18,14 @@ $(function()
     var inputPrise=document.querySelector('#Prise');
     var inputRetour=document.querySelector('#Retour');
     var inputversement=document.querySelector('#Versement');
-    var inputDateBoul=document.querySelector(".dateBoul");
+    var inputDateBoul=document.querySelector(".inputDateBoulangerie");
     var selectBoul=document.querySelector("#selectBoulangerie");
     var inputDateVente=document.querySelector(".dateVente");
     var box_info=document.querySelector(".box_info");
     var box_success =document.querySelector("#box-success");
     var box_warning =document.querySelector("#box-warning");
     var box_danger =document.querySelector("#box-danger");
-    var dateBoul = document.querySelector(".dateBoul").value;
+    var dateBoul = document.querySelector(".inputDateBoulangerie").value;
     var dateVente =document.querySelector(".dateVente").value;
     var arrayTableau=document.getElementById('dtBasicExample').rows;
     var nombreLignesTab=arrayTableau.length;
@@ -68,10 +68,11 @@ $(function()
         if(dateBoul=== ""){
             selectBoul.disabled=true;
         };
-        inputDateBoul.addEventListener("click",function(){
+        inputDateBoul.onchange=function(){
             dateBoul=this.value;
             selectBoul.disabled=false;
-        })
+        }
+       
         if((PrixUnitaireBoul===0) || (idBoulagerie === 0)){
             inputPrise.disabled=true;
             inputRetour.disabled=true;
@@ -82,7 +83,7 @@ $(function()
                 allInput[i].disabled=true;
             }
         }
-        inputDateVente.addEventListener("change",function(){
+        inputDateVente.onchange=function(){
             dateVente=this.value;
             //On desactive tous les input
             for(var i = 0 ;i<allInput.length;i++){
@@ -105,7 +106,7 @@ $(function()
                     }
                 }
             })
-        });
+        }
         
 selectBoul.addEventListener("change",function(){
     //si il chage de boulangerie on efface toute les donne qui a precedenment saisie 
@@ -463,6 +464,11 @@ selectBoul.addEventListener("change",function(){
     })
 
 // ---------------------------SECTION DES FUNCTION --------------------------------  //
+    function activeSelectBoul(){
+        console.log("Activation du select ");
+        dateBoul=inputDateBoul.value;
+        selectBoul.disabled=false;
+    }
     function verifDate(){
         if (document.querySelector(".dateBoul").value ===""){
             alert("Commencez par saisir la date du jour ");

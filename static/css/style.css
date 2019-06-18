@@ -15,6 +15,7 @@ body{
 .date{
 	text-align: center;
 	display: inline;
+	margin: 0 auto;
 }
 .date input{
 	color: #1E90FF;
@@ -73,11 +74,9 @@ select{
 .divUl{
 	border-bottom: 1px solid grey;
 }
-.ulVenteDuJour ul{
-}
+
 .ulVenteDuJour li{
 	text-decoration: none;
-	width: 150px;
 	display: inline;
 	border: none;
 	margin-right:-10px; 
