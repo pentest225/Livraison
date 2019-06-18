@@ -487,7 +487,7 @@ selectBoul.addEventListener("change",function(){
         dateBoul=inputDateBoul.value;
         selectBoul.disabled=false;
     }
-   
+ 
     function verifPrixUnitaire(valleur){
         if ( valleur===0){
             alert("Veillez selectionne la boulangerie");
