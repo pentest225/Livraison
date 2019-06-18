@@ -46,6 +46,7 @@
 
 				<div class="modal-content">
 				<div class="modal-header">
+<<<<<<< HEAD
 							<div class="col-md-8 date">
 								<h5>Prise du ...</h5>
 								<div class="md-form ">
@@ -53,6 +54,8 @@
 								<label for="date-picker-example">Try me...</label>
 								</div>
 							</div>
+=======
+>>>>>>> parent of 743ef1d... SECTION BOULANGERIE OK
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 					</button>
@@ -85,11 +88,11 @@
 											</tr>
 											<tr>
 												<th scope="col">Prise du jour</th>
-												<th scope="col"><input type="number" name="Prise" placeholder="prise" id="Prise" class="inputBoul" value='0'></th>
+												<th scope="col"><input type="number" name="Prise" placeholder="prise" id="Prise" value='0'></th>
 											</tr>
 											<tr>
 												<th scope="col">Retour</th>
-												<th scope="col"><input type="number" name="Retour" placeholder="Retour" id="Retour" class="inputBoul" value='0'></th>
+												<th scope="col"><input type="number" name="Retour" placeholder="Retour" id="Retour" value='0'></th>
 											</tr>
 											<tr>
 												<th scope="col">Somme A verser</th>
@@ -98,16 +101,20 @@
 										</thead>
 									</table>
 								</div>
-								<div class="col-md-4 ">
-
+							<div class="col-md-4 date">
+								<h4>Prise du ...</h4>
+								<div class="md-form">
+								<input placeholder="date de la prise" type="text" id="date-picker-exampleb" class="form-control datepicker dateDuJour">
+								<label for="date-picker-example">Try me...</label>
 								</div>
+							</div>
 						<!-- FIN TABLEAU GAUCHE -->
 							<div class="col-md-4  Tab_right">
 								<table class="table table-striped">
 									<thead>
 										<tr>
 											<th scope="col">VERSEMENT</th>
-											<th scope="col"><input type="number" name="Versement" placeholder="Versement" id="Versement" class="inputBoul" ></th>
+											<th scope="col"><input type="number" name="Versement" placeholder="Versement" id="Versement"></th>
 										</tr>
 										<tr>
 											<th scope="col">Manquant Du jour </th>
