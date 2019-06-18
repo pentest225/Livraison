@@ -10,6 +10,8 @@ $(function()
     var Manquant=0;
     var totalManquant=0;
     var linesNumber = 50;
+    var soldeClient=0;
+    var SommeAverserClient=0;
     var inputRestPrise=document.querySelector('#restPrise');
     var restPrise=0;
     var inputMaquantDuJour=document.querySelector('#ManquantDuJour');
@@ -19,6 +21,7 @@ $(function()
     var inputRetour=document.querySelector('#Retour');
     var inputversement=document.querySelector('#Versement');
     var inputDateBoul=document.querySelector(".inputDateBoulangerie");
+    var inputTotalSommeRecue=document.querySelector("#totalSomme");
     var selectBoul=document.querySelector("#selectBoulangerie");
     var inputDateVente=document.querySelector(".dateVente");
     var box_info=document.querySelector(".box_info");
@@ -97,7 +100,7 @@ $(function()
                 dataType:'JSON',
                 success:function(result){
                     if(result.dateOk){
-                        restPrise=result.prise;
+                        restPrise=parseInt(result.Prise);
                         inputRestPrise.innerHTML=restPrise;
                     }
                     else{
@@ -172,13 +175,24 @@ selectBoul.addEventListener("change",function(){
             }*/
             Retour=parseInt(Retour);
             this.value==''? Prise=0:Prise=parseInt(this.value);
-            SommeAVerse=(Prise - Retour )*parseInt(PrixUnitaireBoul);
-            Manquant=parseInt(SommeAVerse-Versement);
-            inputSommeAVerser.innerHTML="<strong>"+SommeAVerse+"</strong>";
-            inputMaquantDuJour.innerHTML="<strong>"+Manquant+"</strong>";
-            totalManquant+=Manquant;
+            if(Prise < Retour){
+                alert("La valleur du retour est trop grande");
+                Retour=0;
+            }
+            else
+            {
+                SommeAVerse=(Prise - Retour )*parseInt(PrixUnitaireBoul);
+                Manquant=parseInt(SommeAVerse-Versement);
+                inputSommeAVerser.innerHTML="<strong>"+SommeAVerse+"</strong>";
+                inputMaquantDuJour.innerHTML="<strong>"+Manquant+"</strong>";
+                totalManquant+=Manquant;
+                inputTotalManquant.innerHTML="<strong>"+totalManquant+"</strong>";
+                restPrise-=prise;
+                inputRestPrise.innerHTML=restPrise;
+            }
             
-            $.ajax({
+
+            /*$.ajax({
                 type:'POST',
                 url:'static/php/livraison.php',
                 data:{Action:'enregistrementBoulangerie',idBoul:idBoulagerie,date:dateBoul, prise:Prise,sommeDu:SommeAVerse,rest:Manquant},
@@ -187,11 +201,9 @@ selectBoul.addEventListener("change",function(){
                     //une fois les informations recupere on les affiche a la vue 
                         //1=>on actualise le prix unitaire 
                         totalManquant=parseInt(result.totalManquant);
-                        inputTotalManquant.innerHTML="<strong>"+totalManquant+"</strong>";
-                        restPrise-=prise;
-                        inputRestPrise.innerHTML=restPrise;
+                        
                 }
-            })
+            })*/
     })
     //TRAITEMENT AU CHAGEMENT DU RETOUR 
     inputRetour.addEventListener('change',function(){
@@ -207,7 +219,9 @@ selectBoul.addEventListener("change",function(){
             Manquant=parseInt(SommeAVerse-Versement);
             inputSommeAVerser.innerHTML="<strong>"+SommeAVerse+"</strong>";
             inputMaquantDuJour.innerHTML="<strong>"+Manquant+"</strong>";
-            $.ajax({
+            totalManquant+=Manquant;
+            inputTotalManquant.innerHTML="<strong>"+totalManquant+"</strong>";
+            /*$.ajax({
                 type:"POST",
                 url:'static/php/livraison.php',
                 data:{Action:'MiseAjourRetour',idBoul:idBoulagerie,date:dateBoul, prise:Prise,retour:Retour,sommeDu:SommeAVerse,rest:Manquant},
@@ -217,12 +231,11 @@ selectBoul.addEventListener("change",function(){
                         alert(result.Message);
                     }
                     else{
-                        totalManquant=parseInt(result.totalManquant);
-                        inputTotalManquant.innerHTML="<strong>"+totalManquant+"</strong>";
+                        
                     }
  
             }
-        })
+        })*/
         }
     })
     //TRAITEMENT DU VERSEMENT 
@@ -235,7 +248,9 @@ selectBoul.addEventListener("change",function(){
         else{
             SommeAVerse=(Prise - Retour )*PrixUnitaireBoul;
             Manquant=parseInt(SommeAVerse-Versement);
-            $.ajax({
+            totalManquant+=Manquant;
+            inputTotalManquant.innerHTML="<strong>"+totalManquant+"</strong>";
+           /* $.ajax({
                 type:"POST",
                 url:'static/php/livraison.php',
                 data:{Action:'MiseAjourVersement',idBoul:idBoulagerie,date:dateBoul, prise:Prise,retour:Retour,sommeDu:SommeAVerse,versement:Versement,rest:Manquant},
@@ -244,11 +259,10 @@ selectBoul.addEventListener("change",function(){
                     if(result.error){
                         alert(result.Message);
                     }else{
-                        totalManquant=parseInt(result.totalManquant);
-                        inputTotalManquant.innerHTML="<strong>"+totalManquant+"</strong>";
+                        
                     }
                 }
-            })
+            })*/
         }
     })
  
@@ -256,7 +270,6 @@ selectBoul.addEventListener("change",function(){
     for(var i =0 ;i< linesNumber;i++){
         var NomClient =document.querySelector(".NomClient"+i+"");
             NomClient.addEventListener('change',function(){
-                verifDate();
                 var nom = this.value.toLowerCase();
                 var etatSolde =this.parentElement.parentElement.children[5];
                 var montantSolde =this.parentElement.parentElement.children[6];
@@ -270,6 +283,7 @@ selectBoul.addEventListener("change",function(){
                         success: function (response) {
                             if(response.NameExist){
                                 etatSolde.innerText=verifEtatSolde(response.newSolde);
+                                soldeClient=response.newSolde
                                 montantSolde.innerText=response.newSolde;
                             }
                             else{
@@ -283,15 +297,18 @@ selectBoul.addEventListener("change",function(){
         //Traitement pour les modifiaction des prise 
         for(var i =0 ;i< linesNumber;i++){
             var priseClient =document.querySelector(".priseClient"+i+"");
-            priseClient.addEventListener('change',function(){
-                verifDate();
+                    priseClient.onchange=function(){
                     var prise = this.value;
                     var nom =this.parentElement.parentElement.children[1].children[0].value;
                     var SommeAVerse =this.parentElement.parentElement.children[3];
                     var etatSolde =this.parentElement.parentElement.children[5];
                     var montantSolde =this.parentElement.parentElement.children[6];
-                    console.log(prise);
-                    var clientExit=false;
+                    SommeAverserClient=parseInt(prise) * parseInt(response.prixUnitaire) 
+                    SommeAVerse.innerText=SommeAverserClient;
+                    inputRestPrise.innerText=restPrise - prise;
+                    soldeClient+=SommeAverserClient;
+                    etatSolde.innerText=verifEtatSolde(soldeClient);
+                    montantSolde.innerText=soldeClient;
                         $.ajax({
                             type: "Post",
                             url: 'static/php/livraison.php',
@@ -299,10 +316,10 @@ selectBoul.addEventListener("change",function(){
                             dataType: "json",
                             success: function (response) {
                                 if(response.NameExist){
-                                    SommeAVerse.innerText=parseInt(prise) * parseInt(response.prixUnitaire) ;
-                                    etatSolde.innerText=verifEtatSolde(response.newSolde);
-                                    montantSolde.innerText=response.newSolde;
-                                    rest
+                                    
+                                    
+                                    
+                                    
                                     //si le client est dans la base de bonne 
                                    
                                 }
@@ -312,14 +329,12 @@ selectBoul.addEventListener("change",function(){
                             }
                         });
                     
-                });
-        }
-
+                };
+            }
                 //Traitement pour les modifiaction des Sommme Verser  
                 for(var i =0 ;i< linesNumber;i++){
                     var SommeVerser =document.querySelector(".SommeVerser"+i+"");
                     SommeVerser.addEventListener('change',function(){
-                        verifDate();
                             var Somme = parseInt(this.value);
                             var nom =this.parentElement.parentElement.children[1].children[0].value;
                             var prise =parseInt(this.parentElement.parentElement.children[2].children[0].value);
@@ -339,6 +354,9 @@ selectBoul.addEventListener("change",function(){
                                         if(response.NameExist){
                                             etatSolde.innerText=verifEtatSolde(response.valSolde);
                                             montantSolde.innerText=response.newSolde+" fr";
+                                            totalSommeRecu=response.totalSommeRecu;
+                                            console.log(totalSommeRecu);
+                                            inputTotalSommeRecue.innerText=totalSommeRecu;
                                             //si le client est dans la base de bonne 
                                         }
                                         else{
@@ -366,11 +384,11 @@ selectBoul.addEventListener("change",function(){
             success:function (response){
                 if(response.NameExist){
                     box_info.querySelector('h4').innerHTML="<strong>Erreur Boublon </strong>";
-                    box_info.querySelector('p').innerHTML= "Désolé il existe dejat client nommé  <strong>"+nomClient+" </strong> dans la liste de vos client " ;
+                    box_info.querySelector('p').innerHTML= "Désolé il existe dejat client nommé  <strong>"+nomBoul+" </strong> dans la liste de vos client " ;
                 }
                 if(response.InsertionOk){
                     box_info.querySelector('h4').innerHTML="<strong>COMPTE CREE </strong>";
-                    box_info.querySelector('p').innerHTML= "Felicitation le client <strong>"+nomClient+" </strong> a été ajouté avec succes  " ;
+                    box_info.querySelector('p').innerHTML= "Felicitation le client <strong>"+nomBoul+" </strong> a été ajouté avec succes  " ;
                 }
             }
          })
@@ -469,13 +487,7 @@ selectBoul.addEventListener("change",function(){
         dateBoul=inputDateBoul.value;
         selectBoul.disabled=false;
     }
-    function verifDate(){
-        if (document.querySelector(".dateBoul").value ===""){
-            alert("Commencez par saisir la date du jour ");
-            return 0
-        }
-        return 1
-    }
+   
     function verifPrixUnitaire(valleur){
         if ( valleur===0){
             alert("Veillez selectionne la boulangerie");

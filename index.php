@@ -25,7 +25,7 @@
     <link href="static/css/mdb.min.css" rel="stylesheet">
 </head>
 
-<body>
+<body onbeforeunload="return myFunction()">
 <header>
 			<?php include("views/include/menu.php") ?>
 
@@ -34,9 +34,15 @@
 	
 
 		<form action="# " method="post">
-			<button type="button" class="btn btn-primary " data-toggle="modal" data-target="#fullHeightModalRight" id="">
-				Add Prise et versement <span class="badge badge-warning ml-2">+</span>
-			</button>
+			<div class="bontonHeader">
+				<button type="button" class="btn btn-primary " data-toggle="modal" data-target="#fullHeightModalRight" id="">
+					Add Prise et versement <span class="badge badge-warning ml-2">+</span>
+				</button>
+				<button type="button" class="btn btn-success " data-toggle="modal" data-target="#fullHeightModalRight" id="">
+					Enregistre  <span class="badge badge-warning ml-2"></span>
+				</button>
+			</div>
+			
 			<!-- Full Height Modal Right -->
 			<div class="modal fade top" id="fullHeightModalRight" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
 			aria-hidden="true">
@@ -149,11 +155,8 @@
 							<div class="card w-10">
 								<div class="card-body">
 									<div class="divUl">
-										<ul class="ulVenteDuJour">
-											<li class="">Rest Prise</li>
-											<li>  :</li>
-											<li class="" id="restPrise">Valleur</li>
-										</ul>
+										<h5>Rest Prise</h5>
+										<p id="restPrise">Valleur<p>
 									</div>
 								</div>
 							</div>
@@ -169,10 +172,10 @@
 							<div class="card w-10">
 								<div class="card-body">
 								<div class="divUl">
-									<ul class="ulVenteDuJour">
-										<li class="">Total Somme</li>
-										<li class=""id="totalSomme">Valleur</li>
-									</ul>
+									<div class="divUl">
+										<h5>Total Somme</h5>
+										<p id="totalSomme">Valleur<p>
+									</div>
 								</div>
 								</div>
 							</div>
@@ -372,6 +375,11 @@
 	<!-- <script type="text/javascript" src="https://mdbootstrap.com/previews/docs/latest/js/mdb.min.js"></script> -->
 	<script type="text/javascript" src="https://mdbootstrap.com/previews/docs/latest/js/mdb.min.js"></script>
 	<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+	<script>
+		function myFunction() {
+		return "Write something clever here...";
+		}
+	</script>
 
 </body>
 

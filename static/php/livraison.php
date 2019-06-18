@@ -326,7 +326,7 @@ if(isset($_POST)){
                     //si on a un enregistrement en attente 
                     if($resVerifTab['etat_prise']=="0"){
                         
-                        //calcule de la difference entre la domme a verser t la somme verser 
+                        //calcule de la difference entre la somme a verser t la somme verser 
                         $diffSomme = $Somme - $SomAverser;
                         $updateSommeVerser=$db->prepare('UPDATE vente set etat_prise=?, somme_verser =? ,rest=? WHERE date =? and id_client=? and prise_client=?');
                         $updateSommeVerser->execute(array(1,$Somme,$diffSomme,$date,$response['id'],$priseClient));
@@ -338,9 +338,20 @@ if(isset($_POST)){
                             $MiseAjoutComptClient =$db->prepare('UPDATE  user SET solde =?  WHERE id = ?');
                             $MiseAjoutComptClient->execute(array($newSoldeUser,$response['id']));
                             if($MiseAjoutComptClient){
-                                $Info['miseAJourOk']=TRUE;
-                                $Info['newSolde']=$newSoldeUser;
-                                } 
+                               
+                                //ok on a retabli le sode du client 
+                                //Selectionnons la somme total recu par tous nos client ce jour 
+                                $totalSommeRecu =$db->prepare("SELECT SUM(somme_verser) AS totalSommeRecu FROM vente WHERE date =?");
+                                $totalSommeRecu->execute(array($date));
+                                $resultTotalSommeRecu=$totalSommeRecu->fetch();
+                                if($resultTotalSommeRecu){
+                                    //ok on a selectionne le total de la somme recu par nos client
+                                    $Info['miseAJourOk']=TRUE;
+                                    $Info['newSolde']=$newSoldeUser;
+                                    $Info['totalSommeRecu']=$resultTotalSommeRecu['totalSommeRecu'];
+                                }
+                                
+                            } 
 
                         }
                     }
@@ -369,9 +380,17 @@ if(isset($_POST)){
                             $MiseAjoutComptClient =$db->prepare('UPDATE  user SET solde =?  WHERE id = ?');
                             $MiseAjoutComptClient->execute(array($newSoldeUser,$response['id']));
                             if($MiseAjoutComptClient){
+                                //Selectionnons la somme total recu par tous nos client ce jour 
+                                $totalSommeRecu =$db->prepare("SELECT SUM(somme_verser) AS totalSommeRecu FROM vente WHERE date =?");
+                                $totalSommeRecu->execute(array($date));
+                                $resultTotalSommeRecu=$totalSommeRecu->fetch();
+                                if($resultTotalSommeRecu){
                                 $Info['miseAJourOk']=TRUE;
                                 $Info['newSolde']=$newSoldeUser;
+                                $Info['totalSommeRecu']=$resultTotalSommeRecu['totalSommeRecu'];
+
                                 } 
+                            } 
                         }
 
                     }
@@ -389,8 +408,16 @@ if(isset($_POST)){
                         $UpdateClient =$db->prepare('UPDATE TABLE user SET selde =? WHERE id_user = ?');
                         $UpdateClient->execute(array($nweSolde,$response['id']));
                             if($UpdateClient){
-                            $Info['miseAJourOk']=TRUE;
-                            $Info['newSolde']=$newSolde;
+                              //Selectionnons la somme total recu par tous nos client ce jour 
+                              $totalSommeRecu =$db->prepare("SELECT SUM(somme_verser) AS totalSommeRecu FROM vente WHERE date =?");
+                              $totalSommeRecu->execute(array($date));
+                              $resultTotalSommeRecu=$totalSommeRecu->fetch();
+                              if($resultTotalSommeRecu){  
+                              $Info['miseAJourOk']=TRUE;
+                              $Info['newSolde']=$newSolde;
+                              $Info['totalSommeRecu']=$resultTotalSommeRecu['totalSommeRecu'];
+                              }
+
                             }   
                         }
                 }
