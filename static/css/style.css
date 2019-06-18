@@ -39,7 +39,6 @@ select{
 .showHide{
 	display: none;
 	transition: display 2s ease-in-out;
-	
 }
 .navigation{
 	padding: 0px;
@@ -49,7 +48,6 @@ select{
 .navigation .restPrise{
 	display: flex;
 	border-bottom: 2px solid grey;
-
 	margin-top: -30px;
 }
 .restVal{
@@ -78,7 +76,6 @@ select{
 	border-bottom: 1px solid grey;
 }
 .ulVenteDuJour ul{
-	display: inline-block;
 }
 .ulVenteDuJour li{
 	text-decoration: none;

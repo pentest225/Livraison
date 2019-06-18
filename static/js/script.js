@@ -10,6 +10,8 @@ $(function()
     var Manquant=0;
     var totalManquant=0;
     var linesNumber = 50;
+    var inputRestPrise=document.querySelector('#restPrise');
+    var restPrise=0;
     var inputMaquantDuJour=document.querySelector('#ManquantDuJour');
     var inputSommeAVerser=document.querySelector('#SommeAVerser');
     var inputTotalManquant=document.querySelector('#totalManquant');
@@ -17,7 +19,8 @@ $(function()
     var inputPrise=document.querySelector('#Prise');
     var inputRetour=document.querySelector('#Retour');
     var inputversement=document.querySelector('#Versement');
-    var inputDateVente=document.querySelector(".dateVente")
+    var inputDateBoul=document.querySelector(".dateBoul");
+    var inputDateVente=document.querySelector(".dateVente");
     var box_info=document.querySelector(".box_info");
     var box_success =document.querySelector("#box-success");
     var box_warning =document.querySelector("#box-warning");
@@ -64,8 +67,8 @@ $(function()
         //desactivation des input par defaut ;
         if(dateBoul=== ""){
             selectBoul.disabled=true;
-        }
-        document.querySelector(".dateBoul").addEventListener("change",function(){
+        };
+        inputDateBoul.addEventListener("click",function(){
             dateBoul=this.value;
             selectBoul.disabled=false;
         })
@@ -73,19 +76,35 @@ $(function()
             inputPrise.disabled=true;
             inputRetour.disabled=true;
             inputversement.disabled=true;
-    
         }
         if(dateVente ===""){
             for(var i = 0 ;i<allInput.length;i++){
                 allInput[i].disabled=true;
             }
         }
-        inputDateVente.addEventListener("change",function(){
+        dateVente.addEventListener("change",function(){
             dateVente=this.value;
-            alert("activation des champ "+dateVente);
+            //On desactive tous les input
             for(var i = 0 ;i<allInput.length;i++){
                 allInput[i].disabled=false;
             }
+            //On selectionne la prise de cette date 
+            $.ajax({
+                type:'POST',
+                url:'static/php/livraison.php',
+                data:{Action:'selectPrise',date:dateVente},
+                dataType:'JSON',
+                success:function(result){
+                    if(result.dateOk){
+                        restPrise=result.prise;
+                        inputRestPrise.innerHTML=restPrise;
+                    }
+                    else{
+                        alert('veillez selectionne une date valide ');
+                        inputDateVente.click();
+                    }
+                }
+            })
         });
         
 selectBoul.addEventListener("change",function(){
@@ -157,7 +176,9 @@ selectBoul.addEventListener("change",function(){
                     //une fois les informations recupere on les affiche a la vue 
                         //1=>on actualise le prix unitaire 
                         totalManquant=parseInt(result.totalManquant);
-                        inputTotalManquant.innerHTML="<strong>"+totalManquant+"</strong>"
+                        inputTotalManquant.innerHTML="<strong>"+totalManquant+"</strong>";
+                        restPrise-=prise;
+                        inputRestPrise.innerHTML=restPrise;
                 }
             })
         }
@@ -271,6 +292,7 @@ selectBoul.addEventListener("change",function(){
                                     SommeAVerse.innerText=parseInt(prise) * parseInt(response.prixUnitaire) ;
                                     etatSolde.innerText=verifEtatSolde(response.newSolde);
                                     montantSolde.innerText=response.newSolde;
+                                    rest
                                     //si le client est dans la base de bonne 
                                    
                                 }

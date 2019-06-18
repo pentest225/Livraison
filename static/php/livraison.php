@@ -4,6 +4,18 @@
 if(isset($_POST)){
     switch($_POST['Action'])
     {
+        case 'selectPrise':
+        extract($_POST);
+        $db=DB::connect();
+        $selectPrise=$db->prepare('SELECT prise FROM boulangerie WHERE date=?');
+        $selectPrise->execute(array($date));
+        $resultPrise=$selectPrise->fetch();
+        if($resultPrise){
+            $Info['dateOk']=true;
+            $Info['Prise']=$resultPrise['prise'];
+        }
+        echo json_encode($Info);
+        break;
         case 'recupInfoBoul':
             extract($_POST);
             $db=DB::connect();

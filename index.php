@@ -155,7 +155,6 @@
 							</div>
 						</div>
 						<div class="col-md-4 date">
-							<h4>Vente du ...</h4>
 							<div class="md-form">
 								<input placeholder="Date de vente" type="text" id="date-picker-exampleb" class="form-control datepicker dateVente " >
 								<label for="date-picker-example">Try me...</label>
