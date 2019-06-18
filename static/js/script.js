@@ -18,12 +18,10 @@ $(function()
     var inputPrise=document.querySelector('#Prise');
     var inputRetour=document.querySelector('#Retour');
     var inputversement=document.querySelector('#Versement');
-<<<<<<< HEAD
     var inputDateBoul=document.querySelector(".dateBoul");
+    var selectBoul=document.querySelector("#selectBoulangerie");
     var inputDateVente=document.querySelector(".dateVente");
     var box_info=document.querySelector(".box_info");
-=======
->>>>>>> parent of 743ef1d... SECTION BOULANGERIE OK
     var box_success =document.querySelector("#box-success");
     var box_warning =document.querySelector("#box-warning");
     var box_danger =document.querySelector("#box-danger");
@@ -67,7 +65,6 @@ $(function()
 
 //INSERTION DE MISE A JOUR DU FORMULAIRE DES PRISE ET VERSEMENT 
         //desactivation des input par defaut ;
-<<<<<<< HEAD
         if(dateBoul=== ""){
             selectBoul.disabled=true;
         };
@@ -75,20 +72,17 @@ $(function()
             dateBoul=this.value;
             selectBoul.disabled=false;
         })
-=======
->>>>>>> parent of 743ef1d... SECTION BOULANGERIE OK
         if((PrixUnitaireBoul===0) || (idBoulagerie === 0)){
             inputPrise.disabled=true;
             inputRetour.disabled=true;
             inputversement.disabled=true;
         }
-<<<<<<< HEAD
         if(dateVente ===""){
             for(var i = 0 ;i<allInput.length;i++){
                 allInput[i].disabled=true;
             }
         }
-        dateVente.addEventListener("change",function(){
+        inputDateVente.addEventListener("change",function(){
             dateVente=this.value;
             //On desactive tous les input
             for(var i = 0 ;i<allInput.length;i++){
@@ -113,9 +107,6 @@ $(function()
             })
         });
         
-=======
-var selectBoul=document.querySelector('#selectBoulangerie');
->>>>>>> parent of 743ef1d... SECTION BOULANGERIE OK
 selectBoul.addEventListener("change",function(){
     //si il chage de boulangerie on efface toute les donne qui a precedenment saisie 
     PrixUnitaireBoul=0;
@@ -157,11 +148,11 @@ selectBoul.addEventListener("change",function(){
 //L'EVENEMENT DECLANCHREUR C'EST DANS CE EVENEMENT QU'EST DEFFINI LA PORTER DE TOUTE LE VARAIBLE 
     //TETEMENT LORS DU CHANGEMENT DE LA PRISE 
     inputPrise.addEventListener("change",function(){
-        verifDate();
+        /*verifDate();
         Retour=parseInt(Retour);
         console.log(Retour);
         this.value==''? Prise=0:Prise=parseInt(this.value);
-SommeAVerse=(Prise - Retour )*parseInt(PrixUnitaireBoul);
+        SommeAVerse=(Prise - Retour )*parseInt(PrixUnitaireBoul);
         Manquant=parseInt(SommeAVerse-Versement);
         inputSommeAVerser.innerHTML="<strong>"+SommeAVerse+"</strong>";
         inputMaquantDuJour.innerHTML="<strong>"+Manquant+"</strong>";
@@ -177,8 +168,9 @@ SommeAVerse=(Prise - Retour )*parseInt(PrixUnitaireBoul);
                     //1=>on actualise le prix unitaire 
                     totalManquant=parseInt(result.totalManquant);
                     inputTotalManquant.innerHTML="<strong>"+totalManquant+"</strong>"
-            }
-<<<<<<< HEAD
+            }*/
+            Retour=parseInt(Retour);
+            this.value==''? Prise=0:Prise=parseInt(this.value);
             SommeAVerse=(Prise - Retour )*parseInt(PrixUnitaireBoul);
             Manquant=parseInt(SommeAVerse-Versement);
             inputSommeAVerser.innerHTML="<strong>"+SommeAVerse+"</strong>";
@@ -199,7 +191,6 @@ SommeAVerse=(Prise - Retour )*parseInt(PrixUnitaireBoul);
                         inputRestPrise.innerHTML=restPrise;
                 }
             })
-        }
     })
     //TRAITEMENT AU CHAGEMENT DU RETOUR 
     inputRetour.addEventListener('change',function(){
@@ -228,9 +219,9 @@ SommeAVerse=(Prise - Retour )*parseInt(PrixUnitaireBoul);
                         totalManquant=parseInt(result.totalManquant);
                         inputTotalManquant.innerHTML="<strong>"+totalManquant+"</strong>";
                     }
-                    
-                }
-            })
+ 
+            }
+        })
         }
     })
     //TRAITEMENT DU VERSEMENT 
@@ -260,34 +251,6 @@ SommeAVerse=(Prise - Retour )*parseInt(PrixUnitaireBoul);
         }
     })
  
-=======
-        })
-    })
- 
-    $('#Retour').on('change',function(){
-        verifDate();
-        Retour =$('#Retour').val();
-        SommeAVerse=(Prise - Retour )*PrixUnitaireBoul;
-        Manquant=parseInt(SommeAVerse-Versement);
-        $('#SommeAVerser').html(SommeAVerse);
-        $('#ManquantDuJour').html(Manquant);
-        totalManquant+=Manquant;
-        inputTotalManquant.innerHTML="<strong>"+totalManquant+"</strong>";
-    })
-
-    $('#Versement').on('change',function () { 
-        verifDate();
-        Versement =$('#Versement').val();
-        SommeAVerse=(Prise - Retour )*PrixUnitaireBoul;
-        Manquant=parseInt(SommeAVerse-Versement);
-        $('#Versement').html(SommeAVerse);
-        $('#ManquantDuJour').html(Manquant);
-    });
-    $('.dateDuJour').on('change',function () { 
-        dateDuJour=this.value;
-    });
-    
->>>>>>> parent of 743ef1d... SECTION BOULANGERIE OK
     //Verification du client dans la base de donnee 
     for(var i =0 ;i< linesNumber;i++){
         var NomClient =document.querySelector(".NomClient"+i+"");

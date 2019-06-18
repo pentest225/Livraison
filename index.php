@@ -46,7 +46,6 @@
 
 				<div class="modal-content">
 				<div class="modal-header">
-<<<<<<< HEAD
 							<div class="col-md-8 date">
 								<h5>Prise du ...</h5>
 								<div class="md-form ">
@@ -54,8 +53,6 @@
 								<label for="date-picker-example">Try me...</label>
 								</div>
 							</div>
-=======
->>>>>>> parent of 743ef1d... SECTION BOULANGERIE OK
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 					</button>
@@ -101,13 +98,13 @@
 										</thead>
 									</table>
 								</div>
-							<div class="col-md-4 date">
+							<!--<div class="col-md-4 date">
 								<h4>Prise du ...</h4>
 								<div class="md-form">
 								<input placeholder="date de la prise" type="text" id="date-picker-exampleb" class="form-control datepicker dateDuJour">
 								<label for="date-picker-example">Try me...</label>
 								</div>
-							</div>
+							</div> -->
 						<!-- FIN TABLEAU GAUCHE -->
 							<div class="col-md-4  Tab_right">
 								<table class="table table-striped">
