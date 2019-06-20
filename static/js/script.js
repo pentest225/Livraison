@@ -395,27 +395,18 @@ selectBoul.addEventListener("change",function(){
                             etatSolde.innerText=verifEtatSolde(soldeClient - differance);
                             montantSolde.innerHTML= soldeClient - differance ;
 
-                             /*   $.ajax({
-                                    type: "Post",
-                                    url: 'static/php/livraison.php',
-                                    data:{Action:'actualisation',Nom:nom,priseClient:prise,SomAverser:SommeAVerse,Somme:Somme,date:dateVente} ,
-                                    dataType: "json",
-                                    success: function (response) {
-                                        if(response.NameExist){
-                                            e
-                                            
-                                            totalSommeRecu=response.totalSommeRecu;
-                                            inputTotalSommeRecue.innerText=totalSommeRecu;
-                                            //si le client est dans la base de bonne 
-                                        }
-                                        else{
-                                            clientExitpas(nom);
-                                        }
-                                    }
-                                }); */
-
                             
                         });
+                }
+
+                for(var i = 0; i <linesNumber ;i++){
+                    var nomClient=document.querySelector(".NomClient"+i+"");
+                    var priseClient =document.querySelector(".priseClient"+i+"");
+                    var inputRetourClient =document.querySelector(".retourClient"+i+"");
+                    var SommeAverserClient =document.querySelector(".SommeAverser");
+                    var SommeVerser =document.querySelector(".SommeVerser"+i+"");
+                    var totalSoldeClient=document.querySelector(".valSolde"+i+"");
+                    if()
                 }
                 
     //Ajouter une boullangerie
