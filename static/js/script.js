@@ -56,13 +56,13 @@ $(function()
             celPrise=ligne.insertCell(2);
             celPrise.innerHTML+="<input type='number' placeholder='' class=' tableInput priseClient"+i+"'> ";
             celSommeAVerser=ligne.insertCell(3);
-            celSommeAVerser.innerHTML+="<p class='SommeAverser"+i+"'>00 <i> fr</i></p> ";
+            celSommeAVerser.innerHTML+="<p  class='SommeAverser"+i+" value='0' readonly '></p>";
             celSommeVerser=ligne.insertCell(4);
             celSommeVerser.innerHTML+="<input type='number' placeholder='' class='tableInput SommeVerser"+i+"'> ";
             celEtatSolde=ligne.insertCell(5);
             celEtatSolde.innerHTML+="<p class='EtatSolde"+i+"'></p>";
             celSolde=ligne.insertCell(6);
-            celSolde.innerHTML+="<p class='valSolde"+i+"'>00 <i> fr</i></p> ";
+            celSolde.innerHTML+="<p type='text' class='valSolde"+i+"   '></p> ";
     }
     var allInput =document.querySelectorAll('.tableInput');
 
@@ -248,7 +248,7 @@ selectBoul.addEventListener("change",function(){
         else{
             SommeAVerse=(Prise - Retour )*PrixUnitaireBoul;
             Manquant=parseInt(SommeAVerse-Versement);
-            totalManquant+=Manquant;
+            totalManquant -= SommeAVerse;
             inputTotalManquant.innerHTML="<strong>"+totalManquant+"</strong>";
            /* $.ajax({
                 type:"POST",
