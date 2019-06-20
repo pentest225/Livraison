@@ -406,7 +406,7 @@ selectBoul.addEventListener("change",function(){
                     var SommeAverserClient =document.querySelector(".SommeAverser");
                     var SommeVerser =document.querySelector(".SommeVerser"+i+"");
                     var totalSoldeClient=document.querySelector(".valSolde"+i+"");
-                    if()
+                    if(nomClie)
                 }
                 
     //Ajouter une boullangerie
