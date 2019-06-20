@@ -4,6 +4,23 @@
 if(isset($_POST)){
     switch($_POST['Action'])
     {
+        case "InsertionBoulagerie":
+            extract($_POST);
+            $db=DB::connect();
+            $insertionVersement=$db->prepare('INSERT INTO  boulangerie (id_boul,date,prise,retour,somme_a_verser,somme_verser,manquant_du_jour) VALUES(?,?,?,?,?,?,?)');
+            $insertionVersement->execute(array($idBoul,$date,$prise,$retour,$sommeDu,$versement,$rest));
+            if($insertionVersement){
+                //en suite on met a jour son solde 
+                $miseAjour=$db->prepare('UPDATE  liste_boulangerie SET solde=? WHERE id=?');
+                $miseAjour->execute(array($totalSolde,$idBoul));
+                if($miseAjour){
+                    $Info['insertionOk']=true;
+                    $Info['miseAjourSolde']=true;
+                }
+                
+            }
+            echo json_encode($Info);
+        break;
         case 'selectPrise':
         extract($_POST);
         $db=DB::connect();
@@ -185,7 +202,7 @@ if(isset($_POST)){
                 $Info['NameExist']=TRUE;
                 $Info['newSolde']=$reponse['solde'];
                 $Info['typeClient']=$reponse['type'];
-                $Info['prixUnitaire']=$reponse['unitary_price'];
+                $Info['prixUnitaireClient']=$reponse['unitary_price'];
             }else{
                 $Info['NameExist']=FALSE; 
             }

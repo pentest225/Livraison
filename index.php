@@ -137,7 +137,7 @@
 					</div>
 				<div class="modal-footer justify-content-center">
 					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-					<button type="button" class="btn btn-primary" id="saveChangeFormBoul">Save changes</button>
+					<button type="button" class="btn btn-primary valideBoul" id="saveChangeFormBoul">Save changes</button>
 				</div>
 				</div>
 			</div>
@@ -196,6 +196,8 @@
 				</th>
 				<th class="th-sm">Prise
 				</th>
+				<th class="th-sm">Retour
+				</th>
 				<th class="th-sm">total S
 				</th>
 				<th class="th-sm">somme recu
@@ -215,6 +217,8 @@
 				<th>Name
 				</th>
 				<th>Prise
+				</th>
+				<th>Retour
 				</th>
 				<th>total S
 				</th>

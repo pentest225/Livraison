@@ -3,7 +3,10 @@ $(function()
     var ListeClient=0;
     var idBoulagerie=0;
     var Prise=0;
+    var newSoldeClient=0;
+    var newTotal=0;
     var PrixUnitaireBoul=0;
+    var prixUnitaireClient=0;
     var Retour=0;
     var Versement=0;
     var SommeAVerse=0;
@@ -11,8 +14,12 @@ $(function()
     var totalManquant=0;
     var linesNumber = 50;
     var soldeClient=0;
+    var retourClient=0;
+    var varsementClient=0;
     var SommeAverserClient=0;
+    var inputRetourClient="";
     var inputRestPrise=document.querySelector('#restPrise');
+    var btnValidBoul=document.querySelector(".valideBoul");
     var restPrise=0;
     var inputMaquantDuJour=document.querySelector('#ManquantDuJour');
     var inputSommeAVerser=document.querySelector('#SommeAVerser');
@@ -55,13 +62,15 @@ $(function()
             celNom.innerHTML+="<input type='text' placeholder='' class='tableInput NomClient"+i+"'> ";
             celPrise=ligne.insertCell(2);
             celPrise.innerHTML+="<input type='number' placeholder='' class=' tableInput priseClient"+i+"'> ";
-            celSommeAVerser=ligne.insertCell(3);
+            celPrise=ligne.insertCell(3);
+            celPrise.innerHTML+="<input type='number' placeholder='' class=' tableInput retourClient"+i+"'> ";
+            celSommeAVerser=ligne.insertCell(4);
             celSommeAVerser.innerHTML+="<p  class='SommeAverser"+i+" value='0' readonly '></p>";
-            celSommeVerser=ligne.insertCell(4);
+            celSommeVerser=ligne.insertCell(5);
             celSommeVerser.innerHTML+="<input type='number' placeholder='' class='tableInput SommeVerser"+i+"'> ";
-            celEtatSolde=ligne.insertCell(5);
+            celEtatSolde=ligne.insertCell(6);
             celEtatSolde.innerHTML+="<p class='EtatSolde"+i+"'></p>";
-            celSolde=ligne.insertCell(6);
+            celSolde=ligne.insertCell(7);
             celSolde.innerHTML+="<p type='text' class='valSolde"+i+"   '></p> ";
     }
     var allInput =document.querySelectorAll('.tableInput');
@@ -181,13 +190,14 @@ selectBoul.addEventListener("change",function(){
             }
             else
             {
+                
                 SommeAVerse=(Prise - Retour )*parseInt(PrixUnitaireBoul);
                 Manquant=parseInt(SommeAVerse-Versement);
                 inputSommeAVerser.innerHTML="<strong>"+SommeAVerse+"</strong>";
                 inputMaquantDuJour.innerHTML="<strong>"+Manquant+"</strong>";
-                totalManquant+=Manquant;
-                inputTotalManquant.innerHTML="<strong>"+totalManquant+"</strong>";
-                restPrise-=prise;
+                newTotal=totalManquant+ Manquant;
+                inputTotalManquant.innerHTML="<strong>"+newTotal+"</strong>";
+                restPrise-=Prise;
                 inputRestPrise.innerHTML=restPrise;
             }
             
@@ -219,8 +229,8 @@ selectBoul.addEventListener("change",function(){
             Manquant=parseInt(SommeAVerse-Versement);
             inputSommeAVerser.innerHTML="<strong>"+SommeAVerse+"</strong>";
             inputMaquantDuJour.innerHTML="<strong>"+Manquant+"</strong>";
-            totalManquant+=Manquant;
-            inputTotalManquant.innerHTML="<strong>"+totalManquant+"</strong>";
+            newTotal =totalManquant + Manquant;
+            inputTotalManquant.innerHTML="<strong>"+(newTotal)+"</strong>";
             /*$.ajax({
                 type:"POST",
                 url:'static/php/livraison.php',
@@ -248,8 +258,8 @@ selectBoul.addEventListener("change",function(){
         else{
             SommeAVerse=(Prise - Retour )*PrixUnitaireBoul;
             Manquant=parseInt(SommeAVerse-Versement);
-            totalManquant -= SommeAVerse;
-            inputTotalManquant.innerHTML="<strong>"+totalManquant+"</strong>";
+            newTotal =totalManquant + Manquant;
+            inputTotalManquant.innerHTML="<strong>"+( newTotal )+"</strong>";
            /* $.ajax({
                 type:"POST",
                 url:'static/php/livraison.php',
@@ -265,15 +275,33 @@ selectBoul.addEventListener("change",function(){
             })*/
         }
     })
+
+    btnValidBoul.addEventListener("click",function(){
+        console.log("DATE ="+dateBoul+"PRISE = "+Prise+" RETOUR ="+Retour+" SOMME A VERSER ="+SommeAVerse+"  VERESEMENT ="+Versement+"TOTAL MANQUANT = "+newTotal);
+         $.ajax({
+                type:"POST",
+                url:'static/php/livraison.php',
+                data:{Action:'InsertionBoulagerie',idBoul:idBoulagerie,date:dateBoul, prise:Prise,retour:Retour,sommeDu:SommeAVerse,versement:Versement,rest:Manquant,totalSolde:newTotal},
+                dataType:'JSON',
+                success:function(result){
+                    if(result.insertionOk){
+                        alert("INSERTION OK ");
+                    }
+                }
+            })
+
+    })
  
     //Verification du client dans la base de donnee 
     for(var i =0 ;i< linesNumber;i++){
         var NomClient =document.querySelector(".NomClient"+i+"");
             NomClient.addEventListener('change',function(){
                 var nom = this.value.toLowerCase();
-                var etatSolde =this.parentElement.parentElement.children[5];
-                var montantSolde =this.parentElement.parentElement.children[6];
-                console.log(etatSolde);
+                var inputRetourClient=this.parentElement.parentElement.children[3].children[0];
+                var etatSolde =this.parentElement.parentElement.children[6];
+                var montantSolde =this.parentElement.parentElement.children[7];
+                
+
                 var clientExit=false;
                     $.ajax({
                         type: "Post",
@@ -283,11 +311,21 @@ selectBoul.addEventListener("change",function(){
                         success: function (response) {
                             if(response.NameExist){
                                 etatSolde.innerText=verifEtatSolde(response.newSolde);
-                                soldeClient=response.newSolde
+                                soldeClient=response.newSolde;
+                                prixUnitaireClient=response.prixUnitaireClient;
                                 montantSolde.innerText=response.newSolde;
+                                console.log("ok mane exist");
+                                    //si le client est dans la base de bonne 
+                                    if(response.typeClient == "d"){
+                                        inputRetourClient.value=00;
+                                        inputRetourClient.disabled=true;
+                                    }
                             }
                             else{
+
                                 clientExitpas(nom);
+                                NomClient.value="";
+                                
                             }
                         }
                     });
@@ -296,66 +334,77 @@ selectBoul.addEventListener("change",function(){
     }
         //Traitement pour les modifiaction des prise 
         for(var i =0 ;i< linesNumber;i++){
-            var priseClient =document.querySelector(".priseClient"+i+"");
+                    var priseClient =document.querySelector(".priseClient"+i+"");
                     priseClient.onchange=function(){
                     var prise = this.value;
                     var nom =this.parentElement.parentElement.children[1].children[0].value;
-                    var SommeAVerse =this.parentElement.parentElement.children[3];
-                    var etatSolde =this.parentElement.parentElement.children[5];
-                    var montantSolde =this.parentElement.parentElement.children[6];
-                    SommeAverserClient=parseInt(prise) * parseInt(response.prixUnitaire) 
+                    var SommeAVerse =this.parentElement.parentElement.children[4];
+                    var etatSolde =this.parentElement.parentElement.children[6];
+                    var montantSolde =this.parentElement.parentElement.children[7];
+
+                    SommeAverserClient=(parseInt(prise)-parseInt(retourClient)) * parseInt(prixUnitaireClient); 
                     SommeAVerse.innerText=SommeAverserClient;
                     inputRestPrise.innerText=restPrise - prise;
-                    soldeClient+=SommeAverserClient;
-                    etatSolde.innerText=verifEtatSolde(soldeClient);
-                    montantSolde.innerText=soldeClient;
-                        $.ajax({
-                            type: "Post",
-                            url: 'static/php/livraison.php',
-                            data:{Action:'actualisationPrise',Nom:nom,date:dateVente,prise:prise} ,
-                            dataType: "json",
-                            success: function (response) {
-                                if(response.NameExist){
-                                    
-                                    
-                                    
-                                    
-                                    //si le client est dans la base de bonne 
-                                   
-                                }
-                                else{
-                                    clientExitpas(nom);
-                                }
-                            }
-                        });
+                    newSoldeClient=soldeClient+SommeAverserClient;
+
+                    etatSolde.innerText=verifEtatSolde(newSoldeClient);
+
+                    montantSolde.innerText=newSoldeClient;
+                      
                     
                 };
             }
+
+            for(var i =0 ;i< linesNumber;i++){
+                var inputRetourClient =document.querySelector(".retourClient"+i+"");
+                inputRetourClient.onchange=function(){
+                var retourClient = this.value;
+                var prise =this.parentElement.parentElement.children[2].children[0].value;
+                var SommeAVerse =this.parentElement.parentElement.children[4];
+                var etatSolde =this.parentElement.parentElement.children[6];
+                var montantSolde =this.parentElement.parentElement.children[7];
+                if(retourClient > prise){
+                    alert("Valleur Retour Incorect !!");
+                    retourClient=0;
+                    inputRetourClient.value=0;
+                }
+                SommeAverserClient=(parseInt(prise)-parseInt(retourClient)) * parseInt(prixUnitaireClient); 
+                SommeAVerse.innerText=SommeAverserClient;
+                inputRestPrise.innerText=restPrise - prise;
+
+                newSoldeClient=soldeClient+SommeAverserClient;
+
+                etatSolde.innerText=verifEtatSolde(newSoldeClient);
+
+                montantSolde.innerText=newSoldeClient;
+                
+            };
+        }
                 //Traitement pour les modifiaction des Sommme Verser  
                 for(var i =0 ;i< linesNumber;i++){
                     var SommeVerser =document.querySelector(".SommeVerser"+i+"");
-                    SommeVerser.addEventListener('change',function(){
+                            SommeVerser.addEventListener('change',function(){
                             var Somme = parseInt(this.value);
-                            var nom =this.parentElement.parentElement.children[1].children[0].value;
                             var prise =parseInt(this.parentElement.parentElement.children[2].children[0].value);
-                            var SommeAVerse =parseInt(this.parentElement.parentElement.children[3].innerText);
-                            var etatSolde =this.parentElement.parentElement.children[5];
-                            var montantSolde =this.parentElement.parentElement.children[6];
-                            console.log(SommeAVerse);
-                            var differance =Somme - SommeAVerse;
-                            console.log(prise);
-                            var clientExit=false;
-                                $.ajax({
+                            var inputRetourClient=this.parentElement.parentElement.children[3];
+                            var SommeAVerse =parseInt(this.parentElement.parentElement.children[4].innerText);
+                            var etatSolde =this.parentElement.parentElement.children[6];
+                            
+                            var montantSolde =this.parentElement.parentElement.children[7];
+                            var differance =SommeAVerse - Somme ;
+                            etatSolde.innerText=verifEtatSolde(soldeClient - differance);
+                            montantSolde.innerHTML= soldeClient - differance ;
+
+                             /*   $.ajax({
                                     type: "Post",
                                     url: 'static/php/livraison.php',
                                     data:{Action:'actualisation',Nom:nom,priseClient:prise,SomAverser:SommeAVerse,Somme:Somme,date:dateVente} ,
                                     dataType: "json",
                                     success: function (response) {
                                         if(response.NameExist){
-                                            etatSolde.innerText=verifEtatSolde(response.valSolde);
-                                            montantSolde.innerText=response.newSolde+" fr";
+                                            e
+                                            
                                             totalSommeRecu=response.totalSommeRecu;
-                                            console.log(totalSommeRecu);
                                             inputTotalSommeRecue.innerText=totalSommeRecu;
                                             //si le client est dans la base de bonne 
                                         }
@@ -363,7 +412,8 @@ selectBoul.addEventListener("change",function(){
                                             clientExitpas(nom);
                                         }
                                     }
-                                });
+                                }); */
+
                             
                         });
                 }
