@@ -359,7 +359,7 @@ selectBoul.addEventListener("change",function(){
                 var inputRetourClient =document.querySelector(".retourClient"+i+"");
                 inputRetourClient.onchange=function(){
                 var retourClient = this.value;
-                var prise =this.parentElement.parentElement.children[2].children[0].value;
+                var prise =this.parentElement.parentElement.children[2].children[2].value;
                 var SommeAVerse =this.parentElement.parentElement.children[4];
                 var etatSolde =this.parentElement.parentElement.children[6];
                 var montantSolde =this.parentElement.parentElement.children[7];
@@ -406,7 +406,7 @@ selectBoul.addEventListener("change",function(){
                     var SommeAverserClient =document.querySelector(".SommeAverser");
                     var SommeVerser =document.querySelector(".SommeVerser"+i+"");
                     var totalSoldeClient=document.querySelector(".valSolde"+i+"");
-                    if(nomClie)
+                    
                 }
                 
     //Ajouter une boullangerie
