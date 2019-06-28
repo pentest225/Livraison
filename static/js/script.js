@@ -2,6 +2,7 @@ $(function()
 {
     var ListeClient=0;
     var idBoulagerie=0;
+    var btnSaveVente=document.querySelector("#saveVente");
     var Prise=0;
     var newSoldeClient=0;
     var newTotal=0;
@@ -398,16 +399,23 @@ selectBoul.addEventListener("change",function(){
                             
                         });
                 }
-
-                for(var i = 0; i <linesNumber ;i++){
-                    var nomClient=document.querySelector(".NomClient"+i+"");
-                    var priseClient =document.querySelector(".priseClient"+i+"");
-                    var inputRetourClient =document.querySelector(".retourClient"+i+"");
-                    var SommeAverserClient =document.querySelector(".SommeAverser");
-                    var SommeVerser =document.querySelector(".SommeVerser"+i+"");
-                    var totalSoldeClient=document.querySelector(".valSolde"+i+"");
-                    
-                }
+                btnSaveVente.addEventListener("click",function(){
+                    for(var i = 0; i <linesNumber ;i++){
+                        var nomClient=document.querySelector(".NomClient"+i+"");
+                        var priseClient =document.querySelector(".priseClient"+i+"");
+                        var retourClient =document.querySelector(".retourClient"+i+"");
+                        var SommeAverserClient =document.querySelector(".SommeAverser");
+                        var SommeVerser =document.querySelector(".SommeVerser"+i+"");
+                        var totalSoldeClient=document.querySelector(".valSolde"+i+"");
+                        if(nomClient ==''){
+                            console.log("Nom client "+i+"vide");
+    
+                        }
+                        else{
+                            console.log(nomClient ,priseClient ,retourClient ,SommeAverserClient ,totalSoldeClient );
+                        }
+                    }
+                })
                 
     //Ajouter une boullangerie
     //Ajout d'un utilisateur 
