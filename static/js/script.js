@@ -299,8 +299,8 @@ selectBoul.addEventListener("change",function(){
             NomClient.addEventListener('change',function(){
                 var nom = this.value.toLowerCase();
                 var inputRetourClient=this.parentElement.parentElement.children[3].children[0];
-                var etatSolde =this.parentElement.parentElement.children[6];
-                var montantSolde =this.parentElement.parentElement.children[7];
+                var etatSolde =this.parentElement.parentElement.children[6].children[0];
+                var montantSolde =this.parentElement.parentElement.children[7].children[0];
                 var clientExit=false;
                     $.ajax({
                         type: "Post",
@@ -309,10 +309,10 @@ selectBoul.addEventListener("change",function(){
                         dataType: "json",
                         success: function (response) {
                             if(response.NameExist){
-                                etatSolde.innerText=verifEtatSolde(response.newSolde);
-                                soldeClient=response.newSolde;
+                                etatSolde.value=verifEtatSolde(response.newSolde);
+                                soldeClient=parseInt(response.newSolde);
                                 prixUnitaireClient=response.prixUnitaireClient;
-                                montantSolde.innerText=response.newSolde;
+                                montantSolde.value=parseInt(response.newSolde);
                                 console.log("ok mane exist");
                                     //si le client est dans la base de bonne 
                                     if(response.typeClient == "d"){
@@ -337,23 +337,20 @@ selectBoul.addEventListener("change",function(){
                     priseClient.onkeyup=function(){
                     var prise = this.value;
                     var retourClient =this.parentElement.parentElement.children[3].children[0].value;
-                    var SommeAVerse =this.parentElement.parentElement.children[4];
-                    var etatSolde =this.parentElement.parentElement.children[6];
-                    var montantSolde =this.parentElement.parentElement.children[7];
+                    var SommeAVerse =this.parentElement.parentElement.children[4].children[0];
+                    var etatSolde =this.parentElement.parentElement.children[6].children[0];
+                    var montantSolde =this.parentElement.parentElement.children[7].children[0];
                     
                     SommeAverserClient=(parseInt(prise)-parseInt(retourClient)) * parseInt(prixUnitaireClient); 
                     SommeAVerse.value=SommeAverserClient;
-                    SommeAVerse.innerHTML="<input type='number' readonly class='tableInput SommeAverser"+i+"' value='"+SommeAverserClient+"' >";
-                    console.log(SommeAVerse.value);
+
                     inputRestPrise.value=restPrise - prise;
                     inputRestPrise.innerHTML=restPrise - prise;
                     newSoldeClient =soldeClient+SommeAverserClient;
 
-                    console.log(newSoldeClient);
-                    etatSolde.value=verifEtatSolde(newSoldeClient);
-                    etatSolde.innerText=verifEtatSolde(newSoldeClient);
-                    montantSolde.value=newSoldeClient;
-                    montantSolde.innerHTML="<input type='text' readonly class='tableInput  EtatSolde"+i+"' value='"+newSoldeClient+"'>";
+                    montantSolde.value=parseInt(newSoldeClient);
+                    console.log(montantSolde);
+                    etatSolde.value=verifEtatSolde(parseInt(newSoldeClient));
                       
                     
                 };
@@ -373,14 +370,13 @@ selectBoul.addEventListener("change",function(){
                     inputRetourClient.value=0;
                 }
                 SommeAverserClient=(parseInt(prise)-parseInt(retourClient)) * parseInt(prixUnitaireClient); 
-                SommeAVerse.innerHTML="<input type='number' readonly class='tableInput SommeAverser"+i+"' value='"+SommeAverserClient+"' >";
-                inputRestPrise.innerText=restPrise - prise;
+                inputRestPrise.value=restPrise - prise;
 
                 newSoldeClient=soldeClient+SommeAverserClient;
 
-                etatSolde.innerText=verifEtatSolde(newSoldeClient);
+                etatSolde.value=verifEtatSolde(newSoldeClient);
 
-                montantSolde.innerHTML="<input type='text' readonly class='tableInput  EtatSolde"+i+"' value='"+newSoldeClient+"'>";
+                montantSolde.value=parseInt(newSoldeClient);
                 
             };
         }
