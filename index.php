@@ -38,7 +38,7 @@
 				<button type="button" class="btn btn-primary " data-toggle="modal" data-target="#fullHeightModalRight" id="">
 					Add Prise et versement <span class="badge badge-warning ml-2">+</span>
 				</button>
-				<button type="button" class="btn btn-success " data-toggle="modal" data-target="#fullHeightModalRight" id="saveVente">
+				<button type="button" class="btn btn-success "  id="saveVente">
 					Enregistre  <span class="badge badge-warning ml-2"></span>
 				</button>
 			</div>

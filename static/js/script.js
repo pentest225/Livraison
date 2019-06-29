@@ -64,15 +64,15 @@ $(function()
             celPrise=ligne.insertCell(2);
             celPrise.innerHTML+="<input type='number' placeholder='' class=' tableInput priseClient"+i+"'> ";
             celPrise=ligne.insertCell(3);
-            celPrise.innerHTML+="<input type='number' placeholder='' class=' tableInput retourClient"+i+"'> ";
+            celPrise.innerHTML+="<input type='number' placeholder='' class=' tableInput retourClient"+i+"' value='0' > ";
             celSommeAVerser=ligne.insertCell(4);
-            celSommeAVerser.innerHTML+="<p  class='SommeAverser"+i+" value='0' readonly '></p>";
+            celSommeAVerser.innerHTML+="<input type='number' readonly class='tableInput SommeAverser"+i+"' value='' >";
             celSommeVerser=ligne.insertCell(5);
             celSommeVerser.innerHTML+="<input type='number' placeholder='' class='tableInput SommeVerser"+i+"'> ";
             celEtatSolde=ligne.insertCell(6);
-            celEtatSolde.innerHTML+="<p class='EtatSolde"+i+"'></p>";
+            celEtatSolde.innerHTML+="<input type='text' readonly class='tableInput  EtatSolde"+i+"'>";
             celSolde=ligne.insertCell(7);
-            celSolde.innerHTML+="<p type='text' class='valSolde"+i+"   '></p> ";
+            celSolde.innerHTML+="<input type='number' readonly class='tableInput  valSolde"+i+"'>";
     }
     var allInput =document.querySelectorAll('.tableInput');
 
@@ -161,7 +161,7 @@ selectBoul.addEventListener("change",function(){
 })
 //L'EVENEMENT DECLANCHREUR C'EST DANS CE EVENEMENT QU'EST DEFFINI LA PORTER DE TOUTE LE VARAIBLE 
     //TETEMENT LORS DU CHANGEMENT DE LA PRISE 
-    inputPrise.addEventListener("change",function(){
+    inputPrise.addEventListener("keyup",function(){
         /*verifDate();
         Retour=parseInt(Retour);
         console.log(Retour);
@@ -217,7 +217,7 @@ selectBoul.addEventListener("change",function(){
             })*/
     })
     //TRAITEMENT AU CHAGEMENT DU RETOUR 
-    inputRetour.addEventListener('change',function(){
+    inputRetour.addEventListener('keyup',function(){
         
         this.value==''? Retour=0:Retour=parseInt(this.value);
         if(Retour > Prise){
@@ -250,7 +250,7 @@ selectBoul.addEventListener("change",function(){
         }
     })
     //TRAITEMENT DU VERSEMENT 
-    inputversement.addEventListener('change',function(){
+    inputversement.addEventListener('keyup',function(){
         this.value==''? Versement=0:Versement=parseInt(this.value);
         if(Versement < 0){
             alert("valleur du versement est negative !");
@@ -301,8 +301,6 @@ selectBoul.addEventListener("change",function(){
                 var inputRetourClient=this.parentElement.parentElement.children[3].children[0];
                 var etatSolde =this.parentElement.parentElement.children[6];
                 var montantSolde =this.parentElement.parentElement.children[7];
-                
-
                 var clientExit=false;
                     $.ajax({
                         type: "Post",
@@ -336,31 +334,36 @@ selectBoul.addEventListener("change",function(){
         //Traitement pour les modifiaction des prise 
         for(var i =0 ;i< linesNumber;i++){
                     var priseClient =document.querySelector(".priseClient"+i+"");
-                    priseClient.onchange=function(){
+                    priseClient.onkeyup=function(){
                     var prise = this.value;
-                    var nom =this.parentElement.parentElement.children[1].children[0].value;
+                    var retourClient =this.parentElement.parentElement.children[3].children[0].value;
                     var SommeAVerse =this.parentElement.parentElement.children[4];
                     var etatSolde =this.parentElement.parentElement.children[6];
                     var montantSolde =this.parentElement.parentElement.children[7];
-
+                    
                     SommeAverserClient=(parseInt(prise)-parseInt(retourClient)) * parseInt(prixUnitaireClient); 
-                    SommeAVerse.innerText=SommeAverserClient;
-                    inputRestPrise.innerText=restPrise - prise;
-                    newSoldeClient=soldeClient+SommeAverserClient;
+                    SommeAVerse.value=SommeAverserClient;
+                    SommeAVerse.innerHTML="<input type='number' readonly class='tableInput SommeAverser"+i+"' value='"+SommeAverserClient+"' >";
+                    console.log(SommeAVerse.value);
+                    inputRestPrise.value=restPrise - prise;
+                    inputRestPrise.innerHTML=restPrise - prise;
+                    newSoldeClient =soldeClient+SommeAverserClient;
 
+                    console.log(newSoldeClient);
+                    etatSolde.value=verifEtatSolde(newSoldeClient);
                     etatSolde.innerText=verifEtatSolde(newSoldeClient);
-
-                    montantSolde.innerText=newSoldeClient;
+                    montantSolde.value=newSoldeClient;
+                    montantSolde.innerHTML="<input type='text' readonly class='tableInput  EtatSolde"+i+"' value='"+newSoldeClient+"'>";
                       
                     
                 };
             }
-
+            //Traitement pour les modifiaction des Retour 
             for(var i =0 ;i< linesNumber;i++){
                 var inputRetourClient =document.querySelector(".retourClient"+i+"");
-                inputRetourClient.onchange=function(){
+                inputRetourClient.onkeyup=function(){
                 var retourClient = this.value;
-                var prise =this.parentElement.parentElement.children[2].children[2].value;
+                var prise =this.parentElement.parentElement.children[2].children[0].value;
                 var SommeAVerse =this.parentElement.parentElement.children[4];
                 var etatSolde =this.parentElement.parentElement.children[6];
                 var montantSolde =this.parentElement.parentElement.children[7];
@@ -370,49 +373,50 @@ selectBoul.addEventListener("change",function(){
                     inputRetourClient.value=0;
                 }
                 SommeAverserClient=(parseInt(prise)-parseInt(retourClient)) * parseInt(prixUnitaireClient); 
-                SommeAVerse.innerText=SommeAverserClient;
+                SommeAVerse.innerHTML="<input type='number' readonly class='tableInput SommeAverser"+i+"' value='"+SommeAverserClient+"' >";
                 inputRestPrise.innerText=restPrise - prise;
 
                 newSoldeClient=soldeClient+SommeAverserClient;
 
                 etatSolde.innerText=verifEtatSolde(newSoldeClient);
 
-                montantSolde.innerText=newSoldeClient;
+                montantSolde.innerHTML="<input type='text' readonly class='tableInput  EtatSolde"+i+"' value='"+newSoldeClient+"'>";
                 
             };
         }
                 //Traitement pour les modifiaction des Sommme Verser  
                 for(var i =0 ;i< linesNumber;i++){
                     var SommeVerser =document.querySelector(".SommeVerser"+i+"");
-                            SommeVerser.addEventListener('change',function(){
+                            SommeVerser.addEventListener('keyup',function(){
                             var Somme = parseInt(this.value);
+                            console.log(this.className);    
                             var prise =parseInt(this.parentElement.parentElement.children[2].children[0].value);
-                            var inputRetourClient=this.parentElement.parentElement.children[3];
                             var SommeAVerse =parseInt(this.parentElement.parentElement.children[4].innerText);
                             var etatSolde =this.parentElement.parentElement.children[6];
                             
                             var montantSolde =this.parentElement.parentElement.children[7];
                             var differance =SommeAVerse - Somme ;
                             etatSolde.innerText=verifEtatSolde(soldeClient - differance);
-                            montantSolde.innerHTML= soldeClient - differance ;
+                            montantSolde.innerHTML="<input type='text' readonly class='tableInput  EtatSolde"+i+"' value='"+(soldeClient - differance)+"'>";
+
 
                             
                         });
                 }
                 btnSaveVente.addEventListener("click",function(){
                     for(var i = 0; i <linesNumber ;i++){
-                        var nomClient=document.querySelector(".NomClient"+i+"");
-                        var priseClient =document.querySelector(".priseClient"+i+"");
-                        var retourClient =document.querySelector(".retourClient"+i+"");
-                        var SommeAverserClient =document.querySelector(".SommeAverser");
-                        var SommeVerser =document.querySelector(".SommeVerser"+i+"");
-                        var totalSoldeClient=document.querySelector(".valSolde"+i+"");
-                        if(nomClient ==''){
+                        var tabNomClient=document.querySelector(".NomClient"+i+"").value;
+                        var tabPriseClient =document.querySelector(".priseClient"+i+"").value;
+                        var tabRetourClient =document.querySelector(".retourClient"+i+"").value;
+                        var tabSommeAverserClient =document.querySelector(".SommeAverser"+i+"").value;
+                        var tabSommeVerser =document.querySelector(".SommeVerser"+i+"").value;
+                        var tabTotalSoldeClient=document.querySelector(".valSolde"+i+"").value;
+                        if(tabNomClient ===""){
                             console.log("Nom client "+i+"vide");
     
                         }
                         else{
-                            console.log(nomClient ,priseClient ,retourClient ,SommeAverserClient ,totalSoldeClient );
+                            console.log(tabNomClient ,tabPriseClient ,tabRetourClient ,tabSommeAverserClient ,tabSommeVerser ,tabTotalSoldeClient);
                         }
                     }
                 })
@@ -605,8 +609,8 @@ selectBoul.addEventListener("change",function(){
         })
 
 
-        //DATA TABLE 
+        /*DATA TABLE 
         $(document).ready( function () {
             $('#dtBasicExample').DataTable();
-        } );
+        } );*/ 
 })
