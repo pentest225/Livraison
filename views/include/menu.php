@@ -21,7 +21,7 @@
         <a class="nav-link" href="#" data-toggle="modal" data-target="#myModal" id="creationCompt" >Ajouter un client</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#" data-toggle="modal" data-target="#myModal1" id="comptBoullangerie">Nouvelle Boullangerie</a>
+        <a class="nav-link" href="#" data-toggle="modal" data-target="#myModal1" id="comptBoullangerie">Nouvelle Boulangerie</a>
       </li>
       <!-- Dropdown -->
       <li class="nav-item dropdown multi-level-dropdown">
