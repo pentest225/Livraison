@@ -22,6 +22,7 @@ $(function()
     var inputRestPrise=document.querySelector('#restPrise');
     var btnValidBoul=document.querySelector(".valideBoul");
     var restPrise=0;
+    var restPriseVente=0;
     var inputMaquantDuJour=document.querySelector('#ManquantDuJour');
     var inputSommeAVerser=document.querySelector('#SommeAVerser');
     var inputTotalManquant=document.querySelector('#totalManquant');
@@ -110,8 +111,8 @@ $(function()
                 dataType:'JSON',
                 success:function(result){
                     if(result.dateOk){
-                        restPrise=parseInt(result.Prise);
-                        inputRestPrise.innerHTML=restPrise;
+                        restPriseVente=parseInt(result.Prise);
+                        inputRestPrise.innerHTML=restPriseVente;
                     }
                     else{
                         alert('veillez selectionne une date valide ');
@@ -346,11 +347,8 @@ selectBoul.addEventListener("change",function(){
                     
                     SommeAverserClient=(parseInt(prise)-parseInt(retourClient)) * parseInt(prixUnitaireClient); 
                     SommeAVerse.value=SommeAverserClient;
-
-                    inputRestPrise.value=restPrise - prise;
-                    inputRestPrise.innerHTML=restPrise - prise;
+                    parcourPrise(restPriseVente);
                     newSoldeClient =(soldeClient+SommeAverserClient) - SommeRandu;
-                    console.log();
                     montantSolde.value=parseInt(newSoldeClient  );
                     montantSolde.disabled=true;
                     etatSolde.value=verifEtatSolde(parseInt(newSoldeClient));
@@ -363,24 +361,22 @@ selectBoul.addEventListener("change",function(){
             for(var i =0 ;i< linesNumber;i++){
                 var inputRetourClient =document.querySelector(".retourClient"+i+"");
                 inputRetourClient.addEventListener('keyup',function(){
-                    alert('bonjour');
                 var retourClient =0;
                 this.value==''?retourClient=0:retourClient=parseInt(this.value);
-                (retourClient="")?retourClient=0:retourClient=retourClient;
                 var prise =this.parentElement.parentElement.children[2].children[0].value;
-                var SommeRandu =this.parentElement.parentElement.children[5].children[0].value;
-                var SommeAVerse =this.parentElement.parentElement.children[4];
-                var etatSolde =this.parentElement.parentElement.children[6];
-                var montantSolde =this.parentElement.parentElement.children[7];
+                
+                var SommeRendu =this.parentElement.parentElement.children[5].children[0].value;
+                var SommeAVerse =this.parentElement.parentElement.children[4].children[0];
+                var etatSolde =this.parentElement.parentElement.children[6].children[0];
+                var montantSolde =this.parentElement.parentElement.children[7].children[0];
                 if(retourClient > prise){
                     alert("Valleur Retour Incorect !!");
                     retourClient=0;
                     inputRetourClient.value=0;
                 }
                 SommeAverserClient=(parseInt(prise)-parseInt(retourClient)) * parseInt(prixUnitaireClient); 
-                inputRestPrise.value=restPrise - prise;
                 SommeAVerse.value=SommeAverserClient;
-                newSoldeClient=(soldeClient+SommeAverserClient) -SommeRandu;
+                newSoldeClient=(soldeClient + SommeAverserClient) - SommeRendu;
                 etatSolde.value=verifEtatSolde(newSoldeClient);
                 montantSolde.value=parseInt(newSoldeClient);
                 })
@@ -403,6 +399,7 @@ selectBoul.addEventListener("change",function(){
                         });
                 }
                 btnSaveVente.addEventListener("click",function(){
+                    var tableauVente=[];
                     for(var i = 0; i <linesNumber ;i++){
                         var tabNomClient=document.querySelector(".NomClient"+i+"").value;
                         var tabPriseClient =document.querySelector(".priseClient"+i+"").value;
@@ -414,10 +411,30 @@ selectBoul.addEventListener("change",function(){
                             break;
                         }
                         else{
-                            
-                            console.log(tabNomClient ,tabPriseClient ,tabRetourClient ,tabSommeAverserClient ,tabSommeVerser ,tabTotalSoldeClient);
+                            var objClient ={
+                                nom:tabNomClient,
+                                prise:parseInt(tabPriseClient),
+                                retour:parseInt(tabRetourClient),
+                                sommeAVerse:parseInt(tabSommeVerser),
+                                sommeVerser:parseInt(tabSommeVerser),
+                                solde:parseInt(tabTotalSoldeClient)
+                            }
                         }
+                        tableauVente.push(objClient);
                     }
+                    console.log(tableauVente);
+                    $.ajax({
+                        type: "Post",
+                        url: 'static/php/livraison.php',
+                        data:{Action:'InsertionVente',date:dateVente,tab:tableauVente} ,
+                        dataType: "json",
+                        success: function (response) {
+                            if(response.InsertionOk){
+                                var text ='Enregistrement effectuer ';
+                                alertSusess(text); 
+                            }
+                        }
+                    });
                 })
                 
     //Ajouter une boullangerie
@@ -522,8 +539,24 @@ selectBoul.addEventListener("change",function(){
         }
         
     })
-  	
+    
         
+      Swal.fire(
+        'Good job!',
+        'You clicked the button!',
+        'success'
+      )
+
+
+    function alertSusess(text){
+        Swal.fire({
+            position: 'top-end',
+            type: 'success',
+            title: text,
+            //showConfirmButton: tre,
+            //timer: 3000
+          })
+    }
     //CODE JS  POUR AFFICHER OU CACHEZ LES ENTETE 
 
     var showHideEntete =document.querySelector("#showHideEntete");
@@ -562,21 +595,17 @@ selectBoul.addEventListener("change",function(){
         return "VALLEUR NON NUMERIQUE";
  
     }
-    function parcourPrise(){
+    function parcourPrise(priseTotal){
+        var inputRestPrise=document.querySelector("#restPrise");
+        var restPrise=0;
         for(var i =0;i < linesNumber;i++){
-            var inputprise=document.querySelector(".priseClient"+i+"");
-            var inputRestPrise=document.querySelector("#restPrise");
-            var priseVal=0;
-            console.log('prise avent modif'+priseVal+'');
-            inputprise.addEventListener('change',function(){
-                priseVal =parseInt(this.value);
-                var priseLocal=0;
-                console.log('prise apres modif '+priseVal);
-                priseLocal +=priseVal;
-                return priseLocal;
-            })
-            return 0;
+            var inputPrise=document.querySelector(".priseClient"+i+"").value;
+            inputPrise ==''?inputPrise=0:inputPrise=inputPrise;
+            restPrise +=parseInt(inputPrise);
+           
         }
+        console.log(restPrise);
+        inputRestPrise.innerHTML=(priseTotal -restPrise);
     }
     function clientExitpas(nomDuClient){
         var creationCompt=confirm('Desole Ce Client '+nomDuClient+' Existe pas dans la liste des client\nvoulez vous cree un compt pour ce client');
