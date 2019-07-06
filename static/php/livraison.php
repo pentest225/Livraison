@@ -28,8 +28,18 @@ if(isset($_POST)){
         $selectPrise->execute(array($date));
         $resultPrise=$selectPrise->fetch();
         if($resultPrise){
-            $Info['dateOk']=true;
-            $Info['Prise']=$resultPrise['prise'];
+            //ok on selectionne la prise 
+            //on selectionne la liste de tout les client
+            $selectClient=$db->prepare('SELECT name from user');
+            $selectClient->execute(array());
+            $resulSelectClient=$selectClient->fetchAll();
+            if($resulSelectClient){
+                
+                $Info['listeClient']=$resulSelectClient;
+                $Info['dateOk']=true;
+                $Info['Prise']=$resultPrise['prise'];
+            }
+            
         }
         echo json_encode($Info);
         break;

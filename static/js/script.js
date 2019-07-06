@@ -1,6 +1,7 @@
 $(function()
 {
     var ListeClient=0;
+    var AllClient=[];
     var idBoulagerie=0;
     var btnSaveVente=document.querySelector("#saveVente");
     var Prise=0;
@@ -99,10 +100,6 @@ $(function()
         }
         inputDateVente.onchange=function(){
             dateVente=this.value;
-            //On desactive tous les input
-            for(var i = 0 ;i<allInput.length;i++){
-                allInput[i].disabled=false;
-            }
             //On selectionne la prise de cette date 
             $.ajax({
                 type:'POST',
@@ -113,10 +110,19 @@ $(function()
                     if(result.dateOk){
                         restPriseVente=parseInt(result.Prise);
                         inputRestPrise.innerHTML=restPriseVente;
+                        //on stocke la liste de tous les client dans un tableau 
+                        //AllClient=
+                        //On desactive tous les input
+                        for(var i = 0 ;i<allInput.length;i++){
+                            allInput[i].disabled=false;
+                        }
                     }
                     else{
-                        alert('veillez selectionne une date valide ');
-                        inputDateVente.click();
+                        alert('Erreur ,cette date ne correspond a aucune prise ');
+                        for(var i = 0 ;i<allInput.length;i++){
+                            allInput[i].disabled=true;
+                        }
+                        
                     }
                 }
             })
@@ -163,27 +169,7 @@ selectBoul.addEventListener("change",function(){
 //L'EVENEMENT DECLANCHREUR C'EST DANS CE EVENEMENT QU'EST DEFFINI LA PORTER DE TOUTE LE VARAIBLE 
     //TETEMENT LORS DU CHANGEMENT DE LA PRISE 
     inputPrise.addEventListener("keyup",function(){
-        /*verifDate();
-        Retour=parseInt(Retour);
-        console.log(Retour);
-        this.value==''? Prise=0:Prise=parseInt(this.value);
-        SommeAVerse=(Prise - Retour )*parseInt(PrixUnitaireBoul);
-        Manquant=parseInt(SommeAVerse-Versement);
-        inputSommeAVerser.innerHTML="<strong>"+SommeAVerse+"</strong>";
-        inputMaquantDuJour.innerHTML="<strong>"+Manquant+"</strong>";
-        totalManquant+=Manquant;
-         
-         $.ajax({
-            type:'POST',
-            url:'static/php/livraison.php',
-            data:{Action:'enregistrementBoulangerie',idBoul:idBoulagerie,date:dateDuJour, prise:Prise,sommeDu:SommeAVerse,rest:Manquant},
-            dataType:'JSON',
-            success:function(result){
-                //une fois les informations recupere on les affiche a la vue 
-                    //1=>on actualise le prix unitaire 
-                    totalManquant=parseInt(result.totalManquant);
-                    inputTotalManquant.innerHTML="<strong>"+totalManquant+"</strong>"
-            }*/
+        
             Retour=parseInt(Retour);
             this.value==''? Prise=0:Prise=parseInt(this.value);
             if(Prise < Retour){
@@ -202,20 +188,7 @@ selectBoul.addEventListener("change",function(){
                 restPrise-=Prise;
                 inputRestPrise.innerHTML=restPrise;
             }
-            
-
-            /*$.ajax({
-                type:'POST',
-                url:'static/php/livraison.php',
-                data:{Action:'enregistrementBoulangerie',idBoul:idBoulagerie,date:dateBoul, prise:Prise,sommeDu:SommeAVerse,rest:Manquant},
-                dataType:'JSON',
-                success:function(result){
-                    //une fois les informations recupere on les affiche a la vue 
-                        //1=>on actualise le prix unitaire 
-                        totalManquant=parseInt(result.totalManquant);
-                        
-                }
-            })*/
+        
     })
     //TRAITEMENT AU CHAGEMENT DU RETOUR 
     inputRetour.addEventListener('keyup',function(){

@@ -150,6 +150,13 @@
 
 				<div class="vente_du_jour">
 					<h4>Vente du jour </h4>
+					<div class="col-md-4 date">
+							<div class="md-form">
+								<input placeholder="Date de vente" type="text" id="date-picker-exampleb" class="form-control datepicker dateVente " >
+								<label for="date-picker-example">Try me...</label>
+							</div>
+						
+					</div>
 					<div class="row venteDuJourRow">
 						<div class="col-xs-6">
 							<div class="card w-10">
@@ -161,13 +168,7 @@
 								</div>
 							</div>
 						</div>
-						<div class="col-md-4 date">
-							<div class="md-form">
-								<input placeholder="Date de vente" type="text" id="date-picker-exampleb" class="form-control datepicker dateVente " >
-								<label for="date-picker-example">Try me...</label>
-							</div>
 						
-						</div>
 						<div class="col-xs-6">
 							<div class="card w-10">
 								<div class="card-body">
