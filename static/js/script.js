@@ -62,7 +62,7 @@ $(function()
             celNom=ligne.insertCell(0);
             celNom.innerHTML+=(i+1);
             celNom=ligne.insertCell(1);
-            celNom.innerHTML+="<input type='text' placeholder='' class='tableInput NomClient"+i+"'> ";
+            celNom.innerHTML+="<input type='text' placeholder='' class='tableInput NomClient"+i+"'><span class='sugestion"+i+"'></span> ";
             celPrise=ligne.insertCell(2);
             celPrise.innerHTML+="<input type='number' placeholder='' class=' tableInput priseClient"+i+"'> ";
             celPrise=ligne.insertCell(3);
@@ -111,7 +111,11 @@ $(function()
                         restPriseVente=parseInt(result.Prise);
                         inputRestPrise.innerHTML=restPriseVente;
                         //on stocke la liste de tous les client dans un tableau 
-                        //AllClient=
+                        for(var i=0 ;i <result.listeClient.length;i++){
+                            AllClient.push(result.listeClient[i].name)
+                        }
+                        //
+                        console.log(result.listeClient[0].name);
                         //On desactive tous les input
                         for(var i = 0 ;i<allInput.length;i++){
                             allInput[i].disabled=false;
@@ -266,7 +270,22 @@ selectBoul.addEventListener("change",function(){
             })
 
     })
-  
+    //System d'auto completion
+    for(var i =0;i<linesNumber;i++){
+        var NomClient =document.querySelector(".NomClient"+i+"");
+        NomClient.addEventListener('input',(e)=>{
+            console.log(e)
+            var spanSugestion=document.querySelector("sugestion"+i+"");
+            var listeSugestion=[];
+            var valSaisie=e.target.value;
+            AllClient.forEach((client)=>{
+                if((client.toLowerCase().search(valSaisie.toLowerCase()))!=-1){
+                    listeSugestion.push(client);
+                }
+            })            
+
+        })
+    }
     //Verification du client dans la base de donnee 
     for(var i =0 ;i< linesNumber;i++){
         var NomClient =document.querySelector(".NomClient"+i+"");
@@ -287,7 +306,6 @@ selectBoul.addEventListener("change",function(){
                                 soldeClient=parseInt(response.newSolde);
                                 prixUnitaireClient=response.prixUnitaireClient;
                                 montantSolde.value=parseInt(response.newSolde);
-                                console.log("ok mane exist");
                                     //si le client est dans la base de bonne 
                                     if(response.typeClient == "d"){
                                         inputRetourClient.value=00;
@@ -297,7 +315,7 @@ selectBoul.addEventListener("change",function(){
                             else{
 
                                 clientExitpas(nom);
-                                NomClient.value="";
+                                NomClient.value=''
                                 
                             }
                         }
@@ -317,7 +335,7 @@ selectBoul.addEventListener("change",function(){
                     var SommeRandu =this.parentElement.parentElement.children[5].children[0].value;
                     var etatSolde =this.parentElement.parentElement.children[6].children[0];
                     var montantSolde =this.parentElement.parentElement.children[7].children[0];
-                    
+                    console.log(AllClient);
                     SommeAverserClient=(parseInt(prise)-parseInt(retourClient)) * parseInt(prixUnitaireClient); 
                     SommeAVerse.value=SommeAverserClient;
                     parcourPrise(restPriseVente);
@@ -366,9 +384,6 @@ selectBoul.addEventListener("change",function(){
                             var montantSolde =this.parentElement.parentElement.children[7].children[0];
                             etatSolde.value=verifEtatSolde(parseInt(newSoldeClient) - Somme);
                             montantSolde.value=(parseInt(newSoldeClient) - Somme);
-
-
-                            
                         });
                 }
                 btnSaveVente.addEventListener("click",function(){
@@ -497,6 +512,7 @@ selectBoul.addEventListener("change",function(){
                     box_warning.querySelector('p').innerHTML= "Désolé il existe dejat client nommé  <strong>"+nomClient+" </strong> dans la liste de vos client " ;
                 }
                 if(response.InsertionOk){
+                    AllClient.push(nomClient);
                     if(box_success.classList.contains('hideDiv')){
                         box_success.classList.remove('hideDiv');
                     }
