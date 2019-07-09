@@ -107,7 +107,6 @@ $(function()
                 dataType:'JSON',
                 success:function(result){
                     if(result.dateOk){
-<<<<<<< HEAD
                         restPriseVente=parseInt(result.Prise);
                         inputRestPrise.innerHTML=restPriseVente;
                         //on stocke la liste de tous les client dans un tableau 
@@ -120,10 +119,8 @@ $(function()
                         for(var i = 0 ;i<allInput.length;i++){
                             allInput[i].disabled=false;
                         }
-=======
                         restPrise=parseInt(result.Prise);
                         inputRestPrise.innerHTML=restPrise;
->>>>>>> parent of bbda7eb... ok pour la section vente
                     }
                     else{
                         alert('Erreur ,cette date ne correspond a aucune prise ');

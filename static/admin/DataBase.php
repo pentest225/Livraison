@@ -1,8 +1,8 @@
-<?php       
+<?php
    class DB
    {
         public static $db_host = "localhost";
-        public static $db_Name = "livraison";
+        public static $db_Name = "DB_livraison";
         public static $db_user = "root";
         public static $db_psw="";
         private $db=null;
@@ -20,7 +20,7 @@
             public static function Deconexte(){
                 $db=null;
             }
-        
+
     }
-   
+
 ?>
