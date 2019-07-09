@@ -380,8 +380,6 @@
 	<!-- <script type="text/javascript" src="https://mdbootstrap.com/previews/docs/latest/js/mdb.min.js"></script> -->
 	<script type="text/javascript" src="https://mdbootstrap.com/previews/docs/latest/js/mdb.min.js"></script>
 	<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
-	
-	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
 	<script>
 		function myFunction() {
 		return "Write something clever here...";

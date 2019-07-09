@@ -101,23 +101,6 @@ if(isset($_POST)){
             }
             echo json_encode($Info);
         break;
-        case 'InsertionVente':
-            extract($_POST);
-            for($i=0 ;$i<sizeof($tab);$i++){
-                $db=DB::connect();
-                
-                $InsertTableVente= $db->prepare('INSERT INTO vente (date,nom_client,prise_client,retour_client,somme_a_verser,somme_verser,solde_actuel) VALUES (?,?,?,?,?,?,?)');
-                $InsertTableVente->execute(array($date,$tab[$i]['nom'],$tab[$i]['prise'],$tab[$i]['retour'],$tab[$i]['sommeAVerse'],$tab[$i]['sommeVerser'],$tab[$i]['solde']));
-                if($InsertTableVente){
-                    $Info['InsertionOk']=true;
-                }
-                else{
-                    $Info['InsertionOk']=false;
-                }
-                
-            }
-            echo json_encode($Info);
-        break;
         case 'MiseAjourRetour':
                 //verification dans la base de bonne 
                 extract($_POST);
