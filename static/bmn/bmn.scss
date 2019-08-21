@@ -1,0 +1,262 @@
+$bmn-width: 250px;
+
+// colors
+$eerie-black: #161925;
+$japanese-indigo: #23395b;
+$japanese-indigo-alt: #263b51;
+$queen-blue: #406e8e;
+$pewter-blue: #8ea8c3;
+$light-steel-blue: #f5f6f7;
+$opacity: 1;
+
+$primary-color: $eerie-black;
+$primary-color-light: $japanese-indigo-alt;
+$accent-color: $queen-blue;
+$accent-color-light: $pewter-blue;
+$white: $light-steel-blue;
+
+.bmn {
+  &__wrapper {
+    height: 100%;
+    width: $bmn-width;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    background-color: $primary-color-light;
+    overflow-x: hidden;
+    padding-top: 30px;
+    transition: 0.5s;
+    &--left {
+      left: -$bmn-width;
+      &.show {
+        left: 0;
+      }
+    }
+    &--right {
+      right: -$bmn-width;
+      &.show {
+        right: 0;
+      }
+    }
+  }
+  &__brand {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    a {
+      color: $accent-color-light;
+      font-weight: bolder;
+    }
+  }
+  &__nav {
+    padding-left: 0;
+  }
+  &-item {
+    list-style: none;
+    padding: 10px 0;
+    position: relative;
+    &:before {
+      content: "";
+      background-color: $accent-color;
+      position: absolute;
+      z-index: -1;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      -webkit-transform: scaleX(0);
+      transform: scaleX(0);
+      -webkit-transform-origin: 0 50%;
+      transform-origin: 0 50%;
+      -webkit-transition-property: transform;
+      transition-property: transform;
+      -webkit-transition-duration: 0.5s;
+      transition-duration: 0.5s;
+      -webkit-transition-timing-function: ease-out;
+      transition-timing-function: ease-out;
+    }
+    & > a.disabled {
+      color: $queen-blue;
+    }
+    &:hover a,
+    &.active a {
+      text-decoration: none;
+      color: $white;
+    }
+    &:hover:before,
+    &.active:before {
+      -webkit-transform: scaleX(0.02);
+      transform: scaleX(0.02);
+    }
+    &:focus:before,
+    &.active:focus:before {
+      -webkit-transform: scaleX(1) !important;
+      transform: scaleX(1) !important;
+    }
+    &:hover a.disabled {
+      color: $queen-blue;
+      pointer-events: none;
+    }
+  }
+  &-link {
+    display: block;
+    width: 100%;
+    color: $accent-color-light;
+    font-weight: 600;
+    font-size: 1.2rem;
+    letter-spacing: 1%;
+    padding-left: 25px;
+  }
+  &__brand a,
+  &__social a {
+    &:hover,
+    &:focus {
+      text-decoration: none;
+      color: $white;
+    }
+  }
+  &__social {
+    list-style: none;
+    li {
+      display: inline-block;
+      a {
+        color: $accent-color-light;
+      }
+    }
+  }
+  &__chevron {
+    background-image: url('data:image/svg+xml;utf8,<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" fill="rgba(245,246,247,1)" viewBox="0 0 272 155.28"><title>Chevron Down</title><path d="M694.36,317.51,580.88,214.58A23.56,23.56,0,0,0,565,208.72a22.51,22.51,0,0,0-15.71,5.86L435.63,317.51A18.77,18.77,0,0,0,429,331.9a18,18,0,0,0,6.63,14.23L448.73,358a23.54,23.54,0,0,0,31.42,0L565,281.3,649.85,358a21.85,21.85,0,0,0,15.71,6,22.88,22.88,0,0,0,15.89-6l13.09-11.86A18.47,18.47,0,0,0,701,331.9,18.74,18.74,0,0,0,694.36,317.51Z" transform="translate(-429 -208.72)"/></svg>');
+    background-size: 100% 100%;
+    transition: transform 0.25s ease-out;
+    transform: rotate(180deg);
+    &--rotated {
+      transform: rotate(0deg);
+    }
+  }
+  &__plus {
+    // CSS from: https://jsfiddle.net/psullivan6/0eL3jezk/
+    position: relative;
+
+    &:before,
+    &:after {
+      content: "";
+      position: absolute;
+      background-color: $white;
+      transition: transform 0.25s ease-out;
+    }
+
+    /* Vertical line */
+    &:before {
+      top: 0;
+      left: 50%;
+      width: 2px;
+      height: 100%;
+      margin-left: -1px;
+    }
+
+    /* horizontal line */
+    &:after {
+      top: 50%;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      margin-top: -2px;
+    }
+
+    &:hover {
+      cursor: pointer;
+    }
+
+    &--minus {
+      &:before {
+        transform: rotate(90deg);
+      }
+      &:after {
+        transform: rotate(180deg);
+      }
+    }
+  }
+
+  // dropdowns
+  &__dropdown {
+    position: relative;
+    .dropdown-toggle {
+      padding-left: 25px;
+      white-space: normal;
+      &::after {
+        content: "";
+        border-top: none;
+        border-bottom: none;
+        border-left: none;
+        border-right: none;
+      }
+      span {
+        height: 15px;
+        width: 15px;
+        position: absolute;
+        right: 15px;
+        top: 17px;
+        display: block;
+        svg {
+          path {
+            fill: $white;
+          }
+        }
+      }
+    }
+    .dropdown-menu {
+      display: none;
+      height: 0;
+      position: relative;
+      padding: 0;
+      border: none;
+      border-radius: 0;
+      background-color: $primary-color;
+      width: 100%;
+      box-shadow: inset 0px -1px 3px 2px darken($color: $primary-color, $amount:
+            5%);
+      a {
+        color: $white;
+      }
+    }
+    .dropdown-item {
+      padding: 10px 25px;
+      &:not(:last-child) {
+        border-bottom: solid thin $accent-color;
+      }
+      &:hover,
+      &:focus {
+        background-color: $accent-color-light;
+        color: $white;
+      }
+    }
+    &.show .dropdown-menu {
+      display: block;
+      margin: 10px 0;
+      height: auto;
+      transform: scaleY(0);
+      transform-origin: top;
+      animation: slideDown 0.2s ease-out 1 forwards;
+    }
+  }
+}
+
+// animations
+@keyframes slideDown {
+  to {
+    transform: scaleY(1);
+  }
+}
+
+// If the wrapper is true
+#wrapper {
+  transition: 0.5s;
+  &.pushed {
+    &--left {
+      margin-left: $bmn-width;
+    }
+    &--right {
+      margin-right: $bmn-width;
+    }
+  }
+}

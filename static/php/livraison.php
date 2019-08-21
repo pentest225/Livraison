@@ -4,9 +4,47 @@
 if(isset($_POST)){
     switch($_POST['Action'])
     {
+        case "selectNomClient":
+            $liste="<ul classe='list-unstyled'>";
+            $data=array();
+            extract($_POST);
+            $db=db::connect();
+            $query=$db->query("SELECT * from user WHERE nom like '%".$query."%' ");
+            $result=$query->fetchAll();
+            if($result){
+                
+                foreach ($result as $res ) {
+                    $liste.="<li><a>".$res['nom']."<a></li>";
+                    $data[]=$res['nom'];
+                }
+            }else{
+                $liste.= "<li></li>";
+            }
+            $liste.="</ul>";
+        echo json_encode($data);    
+        break;
         case "InsertionBoulagerie":
             extract($_POST);
             $db=DB::connect();
+            //VERIFIONS SI UN ENREGISTREMENT A DEJA FAIT 
+            $verifDateExiste=$db->prepare('SELECT * FROM boulangerie WHERE (date = ? and id_boul = ?) ');
+            $verifDateExiste->execute(array($date,$idBoul));
+            $resultVerifDate=$verifDateExiste->fetchAll();
+            if($resultVerifDate){
+                $updateBoulangerie=$db->prepare('UPDATE boulangerie set prise =?, retour=?, somme_a_verser=? ,somme_verser=?, manquant_du_jour=? WHERE date =? and id_boul= ?');
+                $updateBoulangerie->execute(array($prise,$retour,$sommeDu,$versement,$rest,$date,$idBoul));
+                if($updateBoulangerie){
+                   //en suite on met a jour son solde 
+                    $miseAjour=$db->prepare('UPDATE  liste_boulangerie SET solde=? WHERE id=?');
+                    $miseAjour->execute(array($totalSolde,$idBoul));
+                    if($miseAjour){
+                        $Info['insertionOk']=true;
+                        $Info['miseAjourSolde']=true; 
+                    }
+                }
+            }
+            else{
+
             $insertionVersement=$db->prepare('INSERT INTO  boulangerie (id_boul,date,prise,retour,somme_a_verser,somme_verser,manquant_du_jour) VALUES(?,?,?,?,?,?,?)');
             $insertionVersement->execute(array($idBoul,$date,$prise,$retour,$sommeDu,$versement,$rest));
             if($insertionVersement){
@@ -19,20 +57,25 @@ if(isset($_POST)){
                 }
                 
             }
+            }
+            
             echo json_encode($Info);
         break;
         case 'selectPrise':
         extract($_POST);
         $db=DB::connect();
+        
         $selectPrise=$db->prepare('SELECT prise FROM boulangerie WHERE date=?');
         $selectPrise->execute(array($date));
         $resultPrise=$selectPrise->fetch();
         if($resultPrise){
+            
             //ok on selectionne la prise 
             //on selectionne la liste de tout les client
-            $selectClient=$db->prepare('SELECT name from user');
+            $selectClient=$db->prepare('SELECT nom from user');
             $selectClient->execute(array());
             $resulSelectClient=$selectClient->fetchAll();
+            
             if($resulSelectClient){
                 
                 $Info['listeClient']=$resulSelectClient;
@@ -41,6 +84,7 @@ if(isset($_POST)){
             }
             
         }
+        
         echo json_encode($Info);
         break;
         case 'recupInfoBoul':
@@ -54,6 +98,23 @@ if(isset($_POST)){
                $Info['prixUniBoul']=$resultInfo['prix_unitaire'];
                $Info['totalManquant']=$resultInfo['solde'];
             }
+            //VERIFIONS SI UN ENREGISTREMENT A DEJAT ETE FAIT A CETTE DATE 
+            $verifEnregistrement=$db->prepare('SELECT * FROM boulangerie WHERE  (date = ? and id_boul = ?)');
+            $verifEnregistrement->execute(array($date,$idBoul));
+            $resultVerifEnregistrement=$verifEnregistrement->fetchAll();
+            if($resultVerifEnregistrement){
+               if($resultVerifEnregistrement[0]['somme_verser'] == '0' ){
+                   
+                    $Info['dateExiste']=true;
+                    $Info['prise']=$resultVerifEnregistrement[0]['prise'];
+                    $Info['retour']=$resultVerifEnregistrement[0]['retour'];
+                    $Info['sommeAVerser']=$resultVerifEnregistrement[0]['somme_a_verser'];
+               }
+               else{
+                   $Info['ErrorVersementExiste']=true;
+               }
+            }
+
             echo json_encode($Info);
         break;
         case 'enregistrementBoulangerie':
@@ -73,8 +134,8 @@ if(isset($_POST)){
                 
                 if($resulVerif){
                     
-                    //un enregistrement a deja ete effectue 
-                    //c'est une mise a jour on doit en premier temps retablire son solde 
+                   // un enregistrement a deja ete effectue 
+                   // c'est une mise a jour on doit en premier temps retablire son solde 
                     $newSolde=$resultSolde['solde']- $resulVerif['somme_a_verser'];
                     $newSolde+=$sommeDu;
                     //en suite on met a jour son solde 
@@ -88,8 +149,8 @@ if(isset($_POST)){
                         $Info['totalManquant']=$newSolde;
                     }
                 }else{
-                    //aucun enregistrement a ete effectue 
-                    //on cree donc la requette 
+                   // aucun enregistrement a ete effectue 
+                   // on cree donc la requette 
                     $insert=$db->prepare('INSERT INTO boulangerie (date,id_boul,prise,somme_a_verser,manquant_du_jour ) VALUES (?,?,?,?,?)');
                     $insert->execute(array($date,$idBoul,$prise,$sommeDu,$rest));
                     //Augmentation du Manquant de la boulangerie 
@@ -103,19 +164,72 @@ if(isset($_POST)){
         break;
         case 'InsertionVente':
             extract($_POST);
+            $db=DB::connect();
+            //Vetifion si une insertion a dejat ee faite a cette date 
+            $verifDate=$db->prepare('SELECT * FROM vente WHERE date = ?');
+            $verifDate->execute(array($date));
+            $resultVerifDate=$verifDate->fetchAll();
+            if($resultVerifDate){
+                $Info['dateExiste']=true;
+            }else{
             for($i=0 ;$i<sizeof($tab);$i++){
-                $db=DB::connect();
-                
-                $InsertTableVente= $db->prepare('INSERT INTO vente (date,nom_client,prise_client,retour_client,somme_a_verser,somme_verser,solde_actuel) VALUES (?,?,?,?,?,?,?)');
-                $InsertTableVente->execute(array($date,$tab[$i]['nom'],$tab[$i]['prise'],$tab[$i]['retour'],$tab[$i]['sommeAVerse'],$tab[$i]['sommeVerser'],$tab[$i]['solde']));
-                if($InsertTableVente){
-                    $Info['InsertionOk']=true;
+                $selectIdUser=$db->prepare('SELECT id FROM user WHERE nom=?');
+                $selectIdUser->execute(array($tab[$i]['nom']));
+                $idUser=$selectIdUser->fetch();
+                if ($idUser){
+                    var_dump($idUser[0]);
+                    $InsertTableVente= $db->prepare('INSERT INTO vente (date,id_client,nom_client,prise_client,retour_client,somme_a_verser,somme_verser,solde_actuel) VALUES (?,?,?,?,?,?,?,?)');
+                    $InsertTableVente->execute(array($date,$idUser[0],$tab[$i]['nom'],$tab[$i]['prise'],$tab[$i]['retour'],$tab[$i]['sommeAVerse'],$tab[$i]['sommeVerser'],$tab[$i]['solde']));
+                    if($InsertTableVente){
+                            //Mise a jour de la table user
+                            $miseAjourUser=$db->prepare('UPDATE user set solde = ? WHERE nom = ?');
+                            $miseAjourUser->execute(array($tab[$i]['solde'],$tab[$i]['nom']));
+                            if($miseAjourUser){
+                                $Info['InsertionOk']=true;
+                            }
+                        }
+                    else{
+                        $Info['InsertionOk']=false;
+                        }
+                    }
                 }
-                else{
-                    $Info['InsertionOk']=false;
-                }
-                
             }
+            echo json_encode($Info);
+        break;
+        case 'InsertionEncaissement':
+            extract($_POST);
+            $db=DB::connect();
+            //Vetifion si une insertion a dejat ete faite a cette date 
+            $verifDate=$db->prepare('SELECT * FROM encaissement WHERE date = ?');
+            $verifDate->execute(array($date));
+            $resultVerifDate=$verifDate->fetchAll();
+            if($resultVerifDate){
+                $Info['dateExiste']=true;
+            }else{
+            for($i=0 ;$i<sizeof($tab);$i++){
+                $selectIdUser=$db->prepare('SELECT id FROM user WHERE nom=?');
+                $selectIdUser->execute(array($tab[$i]['nom']));
+                $idUser=$selectIdUser->fetch();
+                if ($idUser){
+                    var_dump($idUser[0]);
+                    $InsertTableVente= $db->prepare('INSERT INTO encaissement (date,id_user,nom_user,montant,solde_actuel) VALUES (?,?,?,?,?)');
+                    $InsertTableVente->execute(array($date,$idUser[0],$tab[$i]['nom'],$tab[$i]['sommeVerser'],$tab[$i]['solde']));
+                    if($InsertTableVente){
+                            //Mise a jour de la table user
+                            $miseAjourUser=$db->prepare('UPDATE user set solde = ? WHERE nom = ?');
+                            $miseAjourUser->execute(array($tab[$i]['solde'],$tab[$i]['nom']));
+                            if($miseAjourUser){
+                                var_dump($miseAjourUser);
+                                $Info['InsertionOk']=true;
+                            }
+                        }
+                    else{
+                        $Info['InsertionOk']=false;
+                        }
+                    }
+                }
+            }
+                
             echo json_encode($Info);
         break;
         case 'MiseAjourRetour':
@@ -221,14 +335,14 @@ if(isset($_POST)){
         case 'VerifClient':
 
             $db=DB::connect();
-            $query =$db->prepare('SELECT * FROM user WHERE name =?');
+            $query =$db->prepare('SELECT * FROM user WHERE nom =?');
             $query->execute(array($_POST['Nom']));
             $reponse=$query->fetch();
             if($reponse){
                 //Si le client existe on selectionne donc toute les information a son sujet 
                 $Info['NameExist']=TRUE;
                 $Info['newSolde']=$reponse['solde'];
-                $Info['typeClient']=$reponse['type'];
+                $Info['typeClient']=$reponse['type_client'];
                 $Info['prixUnitaireClient']=$reponse['unitary_price'];
             }else{
                 $Info['NameExist']=FALSE; 
@@ -238,7 +352,7 @@ if(isset($_POST)){
         case 'CreationCompte':
           
             $db=DB::connect();
-            $query =$db->prepare('SELECT * FROM user WHERE name =?');
+            $query =$db->prepare('SELECT * FROM user WHERE nom =?');
             $query->execute(array($_POST['Nom']));
             $reponse=$query->fetch();
             if($reponse){
@@ -247,7 +361,7 @@ if(isset($_POST)){
             }else{
                 $Info['NameExist']=false;
                 $NomClient=$_POST['Nom'];
-                $request =$db->prepare('INSERT INTO user (name,type,unitary_price,solde) VALUES (?,?,?,?)');
+                $request =$db->prepare('INSERT INTO user (nom,type_client,unitary_price,solde) VALUES (?,?,?,?)');
                 $request->execute(array($_POST['Nom'],$_POST['typeClient'],$_POST['PrixAchat'],'0'));
                 if($request)
                 {
@@ -266,7 +380,7 @@ if(isset($_POST)){
             $query->execute(array($_POST['Nom']));
             $reponse=$query->fetch();
             if($reponse){
-                //si le nom existe plus d'insertion dans la base de bonne
+                //si le nom existe , plus d'insertion dans la base de bonne
                 $Info['NameExist']=true;
             }else{
                 $Info['NameExist']=false;
@@ -275,6 +389,11 @@ if(isset($_POST)){
                 $request->execute(array($_POST['Nom'],$_POST['PrixAchat'],'0'));
                 if($request)
                 {
+                    $selectId =$db->prepare('SELECT id FROM liste_boulangerie WHERE nom =?');
+                    $selectId->execute(array($_POST['Nom']));
+                    $reponse=$selectId->fetch();
+                    $Info['idBoul']=$reponse['id'];
+                    
                     $Info['InsertionOk']=true;
                 }
                 else
@@ -288,7 +407,7 @@ if(isset($_POST)){
             extract($_POST);
             //prise des information sur l'utilisateur 
             $db=DB::connect();
-            $query =$db->prepare('SELECT * FROM user WHERE name =?');
+            $query =$db->prepare('SELECT * FROM user WHERE nom =?');
             $query->execute(array($_POST['Nom']));
             $response=$query->fetch();
             if($response){
@@ -355,7 +474,7 @@ if(isset($_POST)){
             extract($_POST);
             //prise des information sur l'utilisateur 
             $db=DB::connect();
-            $query =$db->prepare('SELECT * FROM user WHERE name =?');
+            $query =$db->prepare('SELECT * FROM user WHERE nom =?');
             $query->execute(array($_POST['Nom']));
             $response=$query->fetch();
             if($response){
@@ -465,7 +584,6 @@ if(isset($_POST)){
                             }   
                         }
                 }
-
                 
             }
             echo json_encode($Info);

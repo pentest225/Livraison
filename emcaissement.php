@@ -61,114 +61,11 @@
 	<div class="container mt-4">
 		<!-- <form action="# " method="post"> -->
 			<div class="bontonHeader">
-				<button type="button" class="btn btn-primary " data-toggle="modal" data-target="#fullHeightModalRight" id="">
-					Add Prise et versement <span class="badge badge-warning ml-2">+</span>
-				</button>
 				<button type="button" class="btn btn-success "  id="saveVente">
 					Enregistre  <i class="far fa-save"></i><span class="badge badge-warning ml-2"></span>
 				</button>
 			</div>
-			<!-- MODAL SECTION BOULAGERIE  -->
-			<!-- Full Height Modal Right -->
-			<div class="modal fade top" id="fullHeightModalRight" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-			aria-hidden="true">
-
-			<!-- Add class .modal-full-height and then add class .modal-right (or other classes from list above) to set a position to the modal -->
-			<div class="modal-dialog modal-full-height  modal-top " role="document">
-
-				<div class="modal-content">
-				<div class="modal-header">
-							<div class=" date dateBoul ">
-								<div>
-									<h5 class="">Prise du ...</h5>
-								</div>
-								<div class="md-form">
-									<input placeholder="date de la prise" name='dateBoulangerie' type="text" id="date-picker-exampleb" class="form-control datepicker inputDateBoulangerie">
-									<label for="date-picker-example">Try me...</label>
-								</div>
-							</div>
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-				<div class="modal-body">
-					...<!-- SECTION ENTRTR DU TABLEAUX --->
-					<div class="row entete">
-			
-							<div class="col-md-4 Tab_left">
-								<!-- Tableau d'entete -->
-									<table class="table table-striped" >
-										<thead>
-											<tr>
-												<th scope="col">Boulangerie</th>
-												<th scope="col">
-												<select class="browser-default mdb-select  form-control validate" id="selectBoulangerie" id="Type">
-													<option value=""  selected>...</option>
-													<?php 
-													foreach($InfoBoul as $Boulangerie) :
-															$id=$Boulangerie['id'];
-															$nom=$Boulangerie['nom'];
-													?>
-														<option value="<?=$id?>">
-														<?=$nom?>	
-														</option>
-														<?php endforeach ?>
-												</select>
-												</th>
-											</tr>
-											<tr>
-												<th scope="col">Prise du jour</th>
-												<th scope="col"><input type="number" name="Prise" placeholder="prise" id="Prise" value='0'></th>
-											</tr>
-											<tr>
-												<th scope="col">Retour</th>
-												<th scope="col"><input type="number" name="Retour" placeholder="Retour" id="Retour" value='0'></th>
-											</tr>
-											<tr>
-												<th scope="col">Somme A verser</th>
-												<th scope="col" id="SommeAVerser">Valleur</th>
-											</tr>
-										</thead>
-									</table>
-								</div>
-							<div class="col-md-4 ">
-								<!--<h4>Prise du ...</h4>
-								<div class="md-form">
-								<input placeholder="date de la prise" type="text" id="date-picker-exampleb" class="form-control datepicker dateDuJour">
-								<label for="date-picker-example">Try me...</label>
-								</div> -->
-							</div>
-						<!-- FIN TABLEAU GAUCHE -->
-							<div class="col-md-4  Tab_right">
-								<table class="table table-striped">
-									<thead>
-										<tr>
-											<th scope="col">VERSEMENT</th>
-											<th scope="col"><input type="number" name="Versement" placeholder="Versement" id="Versement"></th>
-										</tr>
-										<tr>
-											<th scope="col">Manquant Du jour </th>
-											<th scope="col" id='ManquantDuJour'>Valleur</th>
-										</tr>
-										<tr>
-											<th scope="col">Total  Manquant</th>
-											<th scope="col" id="totalManquant">Valleur</th>
-										</tr>
-									</thead>
-								</table>
-							</div>
-			
-							<!-- TABLEAU DROIT -->
-						</div>
-	<!-- FIN DE LA SECTION ENTETE -->
-					</div>
-				<div class="modal-footer justify-content-center">
-					<button type="button" class="btn btn-primary valideBoul" id="saveChangeFormBoul">Save changes</button>
-					<button type="button" class="btn btn-secondary closeSectionBoul" data-dismiss="modal">Close</button>
-				</div>
-				</div>
-			</div>
-			</div>
+		
 			<!-- Full Height Modal Right -->
 
 <!-- ________________________________FIN DE LA SECTION DES ENTETE___________________________________________________ -->
@@ -187,16 +84,6 @@
 					</div>
 					<!--Big blue-->
 					<div class="row venteDuJourRow infoBoul">
-						<div class="col-xs-6 ">
-							<div class="card w-10">
-								<div class="card-body">
-									<div class="divUl">
-										<h5>Rest Prise</h5>
-										<p id="restPrise">Valleur<p>
-									</div>
-								</div>
-							</div>
-						</div>
 						<div class="col-xs-6 ">
 							<div class="card w-10">
 								<div class="card-body">
@@ -241,18 +128,12 @@
 			<!--SECTION TABLEAUX  CLIENTS -->
 
 			<!-- section table mdn -->
-		<table id="dtBasicExample" class="table  table-sm table-hover table-responsive-md table-striped" cellspacing="0" width="100%">
+		<table id="dtBasicExample" class="table  table-sm table-hover table-responsive-md " cellspacing="0" width="100%">
 			<thead>
 				<tr>
 				<th class="th-sm-6">N°
 				</th>
 				<th class="th-sm">Name
-				</th>
-				<th class="th-sm">Prise
-				</th>
-				<th class="th-sm">Retour
-				</th>
-				<th class="th-sm">total S
 				</th>
 				<th class="th-sm">somme recu
 				</th>
@@ -269,12 +150,6 @@
 				<th>N°
 				</th>
 				<th>Name
-				</th>
-				<th>Prise
-				</th>
-				<th>Retour
-				</th>
-				<th>total S
 				</th>
 				<th>somme recu
 				</th>
@@ -376,7 +251,7 @@
 	<!-- MI OWN SRCIPT JS -->
 	<script src="static/js/tableHead.js"></script>
     <!-- ME OWN CSS -->
-	<script src="static/js/script.js"></script>
+	<script src="static/js/caisse.js"></script>
 
     <!-- Tooltips -->
     <!-- <script type="text/javascript" src="https://mdbootstrap.com/previews/docs/latest/js/popper.min.js"></script> -->

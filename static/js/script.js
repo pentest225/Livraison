@@ -1,5 +1,10 @@
 $(function()
 {
+    /*
+    //DECLARATION DE NOS VARIABLES 
+    //    
+    //
+    */
     var ListeClient=0;
     var AllClient=[];
     var idBoulagerie=0;
@@ -20,8 +25,11 @@ $(function()
     var varsementClient=0;
     var SommeAverserClient=0;
     var inputRetourClient="";
+    var inputSommeRecuLivreur=document.querySelector('#SommeVerseLivreur');
+    var inputManquantLivreur =document.querySelector('#manquantLivreur');
     var inputRestPrise=document.querySelector('#restPrise');
     var btnValidBoul=document.querySelector(".valideBoul");
+    var btnCloseBoule=document.querySelector(".closeSectionBoul")
     var restPrise=0;
     var restPriseVente=0;
     var inputMaquantDuJour=document.querySelector('#ManquantDuJour');
@@ -43,17 +51,6 @@ $(function()
     var arrayTableau=document.getElementById('dtBasicExample').rows;
     var nombreLignesTab=arrayTableau.length;
     var totalSommeRecu =0;
-    //div pour les alert lor de l'inscription du client 
-    if(!box_danger.classList.contains('hideDiv')){
-        box_danger.classList.add('hideDiv');
-    }
-    if(!box_warning.classList.contains('hideDiv')){
-        box_warning.classList.add('hideDiv');
-    }
-    if(!box_success.classList.contains('hideDiv')){
-        box_success.classList.add('hideDiv');
-    }
-    
     //creation des Ligne du tableau 
     for (var i= 0 ;i <linesNumber ;i++){
         arrayTab=document.getElementById('tbody');
@@ -62,7 +59,7 @@ $(function()
             celNom=ligne.insertCell(0);
             celNom.innerHTML+=(i+1);
             celNom=ligne.insertCell(1);
-            celNom.innerHTML+="<input type='text' placeholder='' class='tableInput NomClient"+i+"'><span class='sugestion"+i+"'></span> ";
+            celNom.innerHTML+="<input type='text' placeholder=''  class='tableInput NomClient"+i+"' id='NomClient"+i+"' name='NomClient"+i+"' autocomplete='off' data-provide='typeahead'><div class='sugestion"+i+" liste '></div>";
             celPrise=ligne.insertCell(2);
             celPrise.innerHTML+="<input type='number' placeholder='' class=' tableInput priseClient"+i+"'> ";
             celPrise=ligne.insertCell(3);
@@ -86,6 +83,8 @@ $(function()
         inputDateBoul.onchange=function(){
             dateBoul=this.value;
             selectBoul.disabled=false;
+            console.log(inputDateBoul);
+            console.log(dateBoul);
         }
        
         if((PrixUnitaireBoul===0) || (idBoulagerie === 0)){
@@ -115,7 +114,7 @@ $(function()
                             AllClient.push(result.listeClient[i].name)
                         }
                         //
-                        console.log(result.listeClient[0].name);
+                        // console.log(result.listeClient[0].name);
                         //On desactive tous les input
                         for(var i = 0 ;i<allInput.length;i++){
                             allInput[i].disabled=false;
@@ -142,7 +141,7 @@ selectBoul.addEventListener("change",function(){
     inputSommeAVerser.innerHTML=0;
     idBoulagerie=this.value;
     if(idBoulagerie==''){
-        alert('Veillez celectionne la boulagerie');
+        alertError('Villez selectionne une boullangerie...');
         inputPrise.disabled=true;
         inputRetour.disabled=true;
         inputversement.disabled=true;
@@ -152,18 +151,36 @@ selectBoul.addEventListener("change",function(){
         $.ajax({
             type:'POST',
             url:'static/php/livraison.php',
-            data:{Action:'recupInfoBoul',idBoul:idBoulagerie},
+            data:{Action:'recupInfoBoul',idBoul:idBoulagerie,date:dateBoul},
             dataType:'JSON',
             success:function(result){
                 //une fois les informations recupere on les affiche a la vue 
                     //1=>on actualise le prix unitaire 
+                    if(result.ErrorVersementExiste){
+                        let textError ="Desole un versement a deja ete effectue le "+dateBoul+" ";
+                        alertError('Erreur',textError);
+                    }
+                    else if(result.dateExiste){
+                        inputPrise.disabled=false;
+                        inputRetour.disabled=false;
+                        inputversement.disabled=false;
+                        totalManquant=parseInt(result.totalManquant);
+                        inputTotalManquant.innerHTML="<strong>"+totalManquant+"</strong>"
 
+                        inputPrise.value=result.prise;
+                        inputRetour.value=result.retour;
+                        inputSommeAVerser.value=result.sommeAVerse;
+
+                    }
+                    else{
                     PrixUnitaireBoul=result.prixUniBoul;
                     inputPrise.disabled=false;
                     inputRetour.disabled=false;
                     inputversement.disabled=false;
                     totalManquant=parseInt(result.totalManquant);
                     inputTotalManquant.innerHTML="<strong>"+totalManquant+"</strong>"
+            }
+                    
             }
         })
     }
@@ -172,7 +189,7 @@ selectBoul.addEventListener("change",function(){
 })
 //L'EVENEMENT DECLANCHREUR C'EST DANS CE EVENEMENT QU'EST DEFFINI LA PORTER DE TOUTE LE VARAIBLE 
     //TETEMENT LORS DU CHANGEMENT DE LA PRISE 
-    inputPrise.addEventListener("keyup",function(){
+    inputPrise.addEventListener("input",function(){
         
             Retour=parseInt(Retour);
             this.value==''? Prise=0:Prise=parseInt(this.value);
@@ -195,7 +212,7 @@ selectBoul.addEventListener("change",function(){
         
     })
     //TRAITEMENT AU CHAGEMENT DU RETOUR 
-    inputRetour.addEventListener('keyup',function(){
+    inputRetour.addEventListener('input',function(){
         
         this.value==''? Retour=0:Retour=parseInt(this.value);
         if(Retour > Prise){
@@ -228,7 +245,7 @@ selectBoul.addEventListener("change",function(){
         }
     })
     //TRAITEMENT DU VERSEMENT 
-    inputversement.addEventListener('keyup',function(){
+    inputversement.addEventListener('input',function(){
         this.value==''? Versement=0:Versement=parseInt(this.value);
         if(Versement < 0){
             alert("valleur du versement est negative !");
@@ -239,22 +256,10 @@ selectBoul.addEventListener("change",function(){
             Manquant=parseInt(SommeAVerse-Versement);
             newTotal =totalManquant + Manquant;
             inputTotalManquant.innerHTML="<strong>"+( newTotal )+"</strong>";
-           /* $.ajax({
-                type:"POST",
-                url:'static/php/livraison.php',
-                data:{Action:'MiseAjourVersement',idBoul:idBoulagerie,date:dateBoul, prise:Prise,retour:Retour,sommeDu:SommeAVerse,versement:Versement,rest:Manquant},
-                dataType:'JSON',
-                success:function(result){
-                    if(result.error){
-                        alert(result.Message);
-                    }else{
                         
-                    }
-                }
-            })*/
         }
     })
-
+    //ENREGITREMENT DES INFO BOULAGERIE 
     btnValidBoul.addEventListener("click",function(){
         console.log("DATE ="+dateBoul+"PRISE = "+Prise+" RETOUR ="+Retour+" SOMME A VERSER ="+SommeAVerse+"  VERESEMENT ="+Versement+"TOTAL MANQUANT = "+newTotal);
          $.ajax({
@@ -264,28 +269,18 @@ selectBoul.addEventListener("change",function(){
                 dataType:'JSON',
                 success:function(result){
                     if(result.insertionOk){
-                        alert("INSERTION OK ");
+                        btnCloseBoule.click();
+                        alertSusess('Enregistrement effectif ; )');
+
                     }
+                    if(result.insertoExiste){
+                        alertError('Enregistrement ','Desole un enregistrement')
+                }
                 }
             })
 
     })
-    //System d'auto completion
-    for(var i =0;i<linesNumber;i++){
-        var NomClient =document.querySelector(".NomClient"+i+"");
-        NomClient.addEventListener('input',(e)=>{
-            console.log(e)
-            var spanSugestion=document.querySelector("sugestion"+i+"");
-            var listeSugestion=[];
-            var valSaisie=e.target.value;
-            AllClient.forEach((client)=>{
-                if((client.toLowerCase().search(valSaisie.toLowerCase()))!=-1){
-                    listeSugestion.push(client);
-                }
-            })            
-
-        })
-    }
+    
     //Verification du client dans la base de donnee 
     for(var i =0 ;i< linesNumber;i++){
         var NomClient =document.querySelector(".NomClient"+i+"");
@@ -320,113 +315,181 @@ selectBoul.addEventListener("change",function(){
                             }
                         }
                     });
-                
             });
     }
-        //Traitement pour les modifiaction des prise 
-        for(var i =0 ;i< linesNumber;i++){
-                    var priseClient =document.querySelector(".priseClient"+i+"");
-                    priseClient.onkeyup=function(){
-                    var prise =0;                   
-                    this.value==''?prise=0:prise=prise=parseInt(this.value);
 
-                    var retourClient =this.parentElement.parentElement.children[3].children[0].value;
-                    var SommeAVerse =this.parentElement.parentElement.children[4].children[0];
-                    var SommeRandu =this.parentElement.parentElement.children[5].children[0].value;
-                    var etatSolde =this.parentElement.parentElement.children[6].children[0];
-                    var montantSolde =this.parentElement.parentElement.children[7].children[0];
-                    console.log(AllClient);
-                    SommeAverserClient=(parseInt(prise)-parseInt(retourClient)) * parseInt(prixUnitaireClient); 
+    //Traitement pour les modifiaction des prise 
+    for(var i =0 ;i< linesNumber;i++){
+                var priseClient =document.querySelector(".priseClient"+i+"");
+                priseClient.onkeyup=function(){
+                var prise =0;                   
+                this.value==''?prise=0:prise=prise=parseInt(this.value);
+                var nom=this.parentElement.parentElement.children[1].children[0].value;
+                var retourClient =this.parentElement.parentElement.children[3].children[0].value;
+                var SommeAVerse =this.parentElement.parentElement.children[4].children[0];
+                var SommeRandu =this.parentElement.parentElement.children[5].children[0].value;
+                var etatSolde =this.parentElement.parentElement.children[6].children[0];
+                var montantSolde =this.parentElement.parentElement.children[7].children[0];
+                $.ajax({
+                    type: "Post",
+                    url: 'static/php/livraison.php',
+                    data:{Action:'VerifClient',Nom:nom} ,
+                    dataType: "json",
+                    success: function (response) {
+                        if(response.NameExist){
+                            SommeAverserClient=(parseInt(prise)-parseInt(retourClient)) * parseInt(response.prixUnitaireClient); 
+                            SommeAVerse.value=SommeAverserClient;
+                            parcourPrise(restPriseVente);
+                            newSoldeClient =(parseInt(response.newSolde)+SommeAverserClient) - SommeRandu;
+                            montantSolde.value=parseInt(newSoldeClient  );
+                            montantSolde.disabled=true;
+                            etatSolde.value=verifEtatSolde(parseInt(newSoldeClient));
+                            etatSolde.disabled=true;
+
+                        }else{
+                            clientExitpas(nom);
+                        }
+                        
+                    }
+                });
+                
+                    
+                
+            };
+        }
+    //Traitement pour les modifiaction des Retour 
+    for(var i =0 ;i< linesNumber;i++){
+        var inputRetourClient =document.querySelector(".retourClient"+i+"");
+        inputRetourClient.addEventListener('keyup',function(){
+        var retourClient =0;
+        this.value==''?retourClient=0:retourClient=parseInt(this.value);
+        var nom=this.parentElement.parentElement.children[1].children[0].value;
+        var prise =this.parentElement.parentElement.children[2].children[0].value;
+        var SommeRandu =this.parentElement.parentElement.children[5].children[0].value;
+        var SommeAVerse =this.parentElement.parentElement.children[4].children[0];
+        var etatSolde =this.parentElement.parentElement.children[6].children[0];
+        var montantSolde =this.parentElement.parentElement.children[7].children[0];
+        if(retourClient > prise){
+            alert("Valleur Retour Incorect !!");
+            retourClient=0;
+            inputRetourClient.value=0;
+        }
+        $.ajax({
+            type: "Post",
+            url: 'static/php/livraison.php',
+            data:{Action:'VerifClient',Nom:nom} ,
+            dataType: "json",
+            success: function (response) {
+                if(response.NameExist){
+                    SommeAverserClient=(parseInt(prise)-parseInt(retourClient)) * parseInt(response.prixUnitaireClient); 
                     SommeAVerse.value=SommeAverserClient;
-                    parcourPrise(restPriseVente);
-                    newSoldeClient =(soldeClient+SommeAverserClient) - SommeRandu;
-                    montantSolde.value=parseInt(newSoldeClient  );
+                    newSoldeClient =(parseInt(response.newSolde)+SommeAverserClient) - SommeRandu;
+                    montantSolde.value=parseInt(newSoldeClient);
                     montantSolde.disabled=true;
                     etatSolde.value=verifEtatSolde(parseInt(newSoldeClient));
                     etatSolde.disabled=true;
-                      
-                    
-                };
-            }
-            //Traitement pour les modifiaction des Retour 
-            for(var i =0 ;i< linesNumber;i++){
-                var inputRetourClient =document.querySelector(".retourClient"+i+"");
-                inputRetourClient.addEventListener('keyup',function(){
-                var retourClient =0;
-                this.value==''?retourClient=0:retourClient=parseInt(this.value);
-                var prise =this.parentElement.parentElement.children[2].children[0].value;
+
+                }else{
+                    clientExitpas(nom);
+                }
                 
-                var SommeRendu =this.parentElement.parentElement.children[5].children[0].value;
-                var SommeAVerse =this.parentElement.parentElement.children[4].children[0];
-                var etatSolde =this.parentElement.parentElement.children[6].children[0];
-                var montantSolde =this.parentElement.parentElement.children[7].children[0];
-                if(retourClient > prise){
-                    alert("Valleur Retour Incorect !!");
-                    retourClient=0;
-                    inputRetourClient.value=0;
-                }
-                SommeAverserClient=(parseInt(prise)-parseInt(retourClient)) * parseInt(prixUnitaireClient); 
-                SommeAVerse.value=SommeAverserClient;
-                newSoldeClient=(soldeClient + SommeAverserClient) - SommeRendu;
-                etatSolde.value=verifEtatSolde(newSoldeClient);
-                montantSolde.value=parseInt(newSoldeClient);
-                })
             }
-                //Traitement pour les modifiaction des Sommme Verser  
-                for(var i =0 ;i< linesNumber;i++){
-                    var SommeVerser =document.querySelector(".SommeVerser"+i+"");
-                            SommeVerser.addEventListener('keyup',function(){
-                            var Somme = 0;
-                            this.value ==''?Somme=0:Somme=parseInt(this.value);
-                            var prise =parseInt(this.parentElement.parentElement.children[2].children[0].value);
-                            var SommeAVerse =parseInt(this.parentElement.parentElement.children[4].value);
-                            var etatSolde =this.parentElement.parentElement.children[6];
-                            var montantSolde =this.parentElement.parentElement.children[7].children[0];
-                            etatSolde.value=verifEtatSolde(parseInt(newSoldeClient) - Somme);
-                            montantSolde.value=(parseInt(newSoldeClient) - Somme);
-                        });
-                }
-                btnSaveVente.addEventListener("click",function(){
-                    var tableauVente=[];
-                    for(var i = 0; i <linesNumber ;i++){
-                        var tabNomClient=document.querySelector(".NomClient"+i+"").value;
-                        var tabPriseClient =document.querySelector(".priseClient"+i+"").value;
-                        var tabRetourClient =document.querySelector(".retourClient"+i+"").value;
-                        var tabSommeAverserClient =document.querySelector(".SommeAverser"+i+"").value;
-                        var tabSommeVerser =document.querySelector(".SommeVerser"+i+"").value;
-                        var tabTotalSoldeClient=document.querySelector(".valSolde"+i+"").value;
-                        if(tabNomClient ===""){
-                            break;
+        });
+        
+    })
+    }
+    //Traitement pour les modifiaction des Sommme Verser  
+    for(var i =0 ;i< linesNumber;i++){
+        var SommeVerser =document.querySelector(".SommeVerser"+i+"");
+                SommeVerser.addEventListener('input',function(){
+                var Somme = 0;
+                this.value ==''?Somme=0:Somme=parseInt(this.value);
+                parcourSommeRecu();
+                var nom=this.parentElement.parentElement.children[1].children[0].value;
+                var prise =parseInt(this.parentElement.parentElement.children[2].children[0].value);
+                var SommeAVerse =parseInt(this.parentElement.parentElement.children[4].value);
+                var etatSolde =this.parentElement.parentElement.children[6];
+                var montantSolde =this.parentElement.parentElement.children[7].children[0];
+
+                $.ajax({
+                    type: "Post",
+                    url: 'static/php/livraison.php',
+                    data:{Action:'VerifClient',Nom:nom} ,
+                    dataType: "json",
+                    success: function (response) {
+                        if(response.NameExist){
+                            SommeAverserClient=(parseInt(prise)-parseInt(retourClient)) * parseInt(response.prixUnitaireClient);
+                            newSoldeClient =(parseInt(response.newSolde)+SommeAverserClient) - Somme;
+                            montantSolde.value=parseInt(newSoldeClient);
+                            montantSolde.disabled=true;
+                            etatSolde.value=verifEtatSolde(parseInt(newSoldeClient));
+                            etatSolde.disabled=true;
+
+                        }else{
+                            clientExitpas(nom);
                         }
-                        else{
-                            var objClient ={
-                                nom:tabNomClient,
-                                prise:parseInt(tabPriseClient),
-                                retour:parseInt(tabRetourClient),
-                                sommeAVerse:parseInt(tabSommeVerser),
-                                sommeVerser:parseInt(tabSommeVerser),
-                                solde:parseInt(tabTotalSoldeClient)
-                            }
-                        }
-                        tableauVente.push(objClient);
+                        
                     }
-                    console.log(tableauVente);
-                    $.ajax({
-                        type: "Post",
-                        url: 'static/php/livraison.php',
-                        data:{Action:'InsertionVente',date:dateVente,tab:tableauVente} ,
-                        dataType: "json",
-                        success: function (response) {
-                            if(response.InsertionOk){
-                                var text ='Enregistrement effectuer ';
-                                alertSusess(text); 
-                            }
-                        }
-                    });
-                })
+                });
+                
+                
+                etatSolde.value=verifEtatSolde(parseInt(newSoldeClient) - Somme);
+                montantSolde.value=(parseInt(newSoldeClient) - Somme);
+            });
+    }
+    //TAITEMENT LORS DE LA SAISIE DE LA SOMME RECU DU LIVREUR 
+    inputSommeRecuLivreur.addEventListener('input',function(){
+        var sommeLivreur=0;
+        this.value==''?sommeLivreur=0:sommeLivreur=parseInt(this.value);
+        var mqt=parseInt(inputTotalSommeRecue.value) - sommeLivreur;
+        inputManquantLivreur.value=mqt;
+
+    })
+    //ENREGISTREMENT DE LA VENTE DU JOURS 
+    btnSaveVente.addEventListener("click",function(){
+        var tableauVente=[];
+        for(var i = 0; i <linesNumber ;i++){
+            var tabNomClient=document.querySelector(".NomClient"+i+"").value;
+            var tabPriseClient =document.querySelector(".priseClient"+i+"").value;
+            var tabRetourClient =document.querySelector(".retourClient"+i+"").value;
+            var tabSommeAverserClient =document.querySelector(".SommeAverser"+i+"").value;
+            var tabSommeVerser =document.querySelector(".SommeVerser"+i+"").value;
+            var tabTotalSoldeClient=document.querySelector(".valSolde"+i+"").value;
+            if(tabNomClient ===""){
+                break;
+            }
+            else{
+                var objClient ={
+                    nom:tabNomClient,
+                    prise:parseInt(tabPriseClient),
+                    retour:parseInt(tabRetourClient),
+                    sommeAVerse:parseInt(tabSommeAverserClient),
+                    sommeVerser:parseInt(tabSommeVerser),
+                    solde:parseInt(tabTotalSoldeClient)
+                }
+            }
+            tableauVente.push(objClient);
+        }
+        $.ajax({
+            type: "Post",
+            url: 'static/php/livraison.php',
+            data:{Action:'InsertionVente',date:dateVente,tab:tableauVente} ,
+            dataType: "json",
+            success: function (response) {
+                console.log(response);
+                if(response.InsertionOk){
+                    var text ='Enregistrement effectuer ';
+                    console.log("Enregistrement effectue ");
+                    alertSusess(text); 
+                }
+                if(response.dateExiste){
+                    alertError('Erreur date','Desole une insertion a dejat ete faite a cette date ');
+            }
+            }
+        });
+    })
                 
     //Ajouter une boullangerie
-    //Ajout d'un utilisateur 
     $('#formAddBoullangerie').submit(function(e){
         e.preventDefault();
         var nomBoul =document.querySelector('#nomBoul').value;
@@ -440,12 +503,13 @@ selectBoul.addEventListener("change",function(){
             dataType:'json',
             success:function (response){
                 if(response.NameExist){
-                    box_info.querySelector('h4').innerHTML="<strong>Erreur Boublon </strong>";
-                    box_info.querySelector('p').innerHTML= "Désolé il existe dejat client nommé  <strong>"+nomBoul+" </strong> dans la liste de vos client " ;
+                    var textError= "Désolé il existe dejat une boulagerie nommée  "+nomBoul+"  dans la liste de vos client " ;
+                    alertError('Erreur Boublon',textError);
                 }
                 if(response.InsertionOk){
-                    box_info.querySelector('h4').innerHTML="<strong>COMPTE CREE </strong>";
-                    box_info.querySelector('p').innerHTML= "Felicitation le client <strong>"+nomBoul+" </strong> a été ajouté avec succes  " ;
+                    var textMessage= "Felicitation une compte "+nomBoul+"  a vien d'ere ajouter   " ;
+                    selectBoul.innerHTML+="<option value="+parseInt(response.idBoul)+">"+nomBoul+"</option> ";
+                    alertSusess(textMessage);
                 }
             }
          })
@@ -482,14 +546,8 @@ selectBoul.addEventListener("change",function(){
                 textError='Veillez selectionne le type de client';
             }
         if(ErrorInput){
-            if(box_danger.classList.contains('hideDiv')){
-                box_danger.classList.remove('hideDiv');
-            }
-            else{
-            box_danger.style.display="block";
-            }
             for(var i =0 ; i<textError.length ;i++){
-                box_danger.querySelector('p').innerHTML="<p>"+textError[i]+"</p>" ;
+                alertError('erreur',textError[i]);
             }
             
         }
@@ -503,24 +561,14 @@ selectBoul.addEventListener("change",function(){
             dataType:'json',
             success:function (response){
                 if(response.NameExist){
-                    if(box_warning.classList.contains('hideDiv')){
-                        box_warning.classList.remove('hideDiv');
-                    }
-                    else{
-                        box_warning.style.display="block";
-                        }
-                    box_warning.querySelector('p').innerHTML= "Désolé il existe dejat client nommé  <strong>"+nomClient+" </strong> dans la liste de vos client " ;
+                    textError= "Désolé il existe dejat client nommé  "+nomClient+" dans la liste de vos client " ;
+                    alertError('Boublon',textError);
                 }
                 if(response.InsertionOk){
                     AllClient.push(nomClient);
-                    if(box_success.classList.contains('hideDiv')){
-                        box_success.classList.remove('hideDiv');
-                    }
-                    else{
-                        box_success.style.display="block";
-                        }
-                    box_success.classList.remove('hideDiv');
-                    box_success.querySelector('p').innerHTML= "Felicitation le client <strong>"+nomClient+" </strong> a été ajouté avec succes  " ;
+                   
+                    text= "Felicitation le client "+nomClient+"  a été ajouté avec succes  " ;
+                    alertSusess(text);
                 
                 }
             }
@@ -528,33 +576,7 @@ selectBoul.addEventListener("change",function(){
         }
         
     })
-    
-        
-      Swal.fire(
-        'Good job!',
-        'You clicked the button!',
-        'success'
-      )
-
-
-    function alertSusess(text){
-        Swal.fire({
-            position: 'top-end',
-            type: 'success',
-            title: text,
-            //showConfirmButton: tre,
-            //timer: 3000
-          })
-    }
-    //CODE JS  POUR AFFICHER OU CACHEZ LES ENTETE 
-
-    var showHideEntete =document.querySelector("#showHideEntete");
-    showHideEntete.addEventListener('click',function(){
-      var Entete= document.querySelector(".entete");
-      Entete.classList.toggle("showHide");
-      this.hidden;
-    })
-
+  
 // ---------------------------SECTION DES FUNCTION --------------------------------  //
     function activeSelectBoul(){
         console.log("Activation du select ");
@@ -584,6 +606,7 @@ selectBoul.addEventListener("change",function(){
         return "VALLEUR NON NUMERIQUE";
  
     }
+    //FONTION POUR LE CALCULE DE RESTE DES PRISE 
     function parcourPrise(priseTotal){
         var inputRestPrise=document.querySelector("#restPrise");
         var restPrise=0;
@@ -593,39 +616,95 @@ selectBoul.addEventListener("change",function(){
             restPrise +=parseInt(inputPrise);
            
         }
-        console.log(restPrise);
         inputRestPrise.innerHTML=(priseTotal -restPrise);
     }
+    //FONCTION POUR LA SOMME RECU TOTAL 
+    function parcourSommeRecu(){
+        var total=0;
+        for(var i =0;i < linesNumber;i++){
+            var valeurRecue=document.querySelector(".SommeVerser"+i+"").value;
+            valeurRecue ==''?valeurRecue=0:valeurRecue=valeurRecue;
+            total +=parseInt(valeurRecue);
+        }
+        console.log(total);
+        inputTotalSommeRecue.value=(total);
+        inputTotalSommeRecue.innerHTML="<strong>"+total+"</strong>"
+    }
+    //FONTION POUR SIGNALE SI LE CLIENT EXISTE PAS EN BD
     function clientExitpas(nomDuClient){
         var creationCompt=confirm('Desole Ce Client '+nomDuClient+' Existe pas dans la liste des client\nvoulez vous cree un compt pour ce client');
             if(creationCompt)
             {
                 $('#creationCompt').click();
             }
+            return creationCompt;
+    }
+
+    //FUNCTION POUR LES ALERTS 
+    function alertSusess(text) {
+        const Toast = Swal.mixin({
+             toast: true,
+             position: 'top-end',
+             showConfirmButton: false,
+             timer: 3000
+           });
+  
+           Toast.fire({
+             type: 'success',
+             title: text
+           })
+     }
+    function alertError(text){
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000
+          });
+ 
+          Toast.fire({
+            type: 'error',
+            title: text
+          })
+    }
+
+    //FONCTION POUR LA RECUPERATION DU PRIX UNITAIRE ET DU SOLDE DU CLENT EN BD
+    function recupPrixUnitaireAndSolde(nom){
+        $.ajax({
+            type: "Post",
+            url: 'static/php/livraison.php',
+            data:{Action:'VerifClient',Nom:nom} ,
+            dataType: "json",
+            success: function (response) {
+                return response.InsertionOk;
+            }
+        });
+        
     }
     // Data Picker Initialization
-    $('.datepicker').pickadate();
+    // $('.datepicker').pickadate();
     // Extend the default picker options for all instances.
     $.extend($.fn.pickadate.defaults, {
         monthsFull: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre',
         'Novembre', 'Décembre'],
         weekdaysShort: ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'],
         today: 'aujourd\'hui',
+        format: 'yyyy/mm/dd',
         clear: 'effacer',
         formatSubmit: 'yyyy/mm/dd'
         })
         
-        // Or, pass the months and weekdays as an array for each invocation.
+        //Or, pass the months and weekdays as an array for each invocation.
         $('.datepicker').pickadate({
         monthsFull: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre',
         'Novembre', 'Décembre'],
         weekdaysShort: ['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'],
         today: 'aujourd\'hui',
         clear: 'effacer',
+        format: 'yyyy/mm/dd',
         formatSubmit: 'yyyy/mm/dd'
         })
-
-
+        
         /*DATA TABLE 
         $(document).ready( function () {
             $('#dtBasicExample').DataTable();

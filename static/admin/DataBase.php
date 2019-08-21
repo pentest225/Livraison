@@ -2,7 +2,7 @@
    class DB
    {
         public static $db_host = "localhost";
-        public static $db_Name = "livraison";
+        public static $db_Name = "Livraison2";
         public static $db_user = "root";
         public static $db_psw="";
         private $db=null;

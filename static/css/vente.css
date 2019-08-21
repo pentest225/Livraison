@@ -1,0 +1,79 @@
+body{
+    margin-top: 10%;
+    /* background-color: rgb(127, 127, 196); */
+}
+
+#SectionPrise{
+    padding-top: 5% ;
+    padding-bottom:5%; 
+}
+#sectionTableau h5{
+    text-align: center;
+    margin:5%;
+    padding: 10px;
+}
+#SectionPrincipale{
+    margin: 0 8%;
+}
+table.dataTable thead .sorting:after,
+table.dataTable thead .sorting:before,
+table.dataTable thead .sorting_asc:after,
+table.dataTable thead .sorting_asc:before,
+table.dataTable thead .sorting_asc_disabled:after,
+table.dataTable thead .sorting_asc_disabled:before,
+table.dataTable thead .sorting_desc:after,
+table.dataTable thead .sorting_desc:before,
+table.dataTable thead .sorting_desc_disabled:after,
+table.dataTable thead .sorting_desc_disabled:before {
+bottom: .5em;
+}
+.sectionDynamique{
+    margin-bottom: 10%;
+
+}
+.nav_buttom{
+    text-align: center;
+    position: fixed; 
+    bottom:0;
+    width: 100%;
+}
+.divLogo h6{
+    border-radius:100%;
+    padding: 10%;
+    width:30%;
+    color: white;
+    background-color: rgb(106, 106, 175);
+    text-shadow: 1px 2px rgb(117, 88, 88);
+}
+.divLogo{
+    margin-left:10%;
+}
+.tableau{
+    margin-top: 12%;
+}
+
+.chargementPage{
+	margin: 0 auto;
+	padding: 0 auto;
+	font-size: 150%;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+
+
+}
+.grandeRow{
+    display: flex;
+    justify-content: space-around;
+}
+.venteDuJourRow{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+}
+.cadre{
+    width: 100%;
+    margin: 4%;
+    height: 100%;
+}

@@ -1,0 +1,49 @@
+.bmn__wrapper { height: 100%; width: 250px; position: fixed; z-index: 1; top: 0; background-color: #263b51; overflow-x: hidden; padding-top: 30px; -webkit-transition: 0.5s; transition: 0.5s; }
+.bmn__wrapper--left { left: -250px; }
+.bmn__wrapper--left.show { left: 0; }
+.bmn__wrapper--right { right: -250px; }
+.bmn__wrapper--right.show { right: 0; }
+.bmn__brand { text-align: center; font-size: 2rem; margin-bottom: 2rem; }
+.bmn__brand a { color: #8ea8c3; font-weight: bolder; }
+.bmn__nav { padding-left: 0; }
+.bmn-item { list-style: none; padding: 10px 0; position: relative; }
+.bmn-item:before { content: ""; background-color: #406e8e; position: absolute; z-index: -1; top: 0; left: 0; right: 0; bottom: 0; -webkit-transform: scaleX(0); transform: scaleX(0); -webkit-transform-origin: 0 50%; transform-origin: 0 50%; -webkit-transition-property: transform; -webkit-transition-property: -webkit-transform; transition-property: -webkit-transform; transition-property: transform; transition-property: transform, -webkit-transform; -webkit-transition-duration: 0.5s; transition-duration: 0.5s; -webkit-transition-timing-function: ease-out; transition-timing-function: ease-out; }
+.bmn-item > a.disabled { color: #406e8e; }
+.bmn-item:hover a, .bmn-item.active a { text-decoration: none; color: #f5f6f7; }
+.bmn-item:hover:before, .bmn-item.active:before { -webkit-transform: scaleX(0.02); transform: scaleX(0.02); }
+.bmn-item:focus:before, .bmn-item.active:focus:before { -webkit-transform: scaleX(1) !important; transform: scaleX(1) !important; }
+.bmn-item:hover a.disabled { color: #406e8e; pointer-events: none; }
+.bmn-link { display: block; width: 100%; color: #8ea8c3; font-weight: 600; font-size: 1.2rem; letter-spacing: 1%; padding-left: 25px; }
+.bmn__brand a:hover, .bmn__brand a:focus, .bmn__social a:hover, .bmn__social a:focus { text-decoration: none; color: #f5f6f7; }
+.bmn__social { list-style: none; }
+.bmn__social li { display: inline-block; }
+.bmn__social li a { color: #8ea8c3; }
+.bmn__chevron { background-image: url('data:image/svg+xml;utf8,<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" fill="rgba(245,246,247,1)" viewBox="0 0 272 155.28"><title>Chevron Down</title><path d="M694.36,317.51,580.88,214.58A23.56,23.56,0,0,0,565,208.72a22.51,22.51,0,0,0-15.71,5.86L435.63,317.51A18.77,18.77,0,0,0,429,331.9a18,18,0,0,0,6.63,14.23L448.73,358a23.54,23.54,0,0,0,31.42,0L565,281.3,649.85,358a21.85,21.85,0,0,0,15.71,6,22.88,22.88,0,0,0,15.89-6l13.09-11.86A18.47,18.47,0,0,0,701,331.9,18.74,18.74,0,0,0,694.36,317.51Z" transform="translate(-429 -208.72)"/></svg>'); background-size: 100% 100%; -webkit-transition: -webkit-transform 0.25s ease-out; transition: -webkit-transform 0.25s ease-out; transition: transform 0.25s ease-out; transition: transform 0.25s ease-out, -webkit-transform 0.25s ease-out; -webkit-transform: rotate(180deg); transform: rotate(180deg); }
+.bmn__chevron--rotated { -webkit-transform: rotate(0deg); transform: rotate(0deg); }
+.bmn__plus { position: relative; /* Vertical line */ /* horizontal line */ }
+.bmn__plus:before, .bmn__plus:after { content: ""; position: absolute; background-color: #f5f6f7; -webkit-transition: -webkit-transform 0.25s ease-out; transition: -webkit-transform 0.25s ease-out; transition: transform 0.25s ease-out; transition: transform 0.25s ease-out, -webkit-transform 0.25s ease-out; }
+.bmn__plus:before { top: 0; left: 50%; width: 2px; height: 100%; margin-left: -1px; }
+.bmn__plus:after { top: 50%; left: 0; width: 100%; height: 2px; margin-top: -2px; }
+.bmn__plus:hover { cursor: pointer; }
+.bmn__plus--minus:before { -webkit-transform: rotate(90deg); transform: rotate(90deg); }
+.bmn__plus--minus:after { -webkit-transform: rotate(180deg); transform: rotate(180deg); }
+.bmn__dropdown { position: relative; }
+.bmn__dropdown .dropdown-toggle { padding-left: 25px; white-space: normal; }
+.bmn__dropdown .dropdown-toggle::after { content: ""; border-top: none; border-bottom: none; border-left: none; border-right: none; }
+.bmn__dropdown .dropdown-toggle span { height: 15px; width: 15px; position: absolute; right: 15px; top: 17px; display: block; }
+.bmn__dropdown .dropdown-toggle span svg path { fill: #f5f6f7; }
+.bmn__dropdown .dropdown-menu { display: none; height: 0; position: relative; padding: 0; border: none; border-radius: 0; background-color: #161925; width: 100%; -webkit-box-shadow: inset 0px -1px 3px 2px #0c0e15; box-shadow: inset 0px -1px 3px 2px #0c0e15; }
+.bmn__dropdown .dropdown-menu a { color: #f5f6f7; }
+.bmn__dropdown .dropdown-item { padding: 10px 25px; }
+.bmn__dropdown .dropdown-item:not(:last-child) { border-bottom: solid thin #406e8e; }
+.bmn__dropdown .dropdown-item:hover, .bmn__dropdown .dropdown-item:focus { background-color: #8ea8c3; color: #f5f6f7; }
+.bmn__dropdown.show .dropdown-menu { display: block; margin: 10px 0; height: auto; -webkit-transform: scaleY(0); transform: scaleY(0); -webkit-transform-origin: top; transform-origin: top; -webkit-animation: slideDown 0.2s ease-out 1 forwards; animation: slideDown 0.2s ease-out 1 forwards; }
+
+@-webkit-keyframes slideDown { to { -webkit-transform: scaleY(1); transform: scaleY(1); } }
+
+@keyframes slideDown { to { -webkit-transform: scaleY(1); transform: scaleY(1); } }
+#wrapper { -webkit-transition: 0.5s; transition: 0.5s; }
+#wrapper.pushed--left { margin-left: 250px; }
+#wrapper.pushed--right { margin-right: 250px; }
+
+/*# sourceMappingURL=bmn.css.map */

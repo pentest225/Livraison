@@ -1,6 +1,6 @@
 
 <!--Navbar-->
-<nav class="navbar navbar-expand-lg navbar-dark primary-color">
+<nav class="navbar navbar-expand-lg navbar-dark primary-color fixed-top">
   <!-- Navbar brand -->
   <a class="navbar-brand" href="#">Top Livraison</a>
   <!-- Collapse button -->
@@ -22,6 +22,12 @@
       </li>
       <li class="nav-item">
         <a class="nav-link" href="#" data-toggle="modal" data-target="#myModal1" id="comptBoullangerie">Nouvelle Boulangerie</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="client.php">Client</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="tesVente.php">test vente</a>
       </li>
       <!-- Dropdown -->
       <li class="nav-item">

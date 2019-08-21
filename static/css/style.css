@@ -1,6 +1,6 @@
 /*SECTION MENU*/
 body{
-	margin: 0px;
+	margin-top:8%;
 	padding: 0px;
 	font-family:"Book Antiqua" ,"Lucida Console", Monaco, monospace;
 	font-size: 15px ;
@@ -11,6 +11,10 @@ body{
 }
 .entete table  {
 	border: 1 px solid red;
+}
+.dateBoul{
+	display: flex;
+	justify-content: space-between;
 }
 .date{
 	text-align: center;
@@ -45,6 +49,7 @@ select{
 	margin: 0px;
 	height: 50px;
 }
+
 .navigation .restPrise{
 	display: flex;
 	border-bottom: 2px solid grey;
@@ -110,4 +115,31 @@ table.dataTable thead .sorting_desc:before,
 table.dataTable thead .sorting_desc_disabled:after,
 table.dataTable thead .sorting_desc_disabled:before {
   bottom: .5em;
+}
+.chargementPage{
+	margin: 0 auto;
+	padding: 0 auto;
+	font-size: 150%;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+
+
+}
+/* mise en forme des liste de sugestion  */
+.liste{
+	color:white;
+	overflow: hidden;
+	max-height: 50px;
+	
+	
+}
+.liste ul li{
+	margin: 0 auto;
+	list-style-type:none ;
+	background: rgb(194, 180, 180);
+	position: relative;
+	padding: 0px 5px;
+	left: -40%;
+	
 }
