@@ -1,10 +1,10 @@
 body{
-    margin-top: 10%;
+    margin-top: 2%;
     /* background-color: rgb(127, 127, 196); */
 }
 
 #SectionPrise{
-    padding-top: 5% ;
+    padding-top: 2% ;
     padding-bottom:5%; 
 }
 #sectionTableau h5{
@@ -34,8 +34,10 @@ bottom: .5em;
 .nav_buttom{
     text-align: center;
     position: fixed; 
-    bottom:0;
+    bottom:10px;
     width: 100%;
+    margin: 0 auto;
+    padding: 0 auto;
 }
 .divLogo h6{
     border-radius:100%;
@@ -65,7 +67,27 @@ bottom: .5em;
 .grandeRow{
     display: flex;
     justify-content: space-around;
+    padding: 5px;
 }
+.prise{
+    /* display: flex;
+    justify-content: space-evenly; */
+    width: 200px;
+    box-shadow: -4px -3px #6f7e83;
+    border-radius: 5px;
+    padding: 10px;
+    border: 1px solid  #6f7e83;
+}
+.prise h3{
+    border-bottom: 2px solid  gray;
+    text-shadow: 3px -5px white;
+    box-shadow: -4px -4px white;
+    color: #6f7e83;
+    text-align: right;
+
+
+}
+
 .venteDuJourRow{
     display: flex;
     flex-direction: column;

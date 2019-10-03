@@ -49,6 +49,10 @@ $(function()
     var dateBoul = document.querySelector(".inputDateBoulangerie").value;
     var dateVente =document.querySelector(".dateVente").value;
     var arrayTableau=document.getElementById('dtBasicExample').rows;
+    var sommeLivreur=0;
+    var mqt
+    var total=0;
+
     var nombreLignesTab=arrayTableau.length;
     var totalSommeRecu =0;
     //creation des Ligne du tableau 
@@ -407,6 +411,7 @@ selectBoul.addEventListener("change",function(){
                 parcourSommeRecu();
                 var nom=this.parentElement.parentElement.children[1].children[0].value;
                 var prise =parseInt(this.parentElement.parentElement.children[2].children[0].value);
+                var retourClient =this.parentElement.parentElement.children[3].children[0].value;
                 var SommeAVerse =parseInt(this.parentElement.parentElement.children[4].value);
                 var etatSolde =this.parentElement.parentElement.children[6];
                 var montantSolde =this.parentElement.parentElement.children[7].children[0];
@@ -433,15 +438,14 @@ selectBoul.addEventListener("change",function(){
                 });
                 
                 
-                etatSolde.value=verifEtatSolde(parseInt(newSoldeClient) - Somme);
-                montantSolde.value=(parseInt(newSoldeClient) - Somme);
+                // etatSolde.value=verifEtatSolde(parseInt(newSoldeClient) - Somme);
+                // montantSolde.value=(parseInt(newSoldeClient) - Somme);
             });
     }
     //TAITEMENT LORS DE LA SAISIE DE LA SOMME RECU DU LIVREUR 
     inputSommeRecuLivreur.addEventListener('input',function(){
-        var sommeLivreur=0;
         this.value==''?sommeLivreur=0:sommeLivreur=parseInt(this.value);
-        var mqt=parseInt(inputTotalSommeRecue.value) - sommeLivreur;
+        mqt=parseInt(inputTotalSommeRecue.value) - sommeLivreur;
         inputManquantLivreur.value=mqt;
 
     })
@@ -473,7 +477,7 @@ selectBoul.addEventListener("change",function(){
         $.ajax({
             type: "Post",
             url: 'static/php/livraison.php',
-            data:{Action:'InsertionVente',date:dateVente,tab:tableauVente} ,
+            data:{Action:'InsertionVente',date:dateVente,tab:tableauVente,restVente:restPrise,sommeRecuVente:total,SommeVerseLivreur:sommeLivreur,manquantLivreur:mqt} ,
             dataType: "json",
             success: function (response) {
                 console.log(response);
@@ -620,13 +624,12 @@ selectBoul.addEventListener("change",function(){
     }
     //FONCTION POUR LA SOMME RECU TOTAL 
     function parcourSommeRecu(){
-        var total=0;
+        total=0;
         for(var i =0;i < linesNumber;i++){
             var valeurRecue=document.querySelector(".SommeVerser"+i+"").value;
             valeurRecue ==''?valeurRecue=0:valeurRecue=valeurRecue;
             total +=parseInt(valeurRecue);
         }
-        console.log(total);
         inputTotalSommeRecue.value=(total);
         inputTotalSommeRecue.innerHTML="<strong>"+total+"</strong>"
     }

@@ -37,7 +37,7 @@
         crossorigin="anonymous">
     <!-- ME OWN CSS -->
     <!--<link rel="stylesheet" href="static/css/style.css">-->
-    <link rel="stylesheet" href="static/css/vente.css">
+    <link rel="stylesheet" href="static/css/client.css">
 	<link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
     
     <!-- Material Design Bootstrap -->
@@ -51,10 +51,9 @@
     <!-- Section: Team v.1 -->
 <section class="team-section   ">
         <!-- Section heading -->
-        <h2 class="h1-responsive font-weight-bold   text-center">Informations client </h2>
         <!-- Section description -->
-        <div class="row  text-center">
-            <div class="col-lg-3 col-md-4 mb-lg-0 ">
+        <div class="row">
+            <div class="col-lg-3 col-md-4 mb-lg-0 text-center tab_profil">
                 <div class="avatar mx-auto">
                     <img src="https://mdbootstrap.com/img/Photos/Avatars/img%20(20).jpg" class="rounded-circle z-depth-1" alt="Sample avatar">
                 </div>
@@ -83,43 +82,45 @@
                 </ul>
             </div>
         <!-- Grid column -->
-            <div class="col-lg-7 col-md-6 mb-lg-0  col-md-8 tableau table-responsive-md table-striped">
-                <table class="table">
-                    <thead>
-                        <tr>
-                        <th scope="col">Date</th>
-                        <th scope="col">Prise</th>
-                        <th scope="col">Retour</th>
-                        <th scope="col">Somme a verser</th>
-                        <th scope="col">Somme  verser</th>
-                        <th scope="col">+ Encaissement</th>
-                        <th scope="col">solde </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($resultSelecAllvente as $vente) :
-                            $date=$vente['date'];
-                            $prise=$vente['prise_client'];
-                            $retour=$vente['retour_client'];
-                            $sommeAverser=$vente['somme_a_verser'];
-                            $sommeVerser=$vente['somme_verser'];
-                            $encaissement=$vente['user_encaissement'];
-                            $solde=$vente['solde_actuel'];
-                            ?>
-                        <tr>
-                            <th scope="row"><?=$date?> </th>
-                            <td><?=$prise?> </td>
-                            <td><?=$retour?> </td>
-                            <td><?=$sommeAverser?> </td>
-                            <td><?=$sommeVerser?> </td>
-                            <td><?=$encaissement?> </td>
-                            <td><?=$solde?> </td>
-                        </tr>
-                        <?php endforeach ?>
-                    </tbody>
-                
-                </table>
-            </div>
+                <div class="col-lg-7 col-md-6 mb-lg-0  col-md-8 tableau table-responsive-md table-striped">
+                    <h2 class="h1-responsive font-weight-bold   text-center">Informations client </h2>
+
+                    <table class="table">
+                        <thead>
+                            <tr>
+                            <th scope="col">Date</th>
+                            <th scope="col">Prise</th>
+                            <th scope="col">Retour</th>
+                            <th scope="col">Somme a verser</th>
+                            <th scope="col">Somme  verser</th>
+                            <th scope="col">+ Encaissement</th>
+                            <th scope="col">solde </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($resultSelecAllvente as $vente) :
+                                $date=$vente['date'];
+                                $prise=$vente['prise_client'];
+                                $retour=$vente['retour_client'];
+                                $sommeAverser=$vente['somme_a_verser'];
+                                $sommeVerser=$vente['somme_verser'];
+                                $encaissement=$vente['user_encaissement'];
+                                $solde=$vente['solde_actuel'];
+                                ?>
+                            <tr>
+                                <th scope="row"><?=$date?> </th>
+                                <td><?=$prise?> </td>
+                                <td><?=$retour?> </td>
+                                <td><?=$sommeAverser?> </td>
+                                <td><?=$sommeVerser?> </td>
+                                <td><?=$encaissement?> </td>
+                                <td><?=$solde?> </td>
+                            </tr>
+                            <?php endforeach ?>
+                        </tbody>
+                    
+                    </table>
+                </div>
         </div> 
         <!-- Grid row -->
 
@@ -249,8 +250,6 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
     <script src="static/js/client.js"></script>
     <script src="static/js/script.js"></script>
-	
-
 </body>
 
 </html>

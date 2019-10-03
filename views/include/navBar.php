@@ -2,7 +2,7 @@
       <!-- navigation -->
       <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
         <div class="container">
-          <a class="navbar-brand" href="#">C'est du pain  ;-)</a>
+          <a class="navbar-brand" href="#">MyDelNote  ;-)</a>
           <button
             class="navbar-toggler"
             type="button"

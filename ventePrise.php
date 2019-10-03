@@ -6,6 +6,7 @@
         $lastDate=$db->prepare('SELECT id , date FROM vente GROUP BY (date) ORDER BY date DESC LIMIT 7 ');
         $lastDate->execute(array());
         $resultLatDate=$lastDate->fetchAll();
+
         
         //SELECTION DES VENTE CORRESPONDANT A AU DIFFERENTE DATE SELECTIONNE 
         ?>
@@ -65,8 +66,152 @@
             
             <!-- Tab panes -->
             <div class="tab-content sectionDynamique">
-                <?php for($i=0 ;$i<sizeof($resultLatDate);$i++)  :?>
-                    <div id="lien<?=trim($resultLatDate[$i]['id'])?>" class="container tab-pane fade"><br>
+                <!-- PREMIERE PARTIE -->
+                <div id="lien<?=trim($resultLatDate[0]['id'])?>" class=" tab-pane fade in active container"><br>
+                    <h3>Vente du <?=$resultLatDate[0]['date']?></h3>
+                    <!-- selection des information correspondant a la date en coure -->
+                    <?php $db=DB::connect();
+                        $selectAll=$db->prepare('SELECT * FROM vente WHERE date =?');
+                        $selectAll->execute(array($resultLatDate[0]['date']));
+                        $resultSelectAll=$selectAll->fetchAll();
+                        $selectAllPrise=$db->prepare('SELECT * FROM boulangerie WHERE date =?');
+                        $selectAllPrise->execute(array($resultLatDate[0]['date']));
+                        $resultSelectAllPise=$selectAllPrise->fetchAll();
+                    ?>
+
+                    <!-- SECTION PRISE -->
+                    <div id="SectionPrise">
+                        <!--ICI -->
+                        <div class="row grandeRow">
+                                <div class="row venteDuJourRow">
+                                    <div class="prise">
+                                        <h4>Prise:</h4>
+                                        <h3 class='Ligne'><?=$resultSelectAllPise[0]['prise']?></h3>
+                                    </div>
+                                    <div class="prise">
+                                        <h4>Rest :</h4>
+                                        <h3 class='Ligne'><?=$resultSelectAllPise[0]['rest_vente']?></h3>
+                                    </div>
+                                    
+                            </div>
+                            <div class="row venteDuJourRow">
+                                    <div class="prise">
+                                        <h4>Total Client :</h4>
+                                        <h3 class='Ligne'><?=$resultSelectAllPise[0]['somme_recue_vente']?></h3>
+                                    </div>
+                                    <div class="prise">
+                                        <h4>Versement :</h4>
+                                        <h3 class='Ligne'><?=$resultSelectAllPise[0]['versement_livreur']?></h3>
+                                    </div>
+                            </div>
+                        <!--ICI 2 -->
+                    
+                                <div class="row venteDuJourRow">
+                                    <div class="prise">
+                                        <h4>Manquant   :</h4>
+                                        <h3 class='Ligne'><?=$resultSelectAllPise[0]['manquant_livreur']?></h3>
+                                    </div>
+                                    <div class="prise">
+                                        <h4>Rest :</h4>
+                                        <h3 class='Ligne'><?=$resultSelectAllPise[0]['prise']?></h3>
+                                    </div>
+                            </div>
+                        </div>
+                        <!--FIN ICI -->
+                    
+                    </div>
+
+                    <!--section tableau -->
+                    <div id="sectionTableau">
+                        <table id="tableauVente" class="table table-striped table-responsive-md  table-sm" cellspacing="0" width="100%">
+                            <thead>
+                                <tr>
+                                    <th class="th-sm">Nom
+                                    </th>
+                                    <th class="th-sm">Prise
+                                    </th>
+                                    <th class="th-sm">Retour
+                                    </th>
+                                    <th class="th-sm">Somme a verser
+                                    </th>
+                                    <th class="th-sm">Somme verser
+                                    </th>
+                                    <th class="th-sm">Etat Solde
+                                    </th>
+                                    <th class="th-sm">Solde
+                                    </th>
+                                    <th class="th-sm">plus d'info
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="tableBody">
+                                <?php foreach($resultSelectAll as $info): 
+                                    $id=$info['id_client'];
+                                    $nom=$info['nom_client'];
+                                    $prise=$info['prise_client'];
+                                    $retour=$info['retour_client'];
+                                    $sommeAVerse=$info['somme_a_verser'];
+                                    $sommeVerse=$info['somme_verser'];
+                                    $solde=$info['solde_actuel'];
+
+                                    ?>
+                                <a href="index.php" >
+                                    <tr>
+                                        <td> <?=$nom?>
+                                        </td>
+                                        <td><?=$prise?>
+                                        </td>
+                                        <td><?=$retour?>
+                                        </td>
+                                        <td><?=$sommeAVerse?>
+                                        </td>
+                                        <td><?=$sommeVerse?>
+                                        </td>
+                                        <td>Etat Solde
+                                        </td>
+                                        <td><?=$solde ?>
+                                        </td>
+                                        <td>
+                                            <ul class="list-unstyled mb-0">
+                                                <!-- Facebook -->
+                                                <a class="p-2 fa-lg fb-ic" href="client.php?id=<?=$id?>">
+                                                    <i class="glyphicon glyphicon-eye-open">voir</i>
+                                                </a>
+                                                
+                                            </ul>
+                                        </td>
+
+                                    </tr>
+                                </a>
+                                <?php endforeach ?>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                <th>Nom
+                                </th>
+                                <th>Prsie
+                                </th>
+                                <th>Retour
+                                </th>
+                                <th>Somme a verser
+                                </th>
+                                <th>Somme verser
+                                </th>
+                                <th>Etat Solde
+                                </th>
+                                <th>Solde
+                                </th>
+                                <th class="th-sm">plus d'info
+                                </th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                            <!-- fin de la section tableau -->
+                </div>
+                <!-- PARCOUR -->
+                <?php for($i=1 ;$i<sizeof($resultLatDate);$i++)  :?>
+                    <div id="lien<?=trim($resultLatDate[$i]['id'])?>" class="container tab-pane fade  "><br>
                         <h3>Vente du <?=$resultLatDate[$i]['date']?></h3>
                         <!-- selection des information correspondant a la date en coure -->
                         <?php $db=DB::connect();
@@ -77,97 +222,47 @@
                             $selectAllPrise->execute(array($resultLatDate[$i]['date']));
                             $resultSelectAllPise=$selectAllPrise->fetchAll();
                         ?>
-
                         <!-- SECTION PRISE -->
                         <div id="SectionPrise">
                             <!--ICI -->
                             <div class="row grandeRow">
                                     <div class="row venteDuJourRow">
-                                        <div class="col-xs-4">
-                                            <div class="card w-10 cadre ">
-                                                <div class="card-body">
-                                                    <div class="divUl">
-                                                        <h5>Prise</h5>
-                                                        <p class="prise"><?=$resultSelectAllPise[0]['prise']?></p>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                        <div class="prise">
+                                            <h4>Prise:</h4>
+                                            <h3 class='Ligne'><?=$resultSelectAllPise[0]['prise']?></h3>
+                                        </div>
+                                        <div class="prise">
+                                            <h4>Rest :</h4>
+                                            <h3 class='Ligne'><?=$resultSelectAllPise[0]['rest_vente']?></h3>
                                         </div>
                                         
-                                        <div class="col-xs-4">
-                                            <div class="card w-10 cadre">
-                                                <div class="card-body">
-                                                <div class="divUl">
-                                                    <div class="divUl">
-                                                        <h5>Somme a verser</h5>
-                                                        <p class="sommeAVerser"><?=$resultSelectAllPise[0]['somme_a_verser']?></p>
-                                                    </div>
-                                                </div>
-                                                </div>
-                                            </div>
-                                        </div>
                                 </div>
                                 <div class="row venteDuJourRow">
-                                        
-                                        
-                                        <div class="col-xs-4">
-                                            <div class="card w-10 cadre">
-                                                <div class="card-body">
-                                                <div class="divUl">
-                                                    <div class="divUl">
-                                                        <h5>Retour</h5>
-                                                        <p class="retour"><?=$resultSelectAllPise[0]['retour']?></p>
-                                                    </div>
-                                                </div>
-                                                </div>
-                                            </div>
+                                        <div class="prise">
+                                            <h4>Total Client :</h4>
+                                            <h3 class='Ligne'><?=$resultSelectAllPise[0]['somme_recue_vente']?></h3>
                                         </div>
-                                        <div class="col-xs-4">
-                                            <div class="card w-10 cadre">
-                                                <div class="card-body">
-                                                <div class="divUl">
-                                                    <div class="divUl">
-                                                        <h5>Manquant du jours</h5>
-                                                        <p class="manquantJour"><?=$resultSelectAllPise[0]['manquant_du_jour']?></p>
-                                                    </div>
-                                                </div>
-                                                </div>
-                                            </div>
+                                        <div class="prise">
+                                            <h4>Versement :</h4>
+                                            <h3 class='Ligne'><?=$resultSelectAllPise[0]['versement_livreur']?></h3>
                                         </div>
                                 </div>
                             <!--ICI 2 -->
-                           
+                        
                                     <div class="row venteDuJourRow">
-                                        <div class="col-xs-4">
-                                            <div class="card w-10 cadre">
-                                                <div class="card-body">
-                                                    <div class="divUl">
-                                                        <h5>Somme Verser</h5>
-                                                        <p class="sommeVerser"><?=$resultSelectAllPise[0]['somme_verser']?></p>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                        <div class="prise">
+                                            <h4>Manquant   :</h4>
+                                            <h3 class='Ligne'><?=$resultSelectAllPise[0]['manquant_livreur']?></h3>
                                         </div>
-                                        
-                                       
-                                        <div class="col-xs-4">
-                                            <div class="card w-10 cadre">
-                                                <div class="card-body">
-                                                <div class="divUl">
-                                                    <div class="divUl">
-                                                        <h5>Solde</h5>
-                                                        <p class="manquant"><?=$resultSelectAllPise[0]['total_manquant']?></p>
-                                                    </div>
-                                                </div>
-                                                </div>
-                                            </div>
+                                        <div class="prise">
+                                            <h4>Rest :</h4>
+                                            <h3 class='Ligne'><?=$resultSelectAllPise[0]['prise']?></h3>
                                         </div>
                                 </div>
                             </div>
                             <!--FIN ICI -->
-                           
+                        
                         </div>
-
                         <!--section tableau -->
                         <div id="sectionTableau">
                             <table id="tableauVente" class="table table-striped table-responsive-md  table-sm" cellspacing="0" width="100%">
@@ -256,107 +351,113 @@
                         </div>
                         <!-- fin de la section tableau -->
                     </div>
-                    
-                <?php endfor ?>
-                    <div id="autre" class="container tab-pane fade " ><br>
-                        <div class="md-form ">
-                            <input placeholder="Selected date" type="text" id="date-picker-example" class="form-control datepicker dateVente">
-                            <label for="date-picker-example">Try me...</label>
-                        </div>
-                        <!--SECTION PRISE -->
-                            <!-- SECTIN PRISE -->
-                        <div id="SectionPrise">
-                            <div class="row ">
-                                <div class="col ">
-                                    <p>prise</p>
-                                    <p id="prise"></p>
-                                </div>
-                                <div class="col  ">
-                                    <p>Retour</p>
-                                    <p id="retour"></p>
-                                </div>
-                                <div class="col ">
-                                    <p>Somme a verser </p>
-                                    <p id="sommeAVerser"></p>
-                                </div>
-                            </div>
-                            <div class="row ">
-                                <div class="col ">
-                                    <p>Somme verser </p>
-                                    <p id="sommeVerser"></p>
-                                </div>
-                                <div class="col ">
-                                    <p>Manquant du jour</p>
-                                    <p id="manquantJour"></p>
-                                </div>
-                                <div class="col ">
-                                    <p>Total Manquant</p>
-                                    <p id="manquant"></p>
-                                </div>
-                            </div>
-                        </div>
-                        <!--FIN SECTION PRISE -->
-                        <!--section tableau -->
-                        <div id="sectionTableau">
-                            <table id="tableauVente" class="table table-striped table-responsive-md  table-sm" cellspacing="0" width="100%">
-                                <thead>
-                                    <tr>
-                                        <th class="th-sm">Nom
-                                        </th>
-                                        <th class="th-sm">Prise
-                                        </th>
-                                        <th class="th-sm">Retour
-                                        </th>
-                                        <th class="th-sm">Somme a verser
-                                        </th>
-                                        <th class="th-sm">Somme verser
-                                        </th>
-                                        <th class="th-sm">Etat Solde
-                                        </th>
-                                        <th class="th-sm">Solde
-                                        </th>
-                                        <th class="th-sm">Plus d' info
-                                        </th>
-                                        
-                                    </tr>
-                                </thead>
-                                <tbody id="tableBody">
-                                    
-                                </tbody>
-                                <tfoot>
-                                    <tr>
-                                    <th>Nom
-                                    </th>
-                                    <th>Prsie
-                                    </th>
-                                    <th>Retour
-                                    </th>
-                                    <th>Somme a verser
-                                    </th>
-                                    <th>Somme verser
-                                    </th>
-                                    <th>Etat Solde
-                                    </th>
-                                    <th>Solde
-                                    </th>
-                                    <th>plus d'info
-                                    </th>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
-                        <!-- fin de la section tableau -->
                         
+                <?php endfor ?>
+                <!-- FIN PARCOUR DE LA BOUCLE  -->
+                <!-- DERNIER SECTION  -->
+                <div id="autre" class="container tab-pane fade " ><br>
+                    <div class="md-form ">
+                        <input placeholder="Selected date" type="text" id="date-picker-example" class="form-control datepicker dateVente">
+                        <label for="date-picker-example">Try me...</label>
                     </div>
+                    <!--SECTION PRISE -->
+                        <!-- SECTIN PRISE -->
+                    <div id="SectionPrise">
+                        <div class="row ">
+                            <div class="col ">
+                                <p>prise</p>
+                                <p id="prise"></p>
+                            </div>
+                            <div class="col  ">
+                                <p>Retour</p>
+                                <p id="retour"></p>
+                            </div>
+                            <div class="col ">
+                                <p>Somme a verser </p>
+                                <p id="sommeAVerser"></p>
+                            </div>
+                        </div>
+                        <div class="row ">
+                            <div class="col ">
+                                <p>Somme verser </p>
+                                <p id="sommeVerser"></p>
+                            </div>
+                            <div class="col ">
+                                <p>Manquant du jour</p>
+                                <p id="manquantJour"></p>
+                            </div>
+                            <div class="col ">
+                                <p>Total Manquant</p>
+                                <p id="manquant"></p>
+                            </div>
+                        </div>
+                    </div>
+                    <!--FIN SECTION PRISE -->
+                    <!--section tableau -->
+                    <div id="sectionTableau">
+                        <table id="tableauVente" class="table table-striped table-responsive-md  table-sm" cellspacing="0" width="100%">
+                            <thead>
+                                <tr>
+                                    <th class="th-sm">Nom
+                                    </th>
+                                    <th class="th-sm">Prise
+                                    </th>
+                                    <th class="th-sm">Retour
+                                    </th>
+                                    <th class="th-sm">Somme a verser
+                                    </th>
+                                    <th class="th-sm">Somme verser
+                                    </th>
+                                    <th class="th-sm">Etat Solde
+                                    </th>
+                                    <th class="th-sm">Solde
+                                    </th>
+                                    <th class="th-sm">Plus d' info
+                                    </th>
+                                    
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody">
+                                
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                <th>Nom
+                                </th>
+                                <th>Prsie
+                                </th>
+                                <th>Retour
+                                </th>
+                                <th>Somme a verser
+                                </th>
+                                <th>Somme verser
+                                </th>
+                                <th>Etat Solde
+                                </th>
+                                <th>Solde
+                                </th>
+                                <th>plus d'info
+                                </th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                    <!-- fin de la section tableau -->
+                        
+                </div>
+                <!-- FIN DERNIER SECTION  -->
+                <!-- Nav tabs -->
             </div>
-            <!-- Nav tabs -->
             
         </div>
         <div class="nav_buttom">
             <ul class="nav nav-tabs ">
-                <?php for($i=0 ;$i<sizeof($resultLatDate);$i++)  :?>
+                <li class="nav-item active">
+                        <a class="nav-link " data-toggle="tab" href="#lien<?=trim($resultLatDate[0]['id'])?>"><?=trim($resultLatDate[0]['date'])?></a>
+                    </li>
+                <?php for($i=1 ;$i<sizeof($resultLatDate);$i++)  :?>
                     <li class="nav-item">
-                        <a class="nav-link " data-toggle="tab" href="#lien<?=trim($resultLatDate[$i]['id'])?>">lien<?=trim($resultLatDate[$i]['date'])?></a>
+                        <a class="nav-link " data-toggle="tab" href="#lien<?=trim($resultLatDate[$i]['id'])?>"><?=trim($resultLatDate[$i]['date'])?></a>
                     </li>
                 <?php endfor ?>
                 <li class="nav-item">

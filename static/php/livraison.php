@@ -177,13 +177,14 @@ if(isset($_POST)){
                 $selectIdUser->execute(array($tab[$i]['nom']));
                 $idUser=$selectIdUser->fetch();
                 if ($idUser){
-                    var_dump($idUser[0]);
                     $InsertTableVente= $db->prepare('INSERT INTO vente (date,id_client,nom_client,prise_client,retour_client,somme_a_verser,somme_verser,solde_actuel) VALUES (?,?,?,?,?,?,?,?)');
                     $InsertTableVente->execute(array($date,$idUser[0],$tab[$i]['nom'],$tab[$i]['prise'],$tab[$i]['retour'],$tab[$i]['sommeAVerse'],$tab[$i]['sommeVerser'],$tab[$i]['solde']));
                     if($InsertTableVente){
                             //Mise a jour de la table user
                             $miseAjourUser=$db->prepare('UPDATE user set solde = ? WHERE nom = ?');
                             $miseAjourUser->execute(array($tab[$i]['solde'],$tab[$i]['nom']));
+                            echo("SERCTION UPDATE CLIENT");
+                            var_dump($miseAjourUser);
                             if($miseAjourUser){
                                 $Info['InsertionOk']=true;
                             }
@@ -193,6 +194,16 @@ if(isset($_POST)){
                         }
                     }
                 }
+                //Mise a jour de la table boulangerier
+                $updateBoul=$db->prepare('UPDATE boulangerie SET rest_vente=?,somme_recue_vente=?,versement_livreur=?,manquant_livreur=? WHERE date=?');
+                $updateBoul->execute(array($restPrise,$sommeRecuVente,$SommeVerseLivreur,$manquantLivreur,$date));
+                if($updateBoul){
+                    $Info['InsertionOk']=true;
+                }
+                else{
+                    $Info['InsertionOk']=false;
+                }
+
             }
             echo json_encode($Info);
         break;
