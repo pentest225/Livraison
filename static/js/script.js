@@ -31,7 +31,6 @@ $(function()
     var btnValidBoul=document.querySelector(".valideBoul");
     var btnCloseBoule=document.querySelector(".closeSectionBoul")
     var restPrise=0;
-    var restPriseVente=0;
     var inputMaquantDuJour=document.querySelector('#ManquantDuJour');
     var inputSommeAVerser=document.querySelector('#SommeAVerser');
     var inputTotalManquant=document.querySelector('#totalManquant');
@@ -123,6 +122,8 @@ $(function()
                         for(var i = 0 ;i<allInput.length;i++){
                             allInput[i].disabled=false;
                         }
+                        restPrise=parseInt(result.Prise);
+                        inputRestPrise.innerHTML=restPrise;
                     }
                     else{
                         alert('Erreur ,cette date ne correspond a aucune prise ');
@@ -615,10 +616,18 @@ selectBoul.addEventListener("change",function(){
         var inputRestPrise=document.querySelector("#restPrise");
         var restPrise=0;
         for(var i =0;i < linesNumber;i++){
-            var inputPrise=document.querySelector(".priseClient"+i+"").value;
-            inputPrise ==''?inputPrise=0:inputPrise=inputPrise;
-            restPrise +=parseInt(inputPrise);
-           
+            var inputprise=document.querySelector(".priseClient"+i+"");
+            var inputRestPrise=document.querySelector("#restPrise");
+            var priseVal=0;
+            console.log('prise avent modif'+priseVal+'');
+            inputprise.addEventListener('change',function(){
+                priseVal =parseInt(this.value);
+                var priseLocal=0;
+                console.log('prise apres modif '+priseVal);
+                priseLocal +=priseVal;
+                return priseLocal;
+            })
+            return 0;
         }
         inputRestPrise.innerHTML=(priseTotal -restPrise);
     }

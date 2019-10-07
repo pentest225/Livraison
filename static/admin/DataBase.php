@@ -1,4 +1,4 @@
-<?php       
+<?php
    class DB
    {
         public static $db_host = "localhost";
@@ -20,7 +20,7 @@
             public static function Deconexte(){
                 $db=null;
             }
-        
+
     }
-   
+
 ?>
