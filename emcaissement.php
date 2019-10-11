@@ -55,7 +55,7 @@
 	</div>
 <section id="bodySection"style="display:none" >
 <header>
-			<?php include("views/include/navBar.php") ?>
+		<?php include("views/include/navBar.php") ?>
 
 		</header>
 	<div class="container mt-4">

@@ -345,6 +345,7 @@ selectBoul.addEventListener("change",function(){
                             SommeAverserClient=(parseInt(prise)-parseInt(retourClient)) * parseInt(response.prixUnitaireClient); 
                             SommeAVerse.value=SommeAverserClient;
                             parcourPrise(restPriseVente);
+                            console.log(parcourPrise);
                             newSoldeClient =(parseInt(response.newSolde)+SommeAverserClient) - SommeRandu;
                             montantSolde.value=parseInt(newSoldeClient  );
                             montantSolde.disabled=true;
@@ -618,6 +619,7 @@ selectBoul.addEventListener("change",function(){
         for(var i =0;i < linesNumber;i++){
             var inputprise=document.querySelector(".priseClient"+i+"");
             var inputRestPrise=document.querySelector("#restPrise");
+            console.log(inputRestPrise.value)   
             var priseVal=0;
             console.log('prise avent modif'+priseVal+'');
             inputprise.addEventListener('change',function(){
